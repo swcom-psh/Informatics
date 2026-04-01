@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>의사결정 트리 (Decision Tree) 시뮬레이터</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js" type="text/javascript"></script>
+
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(
+                    135deg,
+                    #fb923c 0%,
+                    #f97316 35%,
+                    #f43f5e 100%
+            );
+        }
+
+        /* 탭 전환 시 스타일 */
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+
+        .tab-active {
+            font-weight: 800;
+            border-bottom: 4px solid;
+        }
+
+        .tab-inactive {
+            font-weight: 500;
+            color: #64748b;
+            border-bottom: 4px solid transparent;
+        }
+
+        .tab-inactive:hover {
+            color: #4f46e5;
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* 캔버스 및 네트워크 영역 스타일 */
+        .demo-canvas {
+            image-rendering: auto;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            cursor: crosshair;
+        }
+
+        .tree-network {
+            width: 100%;
+            height: 100%;
+            min-height: 450px;
+            background-color: white;
+            border-radius: 0.75rem;
+            outline: none;
+        }
+
+        /* 데이터 테이블 스타일 (스무고개 탭) */
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: bold;
+            text-align: left;
+            padding: 1rem 1.25rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 토스트 알림 */
+        .toast {
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            transform: translate(-50%, 20px);
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -20px);
+        }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+<header class="hero-gradient text-white py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-block px-4 py-1.5 bg-white/20 rounded-full font-bold mb-6 backdrop-blur-md shadow-sm text-sm md:text-base">
+            인공지능 실습
+        </span>
+        <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+            의사결정 트리 <br class="hidden md:block"> (Decision Tree)
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 font-medium max-w-2xl mx-auto leading-relaxed">
+            데이터의 특징을 분석하여 "가장 좋은 질문"을 찾아내는 직관적인 알고리즘입니다. 스무고개 방식과 2차원 평면 분할 방식을 통해 모델의 생성 과정을 직접 경험해 보세요.
+        </p>
+    </div>
+</header>
+
+<div class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <div class="w-full px-4 md:max-w-6xl mx-auto flex justify-center">
+        <button class="tab-btn tab-active px-8 py-5 text-lg md:text-xl text-emerald-600 border-emerald-600" id="tab-cat"
+                onclick="switchTab('cat')">
+            <i class="fa-solid fa-apple-whole mr-2"></i>스무고개 분류 (표 데이터)
+        </button>
+        <button class="tab-btn tab-inactive px-8 py-5 text-lg md:text-xl" id="tab-2d" onclick="switchTab('2d')">
+            <i class="fa-solid fa-map-location-dot mr-2"></i>2차원 평면 분류 (X, Y)
+        </button>
+    </div>
+</div>
+
+<main class="max-w-6xl mx-auto mt-12 px-4 sm:px-6">
+
+    <section class="space-y-6 block mx-auto" id="sec-cat">
+        <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 p-8 md:p-10">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-3">
+                    <i class="fa-solid fa-apple-whole text-emerald-500 mr-2"></i>스무고개 AI (과일 맞히기)</h2>
+                <p class="text-slate-600 text-lg">과일의 특징(색깔, 크기, 모양)이 담긴 표를 학습하여 AI가 불순도(Gini)를 낮추는 최적의 질문 트리를
+                    생성합니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-stretch">
+                <div class="lg:col-span-2 space-y-6 flex flex-col">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                        <p class="font-bold text-slate-700 mb-4 text-lg">데이터 추가하기</p>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="block text-sm font-bold text-slate-500 mb-2">정답(이름)</label><input
+                                    class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base focus:border-emerald-500 outline-none transition-colors"
+                                    id="catName" placeholder="예: 사과"
+                                    type="text">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-500 mb-2">색깔</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base focus:border-emerald-500 outline-none transition-colors"
+                                        id="catColor">
+                                    <option value="빨강">빨강</option>
+                                    <option value="노랑">노랑</option>
+                                    <option value="초록">초록</option>
+                                    <option value="보라">보라</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-500 mb-2">크기</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base focus:border-emerald-500 outline-none transition-colors"
+                                        id="catSize">
+                                    <option value="큼">큼</option>
+                                    <option value="작음">작음</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-500 mb-2">모양</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base focus:border-emerald-500 outline-none transition-colors"
+                                        id="catShape">
+                                    <option value="둥긂">둥긂</option>
+                                    <option value="길쭉함">길쭉함</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="btnCatAdd"
+                                class="w-full bg-emerald-100 text-emerald-700 py-3 rounded-xl font-bold text-lg hover:bg-emerald-200 transition"
+                                onclick="addCatData()">
+                            데이터 추가
+                        </button>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-2xl overflow-x-auto flex-grow max-h-[300px] overflow-y-auto">
+                        <table class="w-full data-table text-base">
+                            <thead class="sticky top-0 bg-slate-50 shadow-sm z-10">
+                            <tr>
+                                <th>이름</th>
+                                <th>색깔</th>
+                                <th>크기</th>
+                                <th>모양</th>
+                                <th>삭제</th>
+                            </tr>
+                            </thead>
+                            <tbody id="catTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button id="btnCatTrain"
+                                class="flex-1 bg-emerald-500 text-white py-4 rounded-xl font-black text-lg shadow-md hover:bg-emerald-600 transition"
+                                onclick="runCatTraining()">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>트리 생성
+                        </button>
+                        <button id="btnCatReset"
+                                class="px-6 bg-slate-200 text-slate-700 rounded-xl font-bold text-lg hover:bg-slate-300 transition"
+                                onclick="initCatData()">
+                            초기화
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 flex flex-col h-full space-y-6">
+                    <div class="flex-grow border-2 border-slate-200 rounded-2xl bg-slate-50 relative overflow-hidden min-h-[400px]">
+                        <div class="absolute inset-0 tree-network" id="network-cat"></div>
+                        <button class="absolute top-3 right-3 z-10 text-sm font-bold bg-white border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg shadow-sm hover:bg-slate-100 transition-colors"
+                                onclick="if(networkCat) networkCat.fit()">
+                            <i class="fa-solid fa-compress mr-1"></i>맞춤
+                        </button>
+                    </div>
+
+                    <div class="bg-white border-2 border-emerald-100 p-6 rounded-2xl shadow-sm">
+                        <p class="font-bold text-slate-800 mb-4 text-lg"><i
+                                class="fa-solid fa-robot text-emerald-500 mr-2"></i>새로운 데이터로 트리 타보기</p>
+                        <div class="flex flex-wrap gap-4 items-end">
+                            <div class="flex-1 min-w-[90px]">
+                                <label class="block text-sm font-bold text-slate-500 mb-2">색깔</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base bg-slate-50"
+                                        id="testColor">
+                                    <option value="빨강">빨강</option>
+                                    <option value="노랑">노랑</option>
+                                    <option value="초록">초록</option>
+                                    <option value="보라">보라</option>
+                                </select>
+                            </div>
+                            <div class="flex-1 min-w-[90px]">
+                                <label class="block text-sm font-bold text-slate-500 mb-2">크기</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base bg-slate-50"
+                                        id="testSize">
+                                    <option value="큼">큼</option>
+                                    <option value="작음">작음</option>
+                                </select>
+                            </div>
+                            <div class="flex-1 min-w-[90px]">
+                                <label class="block text-sm font-bold text-slate-500 mb-2">모양</label>
+                                <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-base bg-slate-50"
+                                        id="testShape">
+                                    <option value="둥긂">둥긂</option>
+                                    <option value="길쭉함">길쭉함</option>
+                                </select>
+                            </div>
+                            <button id="btnCatPred"
+                                    class="bg-slate-800 text-white px-6 py-2.5 rounded-xl hover:bg-slate-700 transition font-bold text-lg h-[46px] whitespace-nowrap"
+                                    onclick="runCatPrediction()">
+                                예측 시작 <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                        </div>
+                        <div id="predResult"
+                             class="mt-4 p-4 text-center font-bold border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-xl rounded-xl opacity-0 pointer-events-none transition-opacity duration-300 min-h-[60px]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="space-y-6 hidden mx-auto" id="sec-2d">
+        <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-200 p-8 md:p-10">
+            <div class="mb-8">
+                <h2 class="text-3xl md:text-4xl font-black text-slate-800 mb-3">
+                    <i class="fa-solid fa-map-location-dot mr-2 text-blue-500"></i>2차원 데이터 분류</h2>
+                <p class="text-slate-600 text-lg">X축, Y축을 기준으로 데이터가 나뉘는 결정 경계(Decision Boundary)를 시각적으로 확인합니다.</p>
+            </div>
+
+            <div class="flex flex-col space-y-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-slate-50 p-8 rounded-2xl border border-slate-100 items-start">
+                    <div>
+                        <p class="font-bold text-slate-700 text-lg mb-4">1. 데이터 클래스 선택</p>
+                        <div class="flex gap-3">
+                            <button class="flex-1 py-3 text-lg bg-red-500 text-white rounded-xl font-bold shadow-md transition"
+                                    id="btnClass1"
+                                    onclick="set2DClass(1)">빨강
+                            </button>
+                            <button class="flex-1 py-3 text-lg bg-white text-blue-500 border-2 border-blue-500 rounded-xl font-bold transition"
+                                    id="btnClass2"
+                                    onclick="set2DClass(2)">파랑
+                            </button>
+                            <button class="flex-1 py-3 text-lg bg-white text-green-500 border-2 border-green-500 rounded-xl font-bold transition"
+                                    id="btnClass3"
+                                    onclick="set2DClass(3)">초록
+                            </button>
+                        </div>
+                        <p class="text-sm font-bold text-slate-500 mt-3 text-center">선택 후 아래 좌표공간을 클릭해 새로운 점을 추가하세요.</p>
+                    </div>
+
+                    <div>
+                        <p class="font-bold text-slate-700 text-lg mb-4">2. 모델 파라미터 조정</p>
+                        <div class="space-y-6 text-base">
+                            <div>
+                                <div class="flex justify-between mb-2"><span
+                                        class="font-medium text-slate-700">최대 깊이</span><span
+                                        class="font-black text-indigo-600 text-xl" id="lblDepth2D">5</span></div>
+                                <input class="w-full accent-indigo-600 cursor-pointer" id="paramDepth2D" max="15"
+                                       min="1" oninput="document.getElementById('lblDepth2D').innerText = this.value"
+                                       onchange="update2DParams()" type="range" value="5">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2"><span
+                                        class="font-medium text-slate-700">리프 최소 개수</span><span
+                                        class="font-black text-indigo-600 text-xl" id="lblMinLeaf2D">2</span></div>
+                                <input class="w-full accent-indigo-600 cursor-pointer" id="paramMinLeaf2D" max="20"
+                                       min="1" oninput="document.getElementById('lblMinLeaf2D').innerText = this.value"
+                                       onchange="update2DParams()" type="range" value="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full pt-4 lg:pt-0">
+                        <p class="font-bold text-slate-700 text-lg mb-4">3. 학습 진행</p>
+                        <div class="flex flex-col gap-3">
+                            <button class="w-full bg-indigo-600 text-white py-4 rounded-xl font-black text-lg shadow-md hover:bg-indigo-700 transition"
+                                    onclick="run2DTraining()">
+                                <i class="fa-solid fa-play mr-2"></i>학습 실행
+                            </button>
+                            <button class="w-full bg-emerald-100 text-emerald-700 py-3 rounded-xl font-bold text-lg hover:bg-emerald-200 transition"
+                                    onclick="random2DData()"
+                                    title="랜덤 데이터 생성">
+                                <i class="fa-solid fa-shuffle mr-2"></i> 랜덤 데이터 생성
+                            </button>
+                            <button class="w-full bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-lg hover:bg-slate-300 transition"
+                                    onclick="clear2DData()">
+                                <i class="fa-solid fa-trash-can mr-2"></i> 모두 지우기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+                    <div class="flex flex-col items-center bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <p class="font-bold text-slate-800 text-xl w-full mb-6">📍 좌표 공간 (클릭하여 추가)</p>
+                        <div class="relative w-full aspect-square max-w-[500px]">
+                            <canvas class="demo-canvas w-full h-full" height="400" id="canvas2d" width="400"></canvas>
+                            <div class="absolute -left-8 top-1/2 -translate-y-1/2 text-sm font-black text-slate-400 rotate-[-90deg]">
+                                Y축
+                            </div>
+                            <div class="absolute left-1/2 -bottom-8 -translate-x-1/2 text-sm font-black text-slate-400">
+                                X축
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col h-full bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <p class="font-bold text-slate-800 text-xl">🌳 생성된 결정 트리</p>
+                            <button class="text-sm font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition-colors"
+                                    onclick="if(network2D) network2D.fit()"><i
+                                    class="fa-solid fa-compress mr-1"></i>맞춤
+                            </button>
+                        </div>
+                        <div class="flex-grow border-2 border-slate-100 rounded-2xl bg-slate-50 relative overflow-hidden min-h-[450px]">
+                            <div class="absolute inset-0 tree-network" id="network-2d"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div class="toast fixed bottom-10 left-1/2 px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-2xl z-[1000] bg-gray-800"
+     id="toast"></div>
+
+<script>
+    // --- 1. 유틸리티 및 탭 제어 ---
+    let toastTimer = null;
+
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        if (toastTimer) clearTimeout(toastTimer);
+        toast.innerText = message;
+        toast.className = `toast fixed bottom-10 left-1/2 px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-2xl z-[1000] transform transition-all ${type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-rose-500' : 'bg-indigo-600'}`;
+        toast.classList.remove('show');
+        requestAnimationFrame(() => toast.classList.add('show'));
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function switchTab(tab) {
+        document.getElementById('sec-cat').classList.toggle('hidden', tab !== 'cat');
+        document.getElementById('sec-2d').classList.toggle('hidden', tab !== '2d');
+        document.getElementById('sec-cat').classList.toggle('block', tab === 'cat');
+        document.getElementById('sec-2d').classList.toggle('block', tab === '2d');
+
+        const btnCat = document.getElementById('tab-cat');
+        const btn2d = document.getElementById('tab-2d');
+
+        if (tab === 'cat') {
+            btnCat.className = 'tab-btn tab-active px-8 py-5 text-lg md:text-xl text-emerald-600 border-emerald-600';
+            btn2d.className = 'tab-btn tab-inactive px-8 py-5 text-lg md:text-xl';
+            if (networkCat) networkCat.fit();
+        } else {
+            btn2d.className = 'tab-btn tab-active px-8 py-5 text-lg md:text-xl text-indigo-600 border-indigo-600';
+            btnCat.className = 'tab-btn tab-inactive px-8 py-5 text-lg md:text-xl';
+            if (network2D) network2D.fit();
+        }
+    }
+
+    // XSS 방지 함수
+    function escapeHtml(unsafe) {
+        return (unsafe || '').toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // ==========================================
+    // 2. 범주형 표 기반 알고리즘 (Tab 1)
+    // ==========================================
+    let datasetCat = [];
+    let treeCat = null;
+    let networkCat = null;
+    let nodesDataCat = null;
+    let isPredictingCat = false; // 예측 애니메이션 도중 상태 오염을 막기 위한 플래그
+
+    const FEATURES = ['color', 'size', 'shape'];
+    const FEATURE_NAMES = {color: '색깔', size: '크기', shape: '모양'};
+
+    function initCatData() {
+        if (isPredictingCat) return; // 비동기 충돌 방지
+        datasetCat = [
+            {id: 1, name: '사과', color: '빨강', size: '큼', shape: '둥긂'},
+            {id: 2, name: '딸기', color: '빨강', size: '작음', shape: '길쭉함'},
+            {id: 3, name: '바나나', color: '노랑', size: '큼', shape: '길쭉함'},
+            {id: 4, name: '레몬', color: '노랑', size: '작음', shape: '둥긂'},
+            {id: 5, name: '수박', color: '초록', size: '큼', shape: '둥긂'},
+            {id: 6, name: '포도', color: '보라', size: '작음', shape: '둥긂'}
+        ];
+        treeCat = null;
+        renderCatTable();
+        renderCatTree();
+        const resEl = document.getElementById('predResult');
+        resEl.classList.remove('opacity-100', 'pointer-events-auto');
+        resEl.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function addCatData() {
+        if (isPredictingCat) return;
+        const name = document.getElementById('catName').value.trim();
+        if (!name) return showToast('이름을 입력하세요.', 'error');
+        const id = datasetCat.length > 0 ? Math.max(...datasetCat.map(d => d.id)) + 1 : 1;
+        datasetCat.push({
+            id,
+            name: escapeHtml(name), // XSS 공격 방어
+            color: document.getElementById('catColor').value,
+            size: document.getElementById('catSize').value,
+            shape: document.getElementById('catShape').value
+        });
+        document.getElementById('catName').value = '';
+        treeCat = null;
+        renderCatTable();
+        renderCatTree();
+
+        const resEl = document.getElementById('predResult');
+        resEl.classList.remove('opacity-100', 'pointer-events-auto');
+        resEl.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function removeCatData(id) {
+        if (isPredictingCat) return;
+        datasetCat = datasetCat.filter(d => d.id !== id);
+        treeCat = null;
+        renderCatTable();
+        renderCatTree();
+
+        const resEl = document.getElementById('predResult');
+        resEl.classList.remove('opacity-100', 'pointer-events-auto');
+        resEl.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function renderCatTable() {
+        const tbody = document.getElementById('catTableBody');
+        tbody.innerHTML = '';
+        datasetCat.forEach(d => {
+            // 탈출된 문자열 사용
+            tbody.innerHTML += `<tr><td class="font-bold">${d.name}</td><td>${d.color}</td><td>${d.size}</td><td>${d.shape}</td> <td><button onclick="removeCatData(${d.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+        });
+    }
+
+    function calcGiniCat(data) {
+        if (data.length === 0) return 0;
+        let counts = {};
+        data.forEach(d => counts[d.name] = (counts[d.name] || 0) + 1);
+        let gini = 1.0;
+        for (let k in counts) {
+            let p = counts[k] / data.length;
+            gini -= p * p;
+        }
+        return gini;
+    }
+
+    function buildTreeCat(data, usedFeatures, depth) {
+        if (data.length === 0) return null;
+
+        const firstClass = data[0].name;
+        if (data.every(d => d.name === firstClass)) {
+            return {isLeaf: true, result: firstClass, size: data.length};
+        }
+
+        if (usedFeatures.length === FEATURES.length || depth >= 5) {
+            let counts = {};
+            data.forEach(d => counts[d.name] = (counts[d.name] || 0) + 1);
+            let bestName = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            return {isLeaf: true, result: bestName, size: data.length};
+        }
+
+        let bestGini = Infinity;
+        let bestFeature = null;
+        let bestVal = null;
+        let bestSplits = null;
+
+        FEATURES.forEach(f => {
+            if (usedFeatures.includes(f)) return;
+            const vals = [...new Set(data.map(d => d[f]))];
+            vals.forEach(v => {
+                const left = data.filter(d => d[f] === v);
+                const right = data.filter(d => d[f] !== v);
+                const probL = left.length / data.length;
+                const probR = right.length / data.length;
+                const giniL = calcGiniCat(left);
+                const giniR = calcGiniCat(right);
+                const wGini = probL * giniL + probR * giniR;
+
+                if (wGini < bestGini) {
+                    bestGini = wGini;
+                    bestFeature = f;
+                    bestVal = v;
+                    bestSplits = {left, right};
+                }
+            });
+        });
+
+        if (!bestFeature || bestGini === calcGiniCat(data)) {
+            let counts = {};
+            data.forEach(d => counts[d.name] = (counts[d.name] || 0) + 1);
+            let bestName = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            return {isLeaf: true, result: bestName, size: data.length};
+        }
+
+        return {
+            isLeaf: false,
+            feature: bestFeature,
+            value: bestVal,
+            gini: bestGini,
+            // [논리 오류 수정] '아니오' 분기(right)에서는 다중 카테고리를 위해 해당 특징을 다시 물어볼 수 있도록 소진시키지 않음.
+            left: buildTreeCat(bestSplits.left, [...usedFeatures, bestFeature], depth + 1),
+            right: buildTreeCat(bestSplits.right, [...usedFeatures], depth + 1)
+        };
+    }
+
+    function runCatTraining() {
+        if (isPredictingCat) return;
+        if (datasetCat.length === 0) return showToast('데이터가 없습니다.', 'error');
+        treeCat = buildTreeCat(datasetCat, [], 0);
+        renderCatTree();
+        showToast('성공적으로 트리가 생성되었습니다!', 'success');
+
+        const resEl = document.getElementById('predResult');
+        resEl.classList.remove('opacity-100', 'pointer-events-auto');
+        resEl.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function renderCatTree() {
+        const container = document.getElementById('network-cat');
+
+        // [렌더링 오류 수정] 메모리 누수 및 DOM 중첩을 막기 위해 기존 네트워크 인스턴스 파괴
+        if (networkCat) {
+            networkCat.destroy();
+            networkCat = null;
+        }
+
+        if (!treeCat) {
+            container.innerHTML = '<div class="flex h-full items-center justify-center text-slate-500 text-lg font-bold"><i class="fa-solid fa-tree text-2xl mr-3 text-emerald-500"></i>데이터가 변경되었습니다. [트리 생성] 버튼을 다시 눌러주세요.</div>';
+            return;
+        }
+
+        let nodesArr = [];
+        let edgesArr = [];
+        let nodeId = 1;
+
+        function traverse(node, parentId = null, edgeLabel = '') {
+            if (!node) return;
+            let currId = nodeId++;
+            node.visId = currId;
+
+            if (!node.isLeaf) {
+                nodesArr.push({
+                    id: currId,
+                    // [교육적 개선] Gini 계수를 시각적으로 표시하여 분할의 의미를 학습하도록 유도
+                    label: `${FEATURE_NAMES[node.feature]}이(가)\n'${node.value}' 입니까?\n(불순도: ${node.gini.toFixed(3)})`,
+                    shape: 'box',
+                    color: {background: '#f8fafc', border: '#10b981'},
+                    font: {color: '#064e3b', bold: true, size: 16},
+                    borderWidth: 2
+                });
+                if (parentId) edgesArr.push({
+                    from: parentId,
+                    to: currId,
+                    label: edgeLabel,
+                    font: {color: '#64748b', bold: true},
+                    color: {color: '#cbd5e1'}
+                });
+
+                traverse(node.left, currId, '예');
+                traverse(node.right, currId, '아니오');
+            } else {
+                nodesArr.push({
+                    id: currId,
+                    label: `결과:\n${node.result}`,
+                    shape: 'ellipse',
+                    color: {background: '#10b981', border: '#059669'},
+                    font: {color: 'white', bold: true, size: 16}
+                });
+                if (parentId) edgesArr.push({
+                    from: parentId,
+                    to: currId,
+                    label: edgeLabel,
+                    font: {color: '#64748b', bold: true},
+                    color: {color: '#cbd5e1'}
+                });
+            }
+        }
+
+        traverse(treeCat);
+        nodesDataCat = new vis.DataSet(nodesArr);
+        networkCat = new vis.Network(container, {nodes: nodesDataCat, edges: edgesArr}, {
+            layout: {hierarchical: {direction: 'UD', sortMethod: 'directed', levelSeparation: 90, nodeSpacing: 160}},
+            physics: false,
+            // 애니메이션 충돌 방지를 위해 예측(상호작용) 중 드래그 뷰를 제어 가능토록 설정
+            interaction: {dragNodes: false, zoomView: true, dragView: true},
+            edges: {arrows: {to: {enabled: true, scaleFactor: 0.5}}, smooth: {type: 'cubicBezier'}}
+        });
+    }
+
+    function resetCatTreeColors() {
+        if (!nodesDataCat) return;
+        const updates = [];
+        nodesDataCat.forEach(n => {
+            if (n.shape === 'box') {
+                updates.push({id: n.id, color: {background: '#f8fafc', border: '#10b981'}, borderWidth: 2});
+            } else {
+                updates.push({id: n.id, color: {background: '#10b981', border: '#059669'}, borderWidth: 1});
+            }
+        });
+        nodesDataCat.update(updates);
+    }
+
+    // 트리 탐색 애니메이션 기능 (비동기 충돌 방지 로직 적용)
+    async function runCatPrediction() {
+        if (!treeCat) return showToast('먼저 트리를 생성해야 예측할 수 있습니다.', 'error');
+        if (isPredictingCat) return;
+
+        isPredictingCat = true;
+
+        const btn = document.getElementById('btnCatPred');
+
+        // [상태 오류 방지] UI 버튼들 잠금 처리
+        const controls = [document.getElementById('btnCatAdd'), document.getElementById('btnCatTrain'), document.getElementById('btnCatReset')];
+        controls.forEach(c => c.classList.add('opacity-50', 'pointer-events-none'));
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>탐색 중...`;
+
+        const resEl = document.getElementById('predResult');
+        resEl.classList.remove('opacity-0', 'pointer-events-none');
+        resEl.classList.add('opacity-100', 'pointer-events-auto');
+        resEl.className = "mt-4 p-4 text-center font-bold border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-xl rounded-xl";
+        resEl.innerHTML = '트리를 탐색하는 중입니다...';
+
+        resetCatTreeColors();
+
+        const testData = {
+            color: document.getElementById('testColor').value,
+            size: document.getElementById('testSize').value,
+            shape: document.getElementById('testShape').value
+        };
+
+        let current = treeCat;
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        while (current) {
+            // [예외 처리] 중간에 트리가 소멸되거나 데이터가 비정상 변경되었는지 확인
+            if (!networkCat || !nodesDataCat) break;
+
+            nodesDataCat.update({
+                id: current.visId,
+                color: {background: '#fef08a', border: '#eab308'},
+                borderWidth: 4
+            });
+
+            networkCat.focus(current.visId, {scale: 1.2, animation: {duration: 500, easingFunction: 'easeInOutQuad'}});
+
+            await sleep(1000);
+
+            // 상태 체크 다시 한번 (비동기 깨어난 직후)
+            if (!isPredictingCat || !nodesDataCat) break;
+
+            if (current.isLeaf) break;
+
+            nodesDataCat.update({
+                id: current.visId,
+                color: {background: '#dcfce3', border: '#22c55e'},
+                borderWidth: 2
+            });
+
+            if (testData[current.feature] === current.value) current = current.left;
+            else current = current.right;
+        }
+
+        if (current && nodesDataCat) {
+            nodesDataCat.update({
+                id: current.visId,
+                color: {background: '#ef4444', border: '#b91c1c'},
+                borderWidth: 4
+            });
+            resEl.innerHTML = `이 데이터는 <b>${current.result}</b>(으)로 분류되었습니다.`;
+            networkCat.fit({animation: {duration: 1000, easingFunction: 'easeInOutQuad'}});
+        }
+
+        // 상태 해제
+        btn.disabled = false;
+        btn.innerHTML = `예측 시작 <i class="fa-solid fa-arrow-right ml-1"></i>`;
+        controls.forEach(c => c.classList.remove('opacity-50', 'pointer-events-none'));
+        isPredictingCat = false;
+    }
+
+    // ==========================================
+    // 3. 2차원 평면 분류 (Tab 2)
+    // ==========================================
+    const canvas2d = document.getElementById('canvas2d');
+    const ctx = canvas2d.getContext('2d');
+    let points2D = [];
+    let currentClass2D = 1;
+    let tree2D = null;
+    let network2D = null;
+
+    const colors2D = {
+        1: {base: '#ef4444', light: 'rgba(239, 68, 68, 0.2)', text: '빨강'},
+        2: {base: '#3b82f6', light: 'rgba(59, 130, 246, 0.2)', text: '파랑'},
+        3: {base: '#10b981', light: 'rgba(16, 185, 129, 0.2)', text: '초록'}
+    };
+
+    function set2DClass(cls) {
+        currentClass2D = cls;
+        document.getElementById('btnClass1').className = cls === 1 ? 'flex-1 py-3 text-lg bg-red-500 text-white rounded-xl font-bold shadow-md transition' : 'flex-1 py-3 text-lg bg-white text-red-500 border-2 border-red-500 rounded-xl font-bold transition';
+        document.getElementById('btnClass2').className = cls === 2 ? 'flex-1 py-3 text-lg bg-blue-500 text-white rounded-xl font-bold shadow-md transition' : 'flex-1 py-3 text-lg bg-white text-blue-500 border-2 border-blue-500 rounded-xl font-bold transition';
+        document.getElementById('btnClass3').className = cls === 3 ? 'flex-1 py-3 text-lg bg-green-500 text-white rounded-xl font-bold shadow-md transition' : 'flex-1 py-3 text-lg bg-white text-green-500 border-2 border-green-500 rounded-xl font-bold transition';
+    }
+
+    function draw2DCanvas() {
+        ctx.clearRect(0, 0, canvas2d.width, canvas2d.height);
+
+        if (tree2D) {
+            drawBoundary(tree2D, 0, canvas2d.width, 0, canvas2d.height);
+        }
+
+        points2D.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+            ctx.fillStyle = colors2D[p.cls].base;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        });
+    }
+
+    function drawBoundary(node, xMin, xMax, yMin, yMax) {
+        if (node.isLeaf) {
+            ctx.fillStyle = colors2D[node.cls].light;
+            ctx.fillRect(xMin, yMin, xMax - xMin, yMax - yMin);
+            return;
+        }
+
+        if (node.feature === 'x') {
+            drawBoundary(node.left, xMin, node.value, yMin, yMax);
+            drawBoundary(node.right, node.value, xMax, yMin, yMax);
+            ctx.beginPath();
+            ctx.moveTo(node.value, yMin);
+            ctx.lineTo(node.value, yMax);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        } else {
+            drawBoundary(node.left, xMin, xMax, yMin, node.value);
+            drawBoundary(node.right, xMin, xMax, node.value, yMax);
+            ctx.beginPath();
+            ctx.moveTo(xMin, node.value);
+            ctx.lineTo(xMax, node.value);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+    }
+
+    canvas2d.addEventListener('mousedown', (e) => {
+        const rect = canvas2d.getBoundingClientRect();
+        const scaleX = canvas2d.width / rect.width;
+        const scaleY = canvas2d.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        points2D.push({x, y, cls: currentClass2D});
+
+        // [사용자 UX/UI 경험 개선] 점을 찍었을 때 기존 경계선이 사라지는 당혹감을 없애기 위해 즉시 재학습
+        if (tree2D) {
+            run2DTraining();
+        } else {
+            draw2DCanvas();
+        }
+    });
+
+    function random2DData() {
+        points2D = [];
+        for (let i = 0; i < 40; i++) {
+            points2D.push({
+                x: Math.random() * 380 + 10,
+                y: Math.random() * 380 + 10,
+                cls: Math.floor(Math.random() * 3) + 1
+            });
+        }
+        tree2D = null;
+        draw2DCanvas();
+        showToast('랜덤 2차원 데이터가 생성되었습니다.', 'info');
+    }
+
+    function clear2DData() {
+        points2D = [];
+        tree2D = null;
+        if (network2D) {
+            network2D.destroy();
+            network2D = null;
+        }
+        document.getElementById('network-2d').innerHTML = '';
+        draw2DCanvas();
+    }
+
+    function update2DParams() {
+        if (tree2D) run2DTraining();
+    }
+
+    function calcGini2D(data) {
+        if (data.length === 0) return 0;
+        let counts = {1: 0, 2: 0, 3: 0};
+        data.forEach(d => counts[d.cls]++);
+        let gini = 1.0;
+        for (let k in counts) {
+            let p = counts[k] / data.length;
+            gini -= p * p;
+        }
+        return gini;
+    }
+
+    function buildTree2D(data, depth, maxDepth, minLeaf) {
+        if (data.length === 0) return null;
+
+        let counts = {1: 0, 2: 0, 3: 0};
+        data.forEach(d => counts[d.cls]++);
+        let bestCls = 1;
+        let maxCount = -1;
+        for (let k in counts) {
+            if (counts[k] > maxCount) {
+                maxCount = counts[k];
+                bestCls = parseInt(k);
+            }
+        }
+
+        if (depth >= maxDepth || data.length <= minLeaf || calcGini2D(data) === 0) {
+            return {isLeaf: true, cls: bestCls, size: data.length};
+        }
+
+        let bestGini = Infinity;
+        let bestFeature = null;
+        let bestVal = null;
+        let bestSplits = null;
+
+        ['x', 'y'].forEach(f => {
+            let sorted = [...data].sort((a, b) => a[f] - b[f]);
+            for (let i = 0; i < sorted.length - 1; i++) {
+                if (sorted[i].cls === sorted[i + 1].cls) continue;
+                let v = (sorted[i][f] + sorted[i + 1][f]) / 2;
+
+                let left = data.filter(d => d[f] <= v);
+                let right = data.filter(d => d[f] > v);
+
+                if (left.length < minLeaf / 2 || right.length < minLeaf / 2) continue;
+
+                const probL = left.length / data.length;
+                const probR = right.length / data.length;
+                const wGini = probL * calcGini2D(left) + probR * calcGini2D(right);
+
+                if (wGini < bestGini) {
+                    bestGini = wGini;
+                    bestFeature = f;
+                    bestVal = v;
+                    bestSplits = {left, right};
+                }
+            }
+        });
+
+        if (!bestFeature) {
+            return {isLeaf: true, cls: bestCls, size: data.length};
+        }
+
+        return {
+            isLeaf: false,
+            feature: bestFeature,
+            value: bestVal,
+            gini: bestGini,
+            left: buildTree2D(bestSplits.left, depth + 1, maxDepth, minLeaf),
+            right: buildTree2D(bestSplits.right, depth + 1, maxDepth, minLeaf)
+        };
+    }
+
+    function run2DTraining() {
+        if (points2D.length === 0) return showToast('데이터가 없습니다. 캔버스를 클릭하세요.', 'error');
+
+        const maxDepth = parseInt(document.getElementById('paramDepth2D').value);
+        const minLeaf = parseInt(document.getElementById('paramMinLeaf2D').value);
+
+        tree2D = buildTree2D(points2D, 0, maxDepth, minLeaf);
+        draw2DCanvas();
+        render2DTree();
+    }
+
+    function render2DTree() {
+        const container = document.getElementById('network-2d');
+
+        // [렌더링 오류 수정] 메모리 누수 방지
+        if (network2D) {
+            network2D.destroy();
+            network2D = null;
+        }
+
+        if (!tree2D) return;
+
+        let nodesArr = [];
+        let edgesArr = [];
+        let nodeId = 1;
+
+        function traverse(node, parentId = null, edgeLabel = '') {
+            if (!node) return;
+            let currId = nodeId++;
+
+            if (!node.isLeaf) {
+                nodesArr.push({
+                    id: currId,
+                    // [교육적 개선] 불순도(Gini) 표시 추가
+                    label: `${node.feature.toUpperCase()}축 값이\n${Math.round(node.value)} 이하인가?\n(불순도: ${node.gini.toFixed(3)})`,
+                    shape: 'box',
+                    color: {background: '#f8fafc', border: '#6366f1'},
+                    font: {color: '#312e81', bold: true, size: 16},
+                    borderWidth: 2
+                });
+                if (parentId) edgesArr.push({
+                    from: parentId,
+                    to: currId,
+                    label: edgeLabel,
+                    font: {color: '#64748b', bold: true},
+                    color: {color: '#cbd5e1'}
+                });
+
+                traverse(node.left, currId, '예');
+                traverse(node.right, currId, '아니오');
+            } else {
+                nodesArr.push({
+                    id: currId,
+                    label: `결과:\n${colors2D[node.cls].text}`,
+                    shape: 'ellipse',
+                    color: {background: colors2D[node.cls].base, border: '#fff'},
+                    font: {color: 'white', bold: true, size: 16}
+                });
+                if (parentId) edgesArr.push({
+                    from: parentId,
+                    to: currId,
+                    label: edgeLabel,
+                    font: {color: '#64748b', bold: true},
+                    color: {color: '#cbd5e1'}
+                });
+            }
+        }
+
+        traverse(tree2D);
+        network2D = new vis.Network(container, {nodes: nodesArr, edges: edgesArr}, {
+            layout: {hierarchical: {direction: 'UD', sortMethod: 'directed', levelSeparation: 90, nodeSpacing: 160}},
+            physics: false,
+            interaction: {dragNodes: false, zoomView: true, dragView: true},
+            edges: {arrows: {to: {enabled: true, scaleFactor: 0.5}}, smooth: {type: 'cubicBezier'}},
+            nodes: {font: {face: 'Pretendard', size: 16}}
+        });
+    }
+
+    // 초기화
+    initCatData();
+    draw2DCanvas();
+
+</script>
+</body>
+</html>

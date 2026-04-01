@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>휴리스틱 탐색 (Greedy & A*) 시뮬레이터</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js" type="text/javascript"></script>
+
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        }
+
+        /* --- 공통 패널 스타일 --- */
+        .control-panel {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* --- 맵 편집 툴 버튼 --- */
+        .tool-btn {
+            transition: all 0.2s ease;
+        }
+
+        .tool-btn.tool-active {
+            background-color: #0d9488 !important;
+            border-color: #0f766e !important;
+            color: white !important;
+        }
+
+        .tool-btn.tool-active i {
+            color: white !important;
+        }
+
+        /* --- Grid Search 관련 스타일 --- */
+        #grid-container {
+            display: grid;
+            gap: 2px;
+            background: #cbd5e1;
+            border: 4px solid #cbd5e1;
+            border-radius: .75rem;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 1;
+            /* 모바일에서 터치 드래그 시 화면 스크롤 방지 */
+            touch-action: none;
+        }
+
+        .grid-cell {
+            background: white;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            transition: background-color 0.2s;
+            user-select: none;
+            /* 셀이 항상 정사각형을 유지하도록 강제 */
+            aspect-ratio: 1;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .grid-cell:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 셀 내부 휴리스틱 텍스트 레이아웃 */
+        .cell-g {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .cell-h {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        .cell-f {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: #1e293b;
+        }
+
+        /* 상태별 색상 (아이콘 크기를 반응형으로 조정하여 찌그러짐 방지) */
+        .cell-wall {
+            background: #475569 !important;
+            border-color: #334155 !important;
+        }
+
+        .cell-start {
+            background: #10b981 !important;
+            color: white !important;
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+        }
+
+        .cell-end {
+            background: #f43f5e !important;
+            color: white !important;
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+        }
+
+        .cell-open {
+            background: #d9f99d !important;
+        }
+
+        .cell-closed {
+            background: #bae6fd !important;
+        }
+
+        .cell-current {
+            background: #fde047 !important;
+            transform: scale(0.95);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+            z-index: 10;
+        }
+
+        .cell-path {
+            background: #f59e0b !important;
+            color: white !important;
+            transform: scale(0.9);
+            border-radius: 8px;
+        }
+
+        /* 텍스트 가시성 조정 */
+        .cell-start .cell-f, .cell-end .cell-f, .cell-path .cell-f,
+        .cell-start .cell-g, .cell-start .cell-h, .cell-end .cell-g, .cell-end .cell-h,
+        .cell-path .cell-g, .cell-path .cell-h {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* --- Tree Search 관련 스타일 --- */
+        .tree-network {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            background-color: white;
+            border-radius: 0.75rem;
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+<header class="hero-gradient text-white py-20 px-6">
+    <div class="max-w-6xl mx-auto text-center">
+        <span class="inline-block px-4 py-1.5 bg-white/20 rounded-full font-bold mb-5 backdrop-blur-md shadow-sm">
+            인공지능 실습
+        </span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight tracking-tight">
+            목표를 향한 똑똑한 탐색 <br class="hidden md:block">휴리스틱 시뮬레이션
+        </h1>
+        <p class="text-lg md:text-xl opacity-90 font-medium max-w-2xl mx-auto leading-relaxed">
+            트리(Tree) 구조와 2차원 공간(Grid)에서 Greedy Best-First 탐색과 A* 탐색이<br>
+            휴리스틱 값(h, g, f)을 활용해 어떻게 동작하는지 직관적으로 비교해 보세요.
+        </p>
+    </div>
+</header>
+
+<div class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <div class="max-w-6xl mx-auto flex justify-center">
+        <button class="px-8 py-4 font-bold text-teal-600 border-b-4 border-teal-600 transition-colors" id="tab-tree"
+                onclick="window.UIController.switchTab('tree')">
+            <i class="fa-solid fa-network-wired mr-2"></i>트리 탐색 (Tree)
+        </button>
+        <button class="px-8 py-4 font-medium text-gray-500 hover:text-teal-600 border-b-4 border-transparent transition-colors"
+                id="tab-grid"
+                onclick="window.UIController.switchTab('grid')">
+            <i class="fa-solid fa-table-cells mr-2"></i>2D 공간 탐색 (Grid)
+        </button>
+    </div>
+</div>
+
+<main class="max-w-6xl mx-auto mt-8 px-4">
+
+    <section class="space-y-6 block" id="tree-search-section">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
+            <div class="lg:col-span-1 control-panel flex flex-col gap-6 min-h-full bg-slate-50 border-2 border-slate-100">
+                <div>
+                    <div class="flex items-center gap-2 font-black text-slate-800 text-lg pb-3">
+                        <i class="fa-solid fa-sliders text-teal-600"></i> 환경 설정
+                    </div>
+                    <div class="flex gap-3 mb-4 items-end">
+                        <div class="flex-1">
+                            <label class="block font-bold text-gray-700 mb-1 text-sm">최대 깊이</label>
+                            <input class="w-full h-10 px-3 border-2 border-slate-300 rounded-xl font-bold focus:border-teal-500 outline-none"
+                                   id="tree-max-depth" max="6" min="2" type="number" value="4">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block font-bold text-gray-700 mb-1 text-sm">최대 자식</label>
+                            <input class="w-full h-10 px-3 border-2 border-slate-300 rounded-xl font-bold focus:border-teal-500 outline-none"
+                                   id="tree-max-children" max="4" min="1" type="number" value="3">
+                        </div>
+                    </div>
+                    <button class="w-full bg-slate-700 hover:bg-slate-800 text-white py-3 rounded-xl font-bold transition shadow-sm flex justify-center items-center gap-2"
+                            id="btn-tree-gen">
+                        <i class="fa-solid fa-sitemap"></i> 트리 생성 및 랜덤 h(n)
+                    </button>
+                    <p class="text-teal-700 font-bold text-center mt-3 text-xs bg-teal-50 py-2 rounded-lg border border-teal-100">
+                        노드를 클릭하여 목표 노드(Goal)를 변경할 수 있습니다.
+                    </p>
+                </div>
+
+                <hr class="border-slate-200">
+
+                <div>
+                    <div class="flex items-center gap-2 font-black text-slate-800 text-lg pb-3">
+                        <i class="fa-solid fa-microchip text-teal-600"></i> 알고리즘 선택
+                    </div>
+                    <select id="tree-algo"
+                            class="w-full border-2 border-slate-300 rounded-xl shadow-sm focus:border-teal-500 outline-none p-3 font-bold bg-white mb-4">
+                        <option value="astar">A* Search (g + h)</option>
+                        <option value="greedy">Greedy Best-First (h)</option>
+                    </select>
+
+                    <label class="block font-bold text-gray-700 mb-2 text-sm">탐색 속도</label>
+                    <input class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                           id="tree-speed" max="1000" min="50" type="range" value="500">
+                </div>
+
+                <hr class="border-slate-200">
+
+                <div class="flex-grow flex flex-col justify-end">
+                    <div class="flex items-center gap-2 font-black text-slate-800 text-lg pb-3">
+                        <i class="fa-solid fa-gamepad text-teal-600"></i> 실행 제어
+                    </div>
+                    <div class="grid grid-cols-1 gap-2">
+                        <button class="bg-teal-600 hover:bg-teal-700 text-white py-3 px-2 rounded-xl font-bold transition shadow-md flex justify-center items-center gap-1 whitespace-nowrap text-sm sm:text-base"
+                                id="btn-tree-play">
+                            <i class="fa-solid fa-play"></i> 자동 실행 (Run)
+                        </button>
+                        <button class="bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-2 rounded-xl font-bold transition shadow-sm flex justify-center items-center gap-1 whitespace-nowrap text-sm sm:text-base"
+                                id="btn-tree-step">
+                            <i class="fa-solid fa-forward-step"></i> 다음 (Next)
+                        </button>
+                        <button class="bg-slate-500 hover:bg-slate-600 text-white py-3 px-2 rounded-xl font-bold transition shadow-sm flex justify-center items-center gap-1 whitespace-nowrap text-sm sm:text-base"
+                                id="btn-tree-reset">
+                            <i class="fa-solid fa-rotate-right"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 control-panel flex flex-col p-0 overflow-hidden">
+                <div class="p-4 bg-slate-800 text-white flex justify-between items-center rounded-t-xl">
+                    <div class="font-bold flex items-center gap-3 w-full">
+                        <span class="bg-slate-700 px-4 py-2 rounded-lg text-sm border border-slate-600 w-full"
+                              id="tree-status">
+                            대기 중
+                        </span>
+                    </div>
+                </div>
+                <div class="bg-slate-100 border-b border-slate-200 py-2 px-4 flex justify-end gap-4 text-xs font-bold text-slate-600">
+                    <span class="flex items-center gap-1"><div
+                            class="w-3 h-3 bg-yellow-400 border border-yellow-500 rounded"></div>현재 선택</span>
+                    <span class="flex items-center gap-1"><div
+                            class="w-3 h-3 bg-lime-300 border border-lime-400 rounded"></div>Open Set</span>
+                    <span class="flex items-center gap-1"><div
+                            class="w-3 h-3 bg-sky-200 border border-sky-300 rounded"></div>Closed Set</span>
+                    <span class="flex items-center gap-1"><div
+                            class="w-3 h-3 bg-amber-500 border border-amber-600 rounded"></div>최종 경로</span>
+                </div>
+                <div class="flex-grow min-h-[40vh] md:min-h-[50vh] relative bg-slate-50 border-x border-b border-slate-200 rounded-b-xl"
+                     id="tree-network">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="space-y-6 hidden" id="grid-search-section">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col lg:flex-row gap-6 justify-between items-stretch">
+
+            <div class="flex-1 min-w-0 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0 lg:pr-6">
+                <div class="flex items-center gap-2 text-slate-800 font-black text-lg">
+                    <i class="fa-solid fa-pen-ruler text-teal-600"></i> 맵 편집 (클릭/드래그)
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="tool-btn bg-slate-50 border-2 border-slate-200 text-slate-600 rounded-xl font-bold py-2 flex items-center justify-center gap-2"
+                            data-tool="start" id="grid-tool-start">
+                        <i class="fa-solid fa-location-dot text-emerald-500"></i> 시작점
+                    </button>
+                    <button class="tool-btn bg-slate-50 border-2 border-slate-200 text-slate-600 rounded-xl font-bold py-2 flex items-center justify-center gap-2"
+                            data-tool="end" id="grid-tool-end">
+                        <i class="fa-solid fa-flag text-rose-500"></i> 목표점
+                    </button>
+                    <button class="tool-btn tool-active bg-slate-50 border-2 border-slate-200 text-slate-600 rounded-xl font-bold py-2 flex items-center justify-center gap-2"
+                            data-tool="wall" id="grid-tool-wall">
+                        <i class="fa-solid fa-cubes text-slate-500"></i> 장애물
+                    </button>
+                    <button class="tool-btn bg-slate-50 border-2 border-slate-200 text-slate-600 rounded-xl font-bold py-2 flex items-center justify-center gap-2"
+                            data-tool="eraser" id="grid-tool-eraser">
+                        <i class="fa-solid fa-eraser text-slate-400"></i> 지우개
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 min-w-0 flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0 lg:pr-6">
+                <div class="flex items-center gap-2 text-slate-800 font-black text-lg">
+                    <i class="fa-solid fa-microchip text-teal-600"></i> 알고리즘 선택
+                </div>
+                <select id="grid-algo"
+                        class="w-full border-2 border-slate-300 rounded-xl shadow-sm focus:border-teal-500 outline-none p-3 font-bold bg-white">
+                    <option value="astar">A* Search (g + h)</option>
+                    <option value="greedy">Greedy Best-First (h)</option>
+                </select>
+                <div class="flex items-center gap-2 mt-2 text-slate-800 font-black text-sm">
+                    <i class="fa-solid fa-gauge text-teal-600"></i> 자동 실행 속도
+                </div>
+                <input class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                       id="grid-speed" max="1000" min="50" type="range" value="500">
+            </div>
+
+            <div class="flex-1 flex flex-col gap-3 justify-between">
+                <div class="flex items-center gap-2 text-slate-800 font-black text-lg mb-2">
+                    <i class="fa-solid fa-gamepad text-teal-600"></i> 실행 제어
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-auto">
+                    <button class="col-span-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl py-3 shadow-md transition-all flex items-center justify-center gap-2"
+                            id="btn-grid-play">
+                        <i class="fa-solid fa-play"></i> 자동 실행 (Run)
+                    </button>
+                    <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl py-2 px-2 shadow-sm transition-all flex items-center justify-center gap-1 whitespace-nowrap text-sm sm:text-base"
+                            id="btn-grid-step">
+                        <i class="fa-solid fa-forward-step"></i> 다음 (Next)
+                    </button>
+                    <button class="bg-slate-500 hover:bg-slate-600 text-white font-bold rounded-xl py-2 shadow-sm transition-all flex items-center justify-center gap-2"
+                            id="btn-grid-reset">
+                        <i class="fa-solid fa-arrow-rotate-right"></i> 리셋
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center">
+            <div class="w-full flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
+
+                <h2 class="text-xl font-black text-slate-800 flex items-center gap-2">
+        <span class="bg-teal-100 text-teal-600 w-8 h-8 rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-chess-board"></i>
+        </span>
+                    2차원 격자 환경 (15x15)
+                </h2>
+
+                <div class="flex flex-nowrap gap-3 font-bold text-slate-600 text-xs sm:text-sm bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 overflow-x-auto">
+        <span class="flex items-center gap-1 whitespace-nowrap">
+            <span class="w-3 h-3 rounded bg-lime-300 border border-lime-400"></span>Open
+        </span>
+                    <span class="flex items-center gap-1 whitespace-nowrap">
+            <span class="w-3 h-3 rounded bg-sky-200 border border-sky-300"></span>Closed
+        </span>
+                    <span class="flex items-center gap-1 whitespace-nowrap">
+            <span class="w-3 h-3 rounded bg-yellow-400 border border-yellow-500"></span>Current
+        </span>
+                    <span class="flex items-center gap-1 whitespace-nowrap">
+            <span class="w-3 h-3 rounded bg-amber-500 border border-amber-600"></span>Path
+        </span>
+                </div>
+
+            </div>
+            <div class="w-full max-w-2xl mx-auto mb-4 bg-slate-800 text-white font-bold px-4 rounded-xl text-sm sm:text-base text-center shadow-inner h-14 flex items-center justify-center break-keep transition-colors"
+                 id="grid-status">
+                대기 중
+            </div>
+            <div class="w-full max-w-2xl mx-auto" id="grid-container"></div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    /* ==============================================================
+       1. 공통 탐색 알고리즘 엔진 (Heuristic Search Engine)
+       ============================================================== */
+    class HeuristicSearch {
+        constructor(startId, goalId, algoType, getNeighborsCallback, hCallback, gCallback) {
+            this.startId = startId;
+            this.goalId = goalId;
+            this.type = algoType;
+            this.getNeighbors = getNeighborsCallback;
+            this.getH = hCallback;
+            this.getG = gCallback;
+
+            this.openSet = [startId];
+            this.closedSet = new Set();
+            this.cameFrom = new Map();
+
+            this.gScore = new Map();
+            this.gScore.set(startId, 0);
+
+            this.fScore = new Map();
+            this.fScore.set(startId, this.calcF(startId, 0));
+
+            this.state = 'INIT';
+            this.currentNode = null;
+            this.path = [];
+            this.isFinished = false;
+        }
+
+        calcF(nodeId, gVal) {
+            let hVal = this.getH(nodeId);
+            return this.type === 'astar' ? (gVal + hVal) : hVal;
+        }
+
+        step() {
+            if (this.isFinished) return {type: 'finished'};
+
+            if (this.state === 'INIT' || this.state === 'EXPAND') {
+                if (this.openSet.length === 0) {
+                    this.isFinished = true;
+                    return {type: 'fail', msg: '❌ 목표까지의 경로를 찾을 수 없습니다 (막힘).'};
+                }
+
+                // [수정 핵심] Tie-breaking 로직 추가: f(n)이 같을 경우 h(n)이 작은 노드를 우선 선택
+                this.openSet.sort((a, b) => {
+                    let fDiff = this.fScore.get(a) - this.fScore.get(b);
+                    if (fDiff === 0) {
+                        return this.getH(a) - this.getH(b);
+                    }
+                    return fDiff;
+                });
+
+                this.currentNode = this.openSet.shift();
+
+                if (this.currentNode === this.goalId) {
+                    this.isFinished = true;
+                    this.buildPath();
+                    return {
+                        type: 'success',
+                        node: this.currentNode,
+                        path: this.path,
+                        msg: '🎉 목표 노드에 도달했습니다! 최적 경로를 표시합니다.'
+                    };
+                }
+
+                this.closedSet.add(this.currentNode);
+                this.state = 'SELECT';
+                return {
+                    type: 'select',
+                    node: this.currentNode,
+                    msg: `Step 1: Open Set에서 <b>f(n)이 가장 낮은 노드(${this.currentNode})</b> 선택`
+                };
+            }
+
+            if (this.state === 'SELECT') {
+                let neighbors = this.getNeighbors(this.currentNode);
+                let expanded = [];
+
+                for (let neighbor of neighbors) {
+                    if (this.closedSet.has(neighbor)) continue;
+
+                    let tentativeG = this.gScore.get(this.currentNode) + this.getG(this.currentNode, neighbor);
+                    let isNew = !this.openSet.includes(neighbor);
+                    let isBetter = isNew || tentativeG < this.gScore.get(neighbor);
+
+                    if (isBetter) {
+                        this.cameFrom.set(neighbor, this.currentNode);
+                        this.gScore.set(neighbor, tentativeG);
+                        let fVal = this.calcF(neighbor, tentativeG);
+                        this.fScore.set(neighbor, fVal);
+
+                        if (isNew) this.openSet.push(neighbor);
+                        expanded.push({id: neighbor, g: tentativeG, h: this.getH(neighbor), f: fVal});
+                    }
+                }
+                this.state = 'EXPAND';
+                return {
+                    type: 'expand',
+                    node: this.currentNode,
+                    expanded: expanded,
+                    msg: `Step 2: 이웃 노드 탐색 및 <b>g(n), h(n), f(n)</b> 값 갱신 (Open Set 추가)`
+                };
+            }
+        }
+
+        buildPath() {
+            let curr = this.goalId;
+            while (this.cameFrom.has(curr)) {
+                this.path.unshift(curr);
+                curr = this.cameFrom.get(curr);
+            }
+            this.path.unshift(this.startId);
+        }
+    }
+
+
+    /* ==============================================================
+       2. Tree Search Simulator (트리 탐색)
+       ============================================================== */
+    class TreeSearchSimulator {
+        constructor() {
+            this.container = document.getElementById('tree-network');
+            this.nodes = new vis.DataSet();
+            this.edges = new vis.DataSet();
+            this.network = new vis.Network(this.container, {nodes: this.nodes, edges: this.edges}, {
+                layout: {hierarchical: {direction: 'UD', sortMethod: 'directed', levelSeparation: 90}},
+                physics: false,
+                nodes: {
+                    shape: 'box',
+                    font: {face: 'Pretendard', multi: 'html', size: 14, align: 'center'},
+                    margin: 10,
+                    borderWidth: 2,
+                    color: {background: 'white', border: '#cbd5e1'}
+                },
+                edges: {color: '#94a3b8', width: 2}
+            });
+
+            this.startNode = 1;
+            this.goalNode = null;
+            this.searchEngine = null;
+            this.playInterval = null;
+            this.nodeDataMap = new Map();
+
+            // 이벤트 리스너 등록
+            document.getElementById('btn-tree-gen').onclick = () => this.generateTree();
+            document.getElementById('btn-tree-step').onclick = () => {
+                if (this.playInterval) this.stopPlay();
+                this.step();
+            };
+            document.getElementById('btn-tree-play').onclick = () => this.togglePlay();
+            document.getElementById('btn-tree-reset').onclick = () => this.resetSearch();
+
+            // [수정 핵심] 알고리즘 변경 시 즉시 상태 동기화 및 엔진 리셋
+            document.getElementById('tree-algo').addEventListener('change', () => this.resetSearch());
+
+            document.getElementById('tree-speed').addEventListener('input', (e) => {
+                if (this.playInterval) {
+                    clearInterval(this.playInterval);
+                    let speed = 1050 - parseInt(e.target.value);
+                    this.playInterval = setInterval(() => this.step(), speed);
+                }
+            });
+
+            this.network.on("click", (params) => {
+                if (params.nodes.length > 0) {
+                    let clickedNodeId = params.nodes[0];
+
+                    if (clickedNodeId === this.startNode) {
+                        this.setStatus('⚠️ 시작 노드는 목표 노드로 지정할 수 없습니다.');
+                        this.network.unselectAll();
+                        return;
+                    }
+
+                    let oldGoal = this.goalNode;
+                    this.goalNode = clickedNodeId;
+
+                    this.nodeDataMap.get(this.goalNode).h = 0;
+                    if (oldGoal && oldGoal !== clickedNodeId) {
+                        this.nodeDataMap.get(oldGoal).h = Math.floor(Math.random() * 20) + 1;
+                    }
+
+                    this.resetSearch();
+                    this.setStatus(`노드 ${this.goalNode}이(가) 새로운 목표(Goal)로 설정되었습니다.`);
+                    this.network.unselectAll();
+                }
+            });
+
+            this.generateTree();
+        }
+
+        generateTree() {
+            this.resetSearch();
+            this.nodes.clear();
+            this.edges.clear();
+            this.nodeDataMap.clear();
+
+            let depth = parseInt(document.getElementById('tree-max-depth').value);
+            let maxChild = parseInt(document.getElementById('tree-max-children').value);
+
+            let idCounter = 1;
+            let currentLevel = [1];
+            this.addVisNode(1, 'Start');
+
+            for (let d = 1; d <= depth; d++) {
+                let nextLevel = [];
+                for (let parent of currentLevel) {
+                    let childrenCount = Math.floor(Math.random() * maxChild) + 1;
+                    for (let i = 0; i < childrenCount; i++) {
+                        idCounter++;
+                        this.edges.add({from: parent, to: idCounter});
+                        nextLevel.push(idCounter);
+                        this.addVisNode(idCounter, 'Node');
+                    }
+                }
+                currentLevel = nextLevel;
+                if (d === depth) {
+                    this.goalNode = currentLevel[Math.floor(Math.random() * currentLevel.length)];
+                }
+            }
+
+            let allIds = this.nodes.getIds();
+            allIds.forEach(id => {
+                let h = (id === this.goalNode) ? 0 : Math.floor(Math.random() * 20) + 1;
+                this.nodeDataMap.set(id, {h: h});
+                this.updateNodeStyle(id, 'default');
+            });
+
+            this.updateNodeStyle(this.startNode, 'start');
+            this.updateNodeStyle(this.goalNode, 'goal');
+            this.setStatus('새로운 트리가 생성되었습니다. 탐색을 시작하세요.');
+
+            // [수정 핵심] 트리 생성 후 네트워크 뷰를 화면 중앙에 자동으로 맞춰줌
+            setTimeout(() => this.network.fit(), 100);
+        }
+
+        addVisNode(id, type) {
+            this.nodes.add({id: id, label: `<b>${type} ${id}</b>`});
+        }
+
+        updateNodeStyle(id, state, extraInfo = null) {
+            let n = this.nodes.get(id);
+            if (!n) return;
+
+            let h = this.nodeDataMap.get(id).h;
+            let baseLabel = id === this.startNode ? 'Start' : (id === this.goalNode ? 'Goal' : `Node ${id}`);
+
+            let labelText = `<b>${baseLabel}</b>`;
+            if (extraInfo && extraInfo.g !== undefined) {
+                labelText += `\nf: ${extraInfo.f}\ng: ${extraInfo.g} | h: ${h}`;
+            } else {
+                labelText += `\nh: ${h}`;
+            }
+
+            let bg = 'white', border = '#cbd5e1', fontColor = '#1e293b';
+            if (state === 'start') {
+                bg = '#10b981';
+                border = '#047857';
+                fontColor = 'white';
+            } else if (state === 'goal') {
+                bg = '#f43f5e';
+                border = '#be123c';
+                fontColor = 'white';
+            } else if (state === 'open') {
+                bg = '#d9f99d';
+                border = '#84cc16';
+            } else if (state === 'closed') {
+                bg = '#bae6fd';
+                border = '#0ea5e9';
+            } else if (state === 'current') {
+                bg = '#fde047';
+                border = '#eab308';
+            } else if (state === 'path') {
+                bg = '#f59e0b';
+                border = '#b45309';
+                fontColor = 'white';
+            }
+
+            this.nodes.update({
+                id: id,
+                label: labelText,
+                color: {background: bg, border: border},
+                font: {color: fontColor}
+            });
+        }
+
+        initSearchEngine() {
+            let algo = document.getElementById('tree-algo').value;
+            this.searchEngine = new HeuristicSearch(
+                this.startNode, this.goalNode, algo,
+                (id) => this.edges.get({filter: e => e.from === id}).map(e => e.to),
+                (id) => this.nodeDataMap.get(id).h,
+                (from, to) => 1
+            );
+        }
+
+        step() {
+            if (!this.searchEngine) this.initSearchEngine();
+            let res = this.searchEngine.step();
+
+            if (!res) return;
+
+            // [수정 핵심] 탐색 완료 시 무한루프(Interval Leak) 방지
+            if (res.type === 'finished') {
+                this.stopPlay();
+                this.setStatus('탐색이 이미 완료되었습니다. 초기화(리셋)를 진행해주세요.');
+                return;
+            }
+
+            if (res.type === 'select') {
+                this.updateNodeStyle(res.node, 'current', {
+                    g: this.searchEngine.gScore.get(res.node),
+                    f: this.searchEngine.fScore.get(res.node)
+                });
+                this.setStatus(res.msg);
+            } else if (res.type === 'expand') {
+                res.expanded.forEach(item => {
+                    this.updateNodeStyle(item.id, 'open', {g: item.g, f: item.f});
+                });
+                if (res.node !== this.startNode && res.node !== this.goalNode) {
+                    this.updateNodeStyle(res.node, 'closed', {
+                        g: this.searchEngine.gScore.get(res.node),
+                        f: this.searchEngine.fScore.get(res.node)
+                    });
+                }
+                this.setStatus(res.msg);
+            } else if (res.type === 'success') {
+                res.path.forEach(id => this.updateNodeStyle(id, 'path', {
+                    g: this.searchEngine.gScore.get(id), f: this.searchEngine.fScore.get(id)
+                }));
+                this.setStatus(res.msg);
+                this.stopPlay();
+            } else if (res.type === 'fail') {
+                this.setStatus(res.msg);
+                this.stopPlay();
+            }
+        }
+
+        togglePlay() {
+            let btn = document.getElementById('btn-tree-play');
+            if (this.playInterval) {
+                this.stopPlay();
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> 일시 정지`;
+                btn.classList.replace('bg-teal-600', 'bg-rose-500');
+
+                let speed = 1050 - parseInt(document.getElementById('tree-speed').value);
+                this.playInterval = setInterval(() => this.step(), speed);
+            }
+        }
+
+        stopPlay() {
+            if (this.playInterval) {
+                clearInterval(this.playInterval);
+                this.playInterval = null;
+            }
+            let btn = document.getElementById('btn-tree-play');
+            btn.innerHTML = `<i class="fa-solid fa-play"></i> 자동 실행 (Run)`;
+            btn.classList.replace('bg-rose-500', 'bg-teal-600');
+        }
+
+        resetSearch() {
+            this.stopPlay();
+            this.searchEngine = null;
+            if (this.nodes.length > 0) {
+                this.nodes.getIds().forEach(id => {
+                    let state = (id === this.startNode) ? 'start' : (id === this.goalNode) ? 'goal' : 'default';
+                    this.updateNodeStyle(id, state);
+                });
+            }
+            this.setStatus('탐색이 초기화되었습니다. 알고리즘을 선택하고 시작하세요.');
+        }
+
+        setStatus(msg) {
+            document.getElementById('tree-status').innerHTML = msg;
+        }
+    }
+
+
+    /* ==============================================================
+       3. Grid Search Simulator (그리드 탐색)
+       ============================================================== */
+    class GridSearchSimulator {
+        constructor() {
+            this.gridSize = 15;
+            this.container = document.getElementById('grid-container');
+            this.cells = [];
+
+            this.startNode = {x: 2, y: 7};
+            this.goalNode = {x: 12, y: 7};
+            this.walls = new Set();
+            this.currentTool = 'wall';
+
+            this.searchEngine = null;
+            this.playInterval = null;
+
+            this.initGrid();
+            this.setupTools();
+            this.setupControls();
+        }
+
+        initGrid() {
+            this.container.innerHTML = '';
+            this.container.style.gridTemplateColumns = `repeat(${this.gridSize}, 1fr)`;
+            this.container.style.gridTemplateRows = `repeat(${this.gridSize}, 1fr)`;
+
+            for (let y = 0; y < this.gridSize; y++) {
+                for (let x = 0; x < this.gridSize; x++) {
+                    let cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+
+                    // 마우스 이벤트
+                    cell.addEventListener('mousedown', (e) => this.handleCellClick(x, y, e));
+                    cell.addEventListener('mouseenter', (e) => {
+                        if (e.buttons === 1) this.handleCellClick(x, y, e);
+                    });
+
+                    this.container.appendChild(cell);
+                    this.cells.push(cell);
+                }
+            }
+
+            // [수정 핵심] 모바일 환경 터치 드래그 지원 추가
+            this.container.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                let touch = e.touches[0];
+                let elem = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (elem && elem.classList.contains('grid-cell')) {
+                    let tx = parseInt(elem.dataset.x);
+                    let ty = parseInt(elem.dataset.y);
+                    this.handleCellClick(tx, ty, e);
+                }
+            }, {passive: false});
+
+            this.container.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                let touch = e.touches[0];
+                let elem = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (elem && elem.classList.contains('grid-cell')) {
+                    let tx = parseInt(elem.dataset.x);
+                    let ty = parseInt(elem.dataset.y);
+                    this.handleCellClick(tx, ty, e);
+                }
+            }, {passive: false});
+
+            this.drawGrid();
+        }
+
+        getIndex(x, y) {
+            return y * this.gridSize + x;
+        }
+
+        getCell(x, y) {
+            return this.cells[this.getIndex(x, y)];
+        }
+
+        drawGrid() {
+            this.cells.forEach(cell => {
+                cell.className = 'grid-cell';
+                cell.innerHTML = '';
+            });
+
+            this.walls.forEach(idx => this.cells[idx].classList.add('cell-wall'));
+
+            let startCell = this.getCell(this.startNode.x, this.startNode.y);
+            startCell.classList.add('cell-start');
+            startCell.innerHTML = '<i class="fa-solid fa-location-dot"></i>';
+
+            let goalCell = this.getCell(this.goalNode.x, this.goalNode.y);
+            goalCell.classList.add('cell-end');
+            goalCell.innerHTML = '<i class="fa-solid fa-flag"></i>';
+        }
+
+        handleCellClick(x, y, e) {
+            if (this.searchEngine) this.resetSearch();
+
+            // [수정 핵심] 시작점과 목표점이 겹치는 DOM 렌더링 덮어쓰기 오류 방어
+            if (this.currentTool === 'start') {
+                if (x === this.goalNode.x && y === this.goalNode.y) return; // 겹침 방지
+                this.startNode = {x, y};
+            } else if (this.currentTool === 'end') {
+                if (x === this.startNode.x && y === this.startNode.y) return; // 겹침 방지
+                this.goalNode = {x, y};
+            } else if (this.currentTool === 'wall') {
+                if ((x !== this.startNode.x || y !== this.startNode.y) && (x !== this.goalNode.x || y !== this.goalNode.y)) {
+                    this.walls.add(this.getIndex(x, y));
+                }
+            } else if (this.currentTool === 'eraser') {
+                this.walls.delete(this.getIndex(x, y));
+            }
+
+            this.drawGrid();
+        }
+
+        setupTools() {
+            document.querySelectorAll('#grid-search-section .tool-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('#grid-search-section .tool-btn').forEach(b => b.classList.remove('tool-active'));
+                    e.currentTarget.classList.add('tool-active');
+                    this.currentTool = e.currentTarget.dataset.tool;
+                };
+            });
+        }
+
+        setupControls() {
+            document.getElementById('btn-grid-step').onclick = () => {
+                if (this.playInterval) this.stopPlay();
+                this.step();
+            };
+            document.getElementById('btn-grid-play').onclick = () => this.togglePlay();
+            document.getElementById('btn-grid-reset').onclick = () => this.resetSearch();
+
+            // [수정 핵심] 알고리즘 변경 시 즉시 상태 동기화 및 엔진 리셋
+            document.getElementById('grid-algo').addEventListener('change', () => this.resetSearch());
+
+            document.getElementById('grid-speed').addEventListener('input', (e) => {
+                if (this.playInterval) {
+                    clearInterval(this.playInterval);
+                    let speed = 1050 - parseInt(e.target.value);
+                    this.playInterval = setInterval(() => this.step(), speed);
+                }
+            });
+        }
+
+        getManhattan(n1, n2) {
+            let p1 = {x: n1 % this.gridSize, y: Math.floor(n1 / this.gridSize)};
+            let p2 = {x: n2 % this.gridSize, y: Math.floor(n2 / this.gridSize)};
+            return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+        }
+
+        initSearchEngine() {
+            let algo = document.getElementById('grid-algo').value;
+            let startIdx = this.getIndex(this.startNode.x, this.startNode.y);
+            let goalIdx = this.getIndex(this.goalNode.x, this.goalNode.y);
+
+            this.searchEngine = new HeuristicSearch(
+                startIdx, goalIdx, algo,
+                (idx) => {
+                    let x = idx % this.gridSize;
+                    let y = Math.floor(idx / this.gridSize);
+                    let neighbors = [];
+                    const dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+                    for (let d of dirs) {
+                        let nx = x + d[0], ny = y + d[1];
+                        if (nx >= 0 && nx < this.gridSize && ny >= 0 && ny < this.gridSize) {
+                            let nIdx = this.getIndex(nx, ny);
+                            if (!this.walls.has(nIdx)) neighbors.push(nIdx);
+                        }
+                    }
+                    return neighbors;
+                },
+                (idx) => this.getManhattan(idx, goalIdx),
+                (from, to) => 1
+            );
+        }
+
+        renderCellData(idx, g, h, f) {
+            if (idx === this.searchEngine.startId || idx === this.searchEngine.goalId) return;
+
+            let cell = this.cells[idx];
+            let algo = document.getElementById('grid-algo').value;
+            if (algo === 'astar') {
+                cell.innerHTML = `<span class="cell-g">g:${g}</span><span class="cell-h">h:${h}</span><span class="cell-f">${f}</span>`;
+            } else {
+                cell.innerHTML = `<span class="cell-h">h:${h}</span><span class="cell-f">${f}</span>`;
+            }
+        }
+
+        step() {
+            if (!this.searchEngine) this.initSearchEngine();
+            let res = this.searchEngine.step();
+            if (!res) return;
+
+            // [수정 핵심] 탐색 완료 시 무한루프(Interval Leak) 방지
+            if (res.type === 'finished') {
+                this.stopPlay();
+                this.setStatus('탐색이 이미 완료되었습니다. 초기화(리셋)를 진행해주세요.');
+                return;
+            }
+
+            if (res.type === 'select') {
+                if (res.node !== this.searchEngine.startId && res.node !== this.searchEngine.goalId) {
+                    this.cells[res.node].classList.remove('cell-open');
+                    this.cells[res.node].classList.add('cell-current');
+                }
+                this.setStatus(res.msg);
+            } else if (res.type === 'expand') {
+                res.expanded.forEach(item => {
+                    if (item.id !== this.searchEngine.startId && item.id !== this.searchEngine.goalId) {
+                        this.cells[item.id].classList.add('cell-open');
+                        this.renderCellData(item.id, item.g, item.h, item.f);
+                    }
+                });
+                if (res.node !== this.searchEngine.startId && res.node !== this.searchEngine.goalId) {
+                    this.cells[res.node].classList.remove('cell-current');
+                    this.cells[res.node].classList.add('cell-closed');
+                }
+                this.setStatus(res.msg);
+            } else if (res.type === 'success') {
+                res.path.forEach(idx => {
+                    if (idx !== this.searchEngine.startId && idx !== this.searchEngine.goalId) {
+                        this.cells[idx].className = 'grid-cell cell-path';
+                        this.renderCellData(idx, this.searchEngine.gScore.get(idx), this.searchEngine.getH(idx), this.searchEngine.fScore.get(idx));
+                    }
+                });
+                this.setStatus(res.msg);
+                this.stopPlay();
+            } else if (res.type === 'fail') {
+                this.setStatus(res.msg);
+                this.stopPlay();
+            }
+        }
+
+        togglePlay() {
+            let btn = document.getElementById('btn-grid-play');
+            if (this.playInterval) {
+                this.stopPlay();
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> 정지`;
+                btn.classList.replace('bg-teal-600', 'bg-rose-500');
+                let speed = 1050 - parseInt(document.getElementById('grid-speed').value);
+                this.playInterval = setInterval(() => this.step(), speed);
+            }
+        }
+
+        stopPlay() {
+            if (this.playInterval) {
+                clearInterval(this.playInterval);
+                this.playInterval = null;
+            }
+            let btn = document.getElementById('btn-grid-play');
+            btn.innerHTML = `<i class="fa-solid fa-play"></i> 자동 실행 (Run)`;
+            btn.classList.replace('bg-rose-500', 'bg-teal-600');
+        }
+
+        resetSearch() {
+            this.stopPlay();
+            this.searchEngine = null;
+            this.drawGrid();
+            this.setStatus('탐색 대기 중입니다. 알고리즘을 선택하고 실행하세요.');
+        }
+
+        setStatus(msg) {
+            document.getElementById('grid-status').innerHTML = msg;
+        }
+    }
+
+
+    /* ==============================================================
+       4. Main UI Controller
+       ============================================================== */
+    window.UIController = {
+        init() {
+            window.TreeApp = new TreeSearchSimulator();
+            window.GridApp = new GridSearchSimulator();
+        },
+        switchTab(tab) {
+            const tabTree = document.getElementById('tab-tree');
+            const tabGrid = document.getElementById('tab-grid');
+            const sectionTree = document.getElementById('tree-search-section');
+            const sectionGrid = document.getElementById('grid-search-section');
+
+            if (tab === 'tree') {
+                sectionTree.classList.remove('hidden');
+                sectionGrid.classList.add('hidden');
+
+                tabTree.classList.add('text-teal-600', 'border-teal-600', 'font-bold');
+                tabTree.classList.remove('text-gray-500', 'border-transparent', 'font-medium');
+
+                tabGrid.classList.remove('text-teal-600', 'border-teal-600', 'font-bold');
+                tabGrid.classList.add('text-gray-500', 'border-transparent', 'font-medium');
+
+                if (window.TreeApp && window.TreeApp.network) window.TreeApp.network.fit();
+            } else {
+                sectionGrid.classList.remove('hidden');
+                sectionTree.classList.add('hidden');
+
+                tabGrid.classList.add('text-teal-600', 'border-teal-600', 'font-bold');
+                tabGrid.classList.remove('text-gray-500', 'border-transparent', 'font-medium');
+
+                tabTree.classList.remove('text-teal-600', 'border-teal-600', 'font-bold');
+                tabTree.classList.add('text-gray-500', 'border-transparent', 'font-medium');
+            }
+        }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+        window.UIController.init();
+    });
+</script>
+</body>
+</html>

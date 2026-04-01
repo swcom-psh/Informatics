@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 2-1-2. 디지털 데이터 암호화</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #dcd3c6;
+            margin: 0;
+            padding: 3rem 1rem;
+            color: #333;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            background-image: radial-gradient(#d3c8b8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .notebook-container {
+            background-color: #fdfbf7;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 4px 12px 12px 4px;
+            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0, 0, 0, 0.05), inset -1px 0 0 rgba(0, 0, 0, 0.03);
+            position: relative;
+            padding: 4rem 4rem 5rem 6rem;
+            min-height: 1000px;
+        }
+
+        .binder-holes {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: 40px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .hole {
+            width: 18px;
+            height: 18px;
+            background-color: #dcd3c6;
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .hole::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 6px;
+            background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6);
+            border-radius: 3px;
+            top: 6px;
+            left: 8px;
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .note-header {
+            border-bottom: 2px dashed #d1c8b8;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .note-header::after {
+            content: "Date: 20__ . __ . __";
+            position: absolute;
+            right: 0;
+            top: -10px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+            color: #9c9284;
+            font-size: 0.95rem;
+        }
+
+        .concept-box {
+            background-color: #fffbdf;
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            position: relative;
+            transform: rotate(-0.5deg);
+        }
+
+        .concept-box::before {
+            content: "📌";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 1.5rem;
+        }
+
+        .alert-box {
+            background-color: #ffefef;
+            border-left: 5px solid #ff7b7b;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            transform: rotate(0.4deg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background-color: #f5f0e6;
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #e1d8c8;
+            color: #5c5446;
+        }
+
+        td {
+            padding: 1rem;
+            border: 1px solid #e1d8c8;
+            color: #4B5563;
+            text-align: left;
+        }
+
+        pre {
+            background-color: #1a1b26;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid #292e42;
+        }
+
+        .highlighter {
+            background: linear-gradient(to top, #ffe566 40%, transparent 40%);
+            font-weight: bold;
+            display: inline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="notebook-container">
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div
+                class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-green-800 uppercase bg-green-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 2. 데이터
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
+                2-1-2. 디지털 데이터 암호화
+            </h1>
+            <p class="text-lg text-gray-600 font-medium">내 소중한 데이터를 지키는 마법의 자물쇠와 열쇠</p>
+        </header>
+
+        <main class="text-gray-800 text-lg">
+
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-amber-900 mb-2">💡 철수와 영희의 비밀 일기장</h3>
+                <p class="text-amber-800">
+                    철수가 영희에게 아주 중요한 편지를 보내려고 합니다. 그런데 중간에 배달하는 사람이 편지를 열어본다면 큰일이겠죠? 그래서 철수는 <span
+                        class="bg-amber-200 px-1 font-bold rounded">자기들만 아는 규칙</span>으로 글씨를 뒤섞어서 보냈습니다.<br><br>
+                    이처럼 인터넷 공간에서 내 개인정보(비밀번호, 카드번호)가 해커에게 가로채이더라도 절대 읽을 수 없게, 글자를 알아볼 수 없는 형태로 뒤죽박죽 꼬아놓는 기술을 <span
+                        class="highlighter">암호화(Encryption)</span>라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 평문과 암호문, 그리고
+                열쇠(Key)</h2>
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 shadow-sm">
+                <ul class="list-disc list-inside space-y-2 text-base text-gray-700">
+                    <li><span class="font-bold text-gray-900">평문(Plain text)</span>: "Hello" 처럼 누구나 알아볼 수 있는 원본 데이터</li>
+                    <li><span class="font-bold text-blue-600 underline">암호화(Encryption)</span>: 평문을 아무나 읽을 수 없게 바꾸는 과정
+                    </li>
+                    <li><span class="font-bold bg-blue-100 px-1 rounded">암호문(Encrypted text)</span>: 알아볼 수 없게 꼬여있는 결과물
+                        (예: "FRPH WR")</li>
+                    <li><span class="font-bold text-red-600 underline">복호화(Decryption)</span>: 암호문을 다시 원래의 평문으로 해독하여
+                        복원하는 과정</li>
+                    <li><span class="font-bold text-indigo-600">키(Key)</span>: 암호화와 복호화를 수행하기 위해 반드시 필요한 특수 <span
+                            class="highlighter">비밀번호(규칙)</span></li>
+                </ul>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 실생활 암호화 활용 사례 4가지!
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                <!-- 사례 1 -->
+                <div class="bg-blue-50 p-5 rounded border border-blue-200">
+                    <h4 class="font-bold text-blue-800 mb-1">🌐 웹 사이트 보안 (HTTPS/SSL)</h4>
+                    <p class="text-sm text-gray-700">웹사이트에 로그인할 때 입력하는 비밀번호가 중간에 탈취되지 않도록 <strong>SSL 통신 규약</strong>을 통해
+                        아이디와 비밀번호를 꽁꽁 싸맵니다.</p>
+                </div>
+                <!-- 사례 2 -->
+                <div class="bg-slate-50 p-5 rounded border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-1">🔐 비밀번호 DB 저장</h4>
+                    <p class="text-sm text-gray-700">심지어 네이버나 구글 관리자도 내 진짜 비밀번호를 볼 수 없습니다. 복원조차 불가능한 <strong>일방향
+                            암호화</strong>를 통해 서버에 안전하게 보관됩니다.</p>
+                </div>
+                <!-- 사례 3 -->
+                <div class="bg-orange-50 p-5 rounded border border-orange-200">
+                    <h4 class="font-bold text-orange-800 mb-1">⛓️ 블록체인과 암호화폐</h4>
+                    <p class="text-sm text-gray-700">비트코인처럼 거래 장부를 <strong>블록(Block)</strong> 단위로 암호화하여 나누어 저장함으로써 위조를
+                        불가능하게 막는 분산 네트워크 기술입니다.</p>
+                </div>
+                <!-- 사례 4 -->
+                <div class="bg-emerald-50 p-5 rounded border border-emerald-200">
+                    <h4 class="font-bold text-emerald-800 mb-1">👁️ 생체 인식(Biometrics)</h4>
+                    <p class="text-sm text-gray-700">얼굴, 지문, 홍채 등 평생 변하지 않는 인간의 <strong>고유한 생체 정보</strong>를 암호의 열쇠(Key)로
+                        사용하는 가장 강력한 암호 해제 기술입니다.</p>
+                </div>
+            </div>
+
+            <div class="alert-box mt-10">
+                <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
+                    <span class="mr-2 text-2xl">🚨</span> 랜섬웨어(Ransomware) 주의보!
+                </h3>
+                <p class="text-red-900 leading-snug">
+                    우리를 지켜주는 암호화 기술이 악당들에게 넘어간다면 어떻게 될까요? 해커가 몰래 내 컴퓨터의 사진과 숙제 파일을 열어볼 수 없도록 <strong>전부 제멋대로 암호화(자물쇠를
+                        채움)해버리고</strong>, 복호화 열쇠(Key)를 주는 대가로 <u>돈(비트코인)을 요구</u>하는 악성 프로그램이 바로 그 악명 높은 <span
+                        class="bg-white font-bold px-1 rounded">랜섬웨어</span>입니다! 출처 불명의 파일은 절대 실행하면 안 됩니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 역사적인 암호 알고리즘</h2>
+
+            <table class="text-[0.9rem]">
+                <thead>
+                    <tr>
+                        <th class="w-1/4">이름</th>
+                        <th class="w-1/4">종류</th>
+                        <th class="w-1/2">동작 원리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold bg-white">시저 암호<br>(카이사르)</td>
+                        <td class="text-center">고대 / 근대</td>
+                        <td>알파벳을 비밀키 숫자만큼 <strong>뒤로 밀어서 치환</strong>하는 단순 암호 (예: 밀기 숫자 3일 때, <code>a ➔ d</code>,
+                            <code>b ➔ e</code>)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-white">비제네르 암호</td>
+                        <td class="text-center">근대</td>
+                        <td>시저 암호를 보완하여, 글자마다 다른 숫자로 밀기 위해 <strong>문자로 된 비밀키(예: sky)를 반복</strong>해서 더하는 난공불락의 암호</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-blue-700 bg-blue-50">RSA 암호</td>
+                        <td class="text-center font-bold bg-blue-50">현대 (공개키)</td>
+                        <td class="bg-blue-50">아주 큰 소수의 <strong>소인수분해가 어렵다는 수학적 원리</strong>를 활용! 잠그는 키(공개)와 여는 키(개인)가 따로
+                            존재하는 혁명적인 인터넷 뱅킹 표준 기술</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div
+                        class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">
+                            Q 1</div>
+                        <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
+                            암호화된 암호문을 다시 누구나 원래대로 읽을 수 있는 평문(Plain text)으로 해독하여 풀어내는 과정을 무엇이라고 부를까요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답
+                                확인하기</summary>
+                            <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
+                                <strong>정답: 복호화 (Decryption)</strong><br>
+                                자물쇠로 잠그는 행위가 암호화라면, 전용 열쇠(Key)를 이용해 원래 데이터로 풀어내는 과정이 바로 복호화입니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

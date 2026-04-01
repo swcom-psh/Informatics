@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>N-Queen 시뮬레이터</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Hero 배경 그라데이션 */
+        .hero-gradient {
+            background: linear-gradient(
+                    135deg,
+                    #059669 0%,
+                    #10b981 35%,
+                    #14b8a6 65%,
+                    #0ea5e9 100%
+            );
+        }
+
+        /* 스크롤 시 상단 고정되는 네비게이션 */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* 섹션 카드 스타일 */
+        .section-card {
+            background-color: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            border: 1px solid #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            .section-card {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+        }
+
+        /* N-Queen 보드 스타일 */
+        .chess-board {
+            display: grid;
+            gap: 0;
+            border: 4px solid #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            width: fit-content;
+            margin: 0 auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chess-cell {
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        @media (max-width: 640px) {
+            .chess-cell {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
+
+        .cell-white {
+            background-color: #f8fafc;
+        }
+
+        .cell-black {
+            background-color: #cbd5e1;
+        }
+
+        .cell-conflict {
+            background-color: #fecdd3 !important;
+            box-shadow: inset 0 0 10px rgba(225, 29, 72, 0.5);
+        }
+
+        .cell-try {
+            background-color: #fef08a !important;
+        }
+
+        .cell-place {
+            background-color: #d1fae5 !important;
+        }
+
+        .cell-paused {
+            background-color: #e2e8f0 !important;
+        }
+
+        .queen-icon {
+            font-size: 2.2rem;
+            color: #4f46e5;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @media (max-width: 640px) {
+            .queen-icon {
+                font-size: 1.5rem;
+            }
+        }
+
+        .queen-conflict {
+            color: #e11d48;
+            animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            10%, 90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+            20%, 80% {
+                transform: translate3d(2px, 0, 0);
+            }
+            30%, 50%, 70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+            40%, 60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        /* 슬라이더 커스텀 */
+        input[type=range] {
+            accent-color: #9333ea;
+        }
+
+        /* D3 트리 SVG 텍스트 드래그 방지 */
+        svg text {
+            user-select: none;
+            pointer-events: none;
+            font-family: 'Pretendard', sans-serif;
+            font-weight: 700;
+        }
+
+        /* ===========================
+           직접 해보기 섹션 스타일 (iq-)
+        =========================== */
+        .iq-chess-board {
+            display: grid;
+            gap: 0;
+            border: 4px solid #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            width: fit-content;
+            margin: 0 auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .iq-cell {
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        @media (max-width: 640px) {
+            .iq-cell {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .iq-cell {
+                width: 2.1rem;
+                height: 2.1rem;
+            }
+        }
+
+        .iq-cell-light {
+            background-color: #f1f5f9;
+        }
+
+        .iq-cell-dark {
+            background-color: #94a3b8;
+        }
+
+        .iq-cell-conflict {
+            background-color: #fecdd3 !important;
+            box-shadow: inset 0 0 12px rgba(225, 29, 72, 0.4);
+        }
+
+        .iq-cell-attacked {
+            background-color: #fef9c3 !important;
+        }
+
+        .iq-cell-light.iq-cell-hover {
+            background-color: #d1fae5 !important;
+        }
+
+        .iq-cell-dark.iq-cell-hover {
+            background-color: #6ee7b7 !important;
+        }
+
+        .iq-cell:active {
+            transform: scale(0.92);
+        }
+
+        .iq-queen {
+            font-size: 2rem;
+            color: #4f46e5;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+            animation: iqPopIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
+        }
+
+        @media (max-width: 640px) {
+            .iq-queen {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .iq-queen {
+                font-size: 1.2rem;
+            }
+        }
+
+        .iq-queen-conflict {
+            color: #e11d48 !important;
+            animation: iqShake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        .iq-queen-ghost {
+            font-size: 2rem;
+            color: #4f46e5;
+            opacity: 0.28;
+            pointer-events: none;
+            transition: opacity 0.15s;
+        }
+
+        @media (max-width: 640px) {
+            .iq-queen-ghost {
+                font-size: 1.4rem;
+            }
+        }
+
+        @keyframes iqPopIn {
+            0% {
+                transform: scale(0) rotate(-20deg);
+                opacity: 0;
+            }
+            80% {
+                transform: scale(1.15) rotate(3deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes iqShake {
+            10%, 90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+            20%, 80% {
+                transform: translate3d(2px, 0, 0);
+            }
+            30%, 50%, 70% {
+                transform: translate3d(-3px, 0, 0);
+            }
+            40%, 60% {
+                transform: translate3d(3px, 0, 0);
+            }
+        }
+
+        .iq-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            border-width: 1px;
+            border-style: solid;
+            padding: 0.5rem 1rem;
+            min-height: 2.5rem;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        .iq-status-idle {
+            color: #475569;
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+
+        .iq-status-ok {
+            color: #065f46;
+            background: #d1fae5;
+            border-color: #a7f3d0;
+        }
+
+        .iq-status-conflict {
+            color: #9f1239;
+            background: #fff1f2;
+            border-color: #fecdd3;
+        }
+
+        .iq-status-success {
+            color: #065f46;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-color: #34d399;
+            animation: iqPulseGreen 1.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes iqPulseGreen {
+            from {
+                box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4);
+            }
+            to {
+                box-shadow: 0 0 0 8px rgba(52, 211, 153, 0);
+            }
+        }
+
+        .iq-progress-fill {
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .iq-success-banner {
+            animation: iqBounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes iqBounceIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+<header class="hero-gradient text-white py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+        <span class="inline-block px-4 py-1.5 bg-white/20 rounded-full font-bold mb-5 backdrop-blur-md shadow-sm">
+            인공지능 실습
+        </span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight tracking-tight">
+            깊이 우선 탐색(DFS)과<br class="hidden md:block"> N-Queen 실습
+        </h1>
+        <p class="text-lg md:text-xl opacity-90 font-medium max-w-2xl mx-auto leading-relaxed">
+            N-Queen 퍼즐 해결 과정을 통해 <strong>깊이 우선 탐색</strong>과 <strong>백트래킹(Backtracking)</strong> 알고리즘이 트리를 탐색하는 전체 구조를
+            한눈에 확인해 보세요.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky-nav px-6 py-4 mb-12">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <div class="font-black text-lg text-purple-700 tracking-tight flex items-center">
+            <i class="fa-solid fa-chess-queen mr-2"></i> N-Queen
+        </div>
+        <div class="hidden md:flex space-x-8 font-bold text-slate-500">
+            <a class="hover:text-indigo-600 transition" href="#concept">개념 이해</a>
+            <a class="hover:text-purple-600 transition" href="#rules">퍼즐 규칙</a>
+            <a class="hover:text-emerald-600 transition" href="#practice">직접 해보기</a>
+            <a class="hover:text-purple-700 transition" href="#simulation">N-Queen 실습</a>
+            <a class="hover:text-purple-700 transition" href="#summary">코드 원리</a>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 pb-24 space-y-16">
+
+    <section class="scroll-mt-24 mb-16 mx-auto" id="concept">
+        <div class="text-center space-y-4 mb-10">
+            <h2 class="text-3xl font-black text-slate-900">개념 이해 단계: 백트래킹과 N-Queen</h2>
+            <div class="w-16 h-1.5 bg-indigo-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1 space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-800">
+                        <i class="fa-solid fa-route text-indigo-500 mr-2"></i>백트래킹 (Backtracking) 이란?
+                    </h3>
+                    <p class="text-lg text-slate-600 leading-relaxed">
+                        문제를 해결하기 위해 모든 가능성을 탐색하다가, <strong>현재 경로가 정답이 될 수 없다고 판단되면 (유망하지 않으면) 즉시 이전 단계로
+                        되돌아가서(Backtrack)</strong> 다른 경로를 탐색하는 알고리즘 기법입니다.
+                    </p>
+                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+                        <h4 class="font-bold text-indigo-800 mb-2">💡 핵심 포인트</h4>
+                        <ul class="list-disc list-inside text-indigo-700 space-y-2 md:text-base">
+                            <li><strong>상태 공간 트리(State Space Tree):</strong> 문제 해결 과정을 트리 형태로 구성하여 탐색합니다.</li>
+                            <li><strong>가지치기(Pruning):</strong> 정답이 될 가능성이 없는 노드는 더 이상 탐색하지 않고 잘라내어 탐색 시간을 대폭 줄입니다.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 flex justify-center">
+                    <div class="w-48 h-48 bg-indigo-100 rounded-full flex items-center justify-center shadow-inner relative">
+                        <i class="fa-solid fa-chess-queen text-7xl text-indigo-600 z-10"></i>
+                        <div class="absolute top-4 right-4 text-3xl opacity-50"><i
+                                class="fa-solid fa-xmark text-rose-500"></i></div>
+                        <div class="absolute bottom-4 left-4 text-3xl opacity-50"><i
+                                class="fa-solid fa-arrow-rotate-left text-blue-500"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-mt-24 mb-16 mx-auto" id="rules">
+        <div class="text-center space-y-4 mb-10">
+            <h2 class="text-3xl font-black text-slate-900">준비 단계: N-Queen 규칙 알아보기</h2>
+            <div class="w-16 h-1.5 bg-purple-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="bg-slate-50 rounded-3xl p-8 border border-slate-200 space-y-8">
+            <p class="text-lg text-slate-700 leading-relaxed text-center">
+                체스 게임의 <strong>'여왕(Queen)'</strong>은 가장 강력한 말입니다. N-Queen 퍼즐의 3가지 핵심 규칙을 살펴볼까요?
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 text-center relative overflow-hidden transition-transform hover:shadow-md">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                    <div class="w-14 h-14 bg-blue-50 shadow-sm text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-chess-board"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-lg">1. 기본 구성</h4>
+                    <p class="text-slate-600 leading-relaxed">가로 N칸, 세로 N칸의 체스판에 <strong>N개의 퀸(Queen)</strong>을 배치해야
+                        합니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 text-center relative overflow-hidden transition-transform hover:shadow-md">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-rose-500"></div>
+                    <div class="w-14 h-14 bg-rose-50 shadow-sm text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-lg">2. 퀸의 파워</h4>
+                    <p class="text-slate-600 leading-relaxed">퀸은 가로, 세로, 대각선 방향으로 칸 수에 제한 없이 <strong>끝까지 이동하며
+                        공격</strong>할 수 있습니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 text-center relative overflow-hidden transition-transform hover:shadow-md">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+                    <div class="w-14 h-14 bg-green-50 shadow-sm text-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800 mb-2 text-lg">3. 최종 목표</h4>
+                    <p class="text-slate-600 leading-relaxed">어떤 퀸들도 서로 공격할 수 없도록, 즉 <strong>같은 행, 열, 대각선에 겹치지
+                        않게</strong> 안전하게 배치하세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================================
+         직접 해보기 섹션 — 학생이 직접 퀸을 배치하는 인터랙티브 영역
+    ================================================================ -->
+    <section class="scroll-mt-24 mb-16 mx-auto" id="practice">
+        <div class="text-center space-y-4 mb-10">
+            <h2 class="text-3xl font-black text-slate-900">직접 해보기: 퀸을 배치해보세요!</h2>
+            <div class="w-16 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="section-card">
+
+            <!-- 안내 배너 -->
+            <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-8">
+                <div class="shrink-0 w-12 h-12 bg-emerald-200 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-emerald-900 mb-1">체스판을 직접 클릭해서 퀸을 배치해보세요!</p>
+                    <p class="text-emerald-700 text-sm leading-relaxed">
+                        셀을 클릭하면 퀸이 <strong>배치/제거</strong>됩니다. 같은 행·열·대각선에 퀸이 겹치면 <span class="text-rose-600 font-bold">빨간색</span>으로
+                        충돌을 알려줍니다.
+                        N개의 퀸을 충돌 없이 배치하면 성공입니다!
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+                <!-- ── 왼쪽: 체스판 영역 ── -->
+                <div class="flex flex-col items-center flex-1 min-w-0">
+
+                    <!-- 컨트롤 바 -->
+                    <div class="flex flex-wrap justify-center items-center gap-4 bg-slate-50 px-5 py-3 rounded-2xl shadow-inner mb-6 border border-slate-200 w-full">
+                        <div class="flex items-center gap-2">
+                            <label class="font-bold text-slate-700 flex items-center gap-1.5 text-sm">
+                                <i class="fa-solid fa-chess-board text-emerald-600"></i> 크기
+                            </label>
+                            <select id="iq-size-select"
+                                    onchange="iqChangeSize(this.value)"
+                                    class="border-2 border-slate-200 rounded-lg px-2 py-1 bg-white text-emerald-700 font-black cursor-pointer focus:outline-none focus:border-emerald-500 text-sm">
+                                <option value="4">4 × 4 (쉬움)</option>
+                                <option value="5">5 × 5 (보통)</option>
+                                <option value="6">6 × 6 (어려움)</option>
+                                <option value="8" selected>8 × 8 (도전!)</option>
+                            </select>
+                        </div>
+                        <button onclick="iqReset()"
+                                class="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all text-sm">
+                            <i class="fa-solid fa-rotate-right"></i> 초기화
+                        </button>
+                        <button onclick="iqShowHint()"
+                                class="flex items-center gap-2 px-4 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 font-bold rounded-xl transition-all text-sm">
+                            <i class="fa-solid fa-lightbulb"></i> 힌트
+                        </button>
+                    </div>
+
+                    <!-- 체스판 -->
+                    <div class="mb-5 relative">
+                        <!-- 성공 오버레이 -->
+                        <div id="iq-success-banner"
+                             class="hidden iq-success-banner absolute inset-0 flex flex-col items-center justify-center z-20 bg-emerald-500/90 rounded-lg pointer-events-none">
+                            <div class="text-5xl mb-2">🎉</div>
+                            <div class="text-white font-black text-xl drop-shadow">완벽한 배치!</div>
+                            <div class="text-emerald-100 font-bold text-sm mt-1">N-Queen 문제 해결!</div>
+                        </div>
+                        <div id="iq-chess-board" class="iq-chess-board"></div>
+                    </div>
+
+                    <!-- 상태 메시지 -->
+                    <div id="iq-status" class="iq-status iq-status-idle mb-3">
+                        <i class="fa-solid fa-hand-pointer mr-2"></i>체스판을 클릭하여 퀸을 배치해보세요!
+                    </div>
+
+                    <!-- 힌트 메시지 (토글) -->
+                    <div id="iq-hint-box"
+                         class="hidden w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-amber-800 text-sm font-medium">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>
+                        <span id="iq-hint-text"></span>
+                    </div>
+                </div>
+
+                <!-- ── 오른쪽: 정보 패널 ── -->
+                <div class="w-full lg:w-64 flex flex-col gap-4 shrink-0">
+
+                    <!-- 퀸 배치 현황 카드 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                        <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-chess-queen text-indigo-500"></i> 배치 현황
+                        </h4>
+                        <div class="flex items-end gap-2 mb-3">
+                            <span class="text-4xl font-black text-indigo-600" id="iq-queen-count">0</span>
+                            <span class="text-slate-400 font-bold mb-1" id="iq-queen-goal">/ 8 개</span>
+                        </div>
+                        <!-- 진행 바 -->
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div id="iq-progress-bar"
+                                 class="iq-progress-fill h-3 rounded-full bg-indigo-400"
+                                 style="width: 0%"></div>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-2">목표: <span class="font-bold" id="iq-goal-text">8개 모두 배치 + 충돌 없음</span>
+                        </p>
+                    </div>
+
+                    <!-- 충돌 상세 카드 -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                        <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> 충돌 위치
+                        </h4>
+                        <div id="iq-conflict-details" class="flex flex-wrap gap-1.5 min-h-[32px]">
+                            <span class="text-slate-400 text-xs">충돌 없음 ✓</span>
+                        </div>
+                    </div>
+
+                    <!-- 규칙 요약 카드 -->
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5">
+                        <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-circle-info text-blue-400"></i> 충돌 조건
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            <li class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">↔</span>
+                                <span>같은 <strong>행(가로)</strong>에 2개 이상</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">↕</span>
+                                <span>같은 <strong>열(세로)</strong>에 2개 이상</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">✕</span>
+                                <span>같은 <strong>대각선</strong>에 2개 이상</span>
+                            </li>
+                        </ul>
+                        <div class="mt-3 pt-3 border-t border-slate-200">
+                            <p class="text-xs text-slate-400">
+                                <i class="fa-solid fa-circle text-amber-300 mr-1 text-[8px]"></i>
+                                셀에 마우스를 올리면 공격 범위가 표시됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-mt-24 mx-auto" id="simulation">
+        <div class="text-center space-y-4 mb-10">
+            <h2 class="text-3xl font-black text-slate-900">실습 단계: N-Queen 실습하기</h2>
+            <div class="w-16 h-1.5 bg-purple-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="section-card">
+            <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+
+                <div class="w-full lg:w-[45%] flex flex-col items-center">
+
+                    <div class="flex flex-wrap justify-center items-center gap-6 bg-slate-50 px-6 py-4 rounded-2xl shadow-inner mb-6 border border-slate-200 w-full">
+                        <div class="flex items-center gap-2">
+                            <label class="font-bold text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-chess-board text-purple-600"></i> 크기
+                            </label>
+                            <select class="border-2 border-slate-200 rounded-lg px-1 py-1 bg-white text-purple-700 font-black cursor-pointer focus:outline-none focus:border-purple-500"
+                                    id="boardSize" onchange="initGame()">
+                                <option value="4">4 x 4 (추천)</option>
+                                <option value="5">5 x 5 (보통)</option>
+                                <option value="6">6 x 6 (어려움)</option>
+                                <option value="8">8 x 8 (트리가 거대해짐)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <label class="font-bold text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-gauge-high text-rose-500"></i> 속도
+                            </label>
+                            <input class="w-24 sm:w-28 cursor-pointer" id="speedSlider" max="9" min="0" type="range"
+                                   value="3">
+                        </div>
+                    </div>
+
+                    <div class="chess-board mb-6 relative transition-opacity duration-300" id="chessBoard"></div>
+
+                    <div class="flex flex-col items-center gap-2 w-full px-2">
+                        <div class="h-10 font-bold text-slate-600 mb-0 transition-colors px-2 text-center flex flex-wrap justify-center gap-2 bg-slate-100 rounded-lg border border-slate-200 w-full"
+                             id="statusText">
+                            <span class="w-full text-center flex items-center justify-center h-full">크기를 설정하고 시작 버튼을 누르세요.</span>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-2 w-full" id="btnGroupIdle">
+                            <button class="flex-1 min-w-[120px] px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all"
+                                    onclick="initGame()">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> 초기화
+                            </button>
+                            <button class="flex-[2] min-w-[160px] px-4 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-md"
+                                    onclick="startAI()">
+                                <i class="fa-solid fa-robot mr-1"></i> AI 자동 탐색
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-2 w-full hidden" id="btnGroupPlaying">
+                            <button class="flex-1 min-w-[120px] px-4 py-3 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-xl transition-all"
+                                    onclick="initGame()">
+                                <i class="fa-solid fa-stop mr-1"></i> 중지
+                            </button>
+                            <button class="flex-[2] min-w-[160px] px-4 py-3 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-all shadow-md"
+                                    onclick="pauseAI()">
+                                <i class="fa-solid fa-pause mr-1"></i> 일시정지
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap justify-center gap-2 w-full hidden" id="btnGroupPaused">
+                            <button class="flex-1 min-w-[100px] px-3 py-3 bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-xl transition-all"
+                                    onclick="initGame()">
+                                <i class="fa-solid fa-stop"></i> 중지
+                            </button>
+                            <button class="flex-1 min-w-[100px] px-3 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-md"
+                                    onclick="resumeAI()">
+                                <i class="fa-solid fa-play"></i> 자동 재생
+                            </button>
+                            <button class="flex-[1.5] min-w-[120px] px-3 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl transition-all shadow-md border-b-4 border-indigo-800 active:border-b-0 active:translate-y-1"
+                                    onclick="stepNextAI()">
+                                <i class="fa-solid fa-forward-step mr-1"></i> 다음 단계
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-[60%] flex flex-col bg-slate-900 rounded-2xl overflow-hidden shadow-xl border-4 border-slate-800 min-h-[450px] flex-1 relative">
+
+                    <div class="bg-slate-800 px-5 py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-2 border-b border-slate-700 z-10 relative shadow-md">
+
+                        <h4 class="text-white font-bold flex items-center gap-2 text-base">
+                            <i class="fa-solid fa-diagram-project text-indigo-400"></i>
+                            상태 공간 트리
+                        </h4>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="treeViewMode" onchange="applyViewMode()"
+                                    class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-bold rounded border border-slate-500 px-2 py-1 outline-none cursor-pointer transition">
+                                <option value="track" selected>🎯 노드 추적 (추천)</option>
+                                <option value="fit">🔍 전체 맞춤</option>
+                                <option value="free">✋ 자유 이동</option>
+                            </select>
+
+                            <button class="bg-slate-700 hover:bg-slate-600 text-white px-2 py-1 rounded border border-slate-600 transition"
+                                    onclick="resetZoom(500)" title="현재 화면에 꽉 차게 정렬">
+                                <i class="fa-solid fa-compress"></i>
+                            </button>
+
+                            <div class="text-slate-400 md:font-mono bg-slate-900 px-3 py-1 rounded-full border border-slate-700 text-sm">
+                                방문: <span class="text-indigo-400 font-bold" id="nodeCount">0</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="flex-1 min-h-[350px] w-full h-full relative overflow-hidden bg-[#0f172a]"
+                         id="dfsTreeContainer">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 text-center space-y-4 pointer-events-none z-10"
+                             id="treePlaceholder">
+                            <i class="fa-solid fa-seedling text-5xl opacity-30"></i>
+                            <p class="md:text-base font-medium opacity-60">AI 탐색을 시작하면 이곳에<br>전체 트리 구조가 그려집니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 px-3 py-2.5 text-slate-300 flex flex-wrap justify-center gap-x-5 gap-y-2 border-t border-slate-700 z-10 relative shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] text-sm md:text-base">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-300"></span> 탐색 시도</span>
+                        <span class="flex items-center gap-1.5"><span
+                                class="w-3 h-3 rounded-full bg-emerald-400"></span> 배치(안전)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500"></span> 충돌(가지치기)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-500"></span> 백트래킹(후퇴)</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-purple-50 border border-purple-100 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center max-w-6xl mx-auto mt-8">
+                <div class="shrink-0 w-16 h-16 bg-purple-200 text-purple-600 rounded-full flex items-center justify-center text-3xl shadow-sm">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-purple-900 mb-2">선생님을 위한 수업 팁!</h3>
+                    <p class="text-purple-800 leading-relaxed md:text-base">
+                        우측의 트리는 <strong>마우스로 드래그하여 이동</strong>하거나 <strong>휠을 굴려 확대/축소</strong>할 수 있습니다.
+                        수동 조작 시 자동으로 <strong>'자유 이동'</strong> 모드로 변경됩니다.<br>
+                        AI가 어디를 탐색하는지 편하게 보려면 상단의 드롭다운을 <strong>'노드 추적'</strong>으로 유지해 보세요!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-mt-24 mb-16 mx-auto" id="summary">
+        <div class="text-center space-y-4 mb-10">
+            <h2 class="text-3xl font-black text-slate-900">마무리 단계: 코드로 보는 원리</h2>
+            <div class="w-16 h-1.5 bg-indigo-500 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="section-card space-y-6">
+            <h2 class="text-2xl font-black text-slate-900 border-b-2 border-slate-100 pb-4 mb-6">
+                <i class="fa-solid fa-code text-indigo-600 mr-2"></i> 코드로 보는 DFS와 백트래킹 원리
+            </h2>
+            <p class="text-slate-700 text-base leading-relaxed">
+                오른쪽 화면에 그려진 트리 구조는 아래 파이썬 코드의 <strong>재귀 호출(Recursive Call)</strong> 흐름과 완전히 일치합니다.<br>
+                함수가 자기 자신을 호출하면 <strong>트리가 아래로(자식 노드) 깊어지고</strong>, 가지치기되어 `return`을 만나면 <strong>위로(부모 노드)
+                되돌아옵니다.</strong>
+            </p>
+
+            <div class="relative">
+                <div class="absolute top-0 right-0 bg-[#2d2d2d] border-b border-l border-slate-700 text-slate-400 px-3 py-1 rounded-bl-lg rounded-tr-lg font-bold z-10">
+                    Python
+                </div>
+                <pre><code class="language-python"># DFS(깊이 우선 탐색)를 이용한 N-Queen 백트래킹
+def solve_n_queens(row, n, state):
+    if row == n:
+        return True # 트리 끝단 도달! 정답을 찾음
+
+    for col in range(n):
+        # 1. 시도 (Try) 및 가지치기(Pruning) 검사
+        if is_safe(row, col, state):
+            state[row] = col  # 안전하다면 퀸을 배치 (Place)
+
+            # 2. 다음 줄(depth) 탐색을 위해 재귀 호출 (자식 노드로 이동)
+            if solve_n_queens(row + 1, n, state):
+                return True
+
+            # 3. 백트래킹 (Backtracking)
+            # 자식 노드에서 답을 못 찾고 돌아왔으므로 상태를 복구하고 다른 칸 시도
+            state[row] = -1
+
+    return False # 이 노드의 모든 자식 경로에 답이 없음</code></pre>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 py-12 px-6 text-center mt-20">
+    <p class="text-white font-black text-2xl mb-2">Computer Science</p>
+    <p class="text-slate-400 ">&copy; N-Queen 시뮬레이터</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+<script>
+    /* =========================================
+       1. 상태 관리 및 기본 변수
+    ========================================= */
+    let N = 4;
+    let boardState = [];
+
+    let isAnimating = false;
+    let isPaused = false;
+    let animationTimer = null;
+    let dfsIterator = null; // 제너레이터 변수
+    let currentStepIndex = 0;
+    let totalNodesVisited = 0;
+    let activeNodeId = "root"; // 현재 포커싱된 노드 ID 추적
+
+    // 슬라이더 값(0~9)에 따른 지연 시간(ms)
+    const delayMap = [2000, 1500, 1000, 700, 400, 200, 100, 50, 15, 0];
+
+    const boardEl = document.getElementById('chessBoard');
+    const statusText = document.getElementById('statusText');
+    const nodeCountEl = document.getElementById('nodeCount');
+    const treePlaceholder = document.getElementById('treePlaceholder');
+    let cellElements = []; // DOM 재사용을 위한 2차원 배열
+
+    /* =========================================
+       2. D3.js 트리 시각화 변수 및 초기화
+    ========================================= */
+    let d3Svg, d3G, zoomBehavior, d3Tree;
+    let rootNodeData;
+    let nodeMap = {};
+
+    function initD3Tree() {
+        d3.select("#dfsTreeContainer").selectAll("svg").remove();
+
+        d3Svg = d3.select("#dfsTreeContainer").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .style("position", "absolute")
+            .style("top", "0")
+            .style("left", "0")
+            .style("display", "block")
+            .style("cursor", "grab");
+
+        d3G = d3Svg.append("g");
+
+        zoomBehavior = d3.zoom()
+            .scaleExtent([0.05, 4])
+            .on("zoom", (event) => {
+                d3G.attr("transform", event.transform);
+                // 사용자가 마우스로 패닝/줌 시도 시 '자유 이동' 모드로 자동 전환
+                if (event.sourceEvent && (event.sourceEvent.type === 'mousemove' || event.sourceEvent.type === 'wheel' || event.sourceEvent.type === 'touchmove')) {
+                    const modeSelect = document.getElementById('treeViewMode');
+                    if (modeSelect.value !== 'free') modeSelect.value = 'free';
+                }
+            });
+
+        d3Svg.call(zoomBehavior);
+        d3Tree = d3.tree().nodeSize([45, 60]);
+
+        rootNodeData = {id: "root", name: "시작", type: "root", children: []};
+        nodeMap = {"root": rootNodeData};
+        activeNodeId = "root";
+
+        resetZoom(0);
+        updateD3Visuals(0);
+    }
+
+    // 노드 추적 (Panning) 로직
+    function focusOnNode(nodeId, duration) {
+        if (!d3Svg || !rootNodeData) return;
+        const root = d3.hierarchy(rootNodeData);
+        d3Tree(root);
+
+        let targetNode = null;
+        root.each(d => {
+            if (d.data.id === nodeId) targetNode = d;
+        });
+        if (!targetNode) return;
+
+        const container = document.getElementById('dfsTreeContainer');
+        const width = container.clientWidth || 600;
+        const height = container.clientHeight || 650;
+
+        // 글자가 잘 보이는 고정 배율
+        const scale = 1.2;
+
+        // 화면 중앙 약간 위에 위치하도록 조정
+        const tx = (width / 2) - (targetNode.x * scale);
+        const ty = (height / 3.5) - (targetNode.y * scale);
+
+        d3Svg.transition().duration(duration).call(
+            zoomBehavior.transform,
+            d3.zoomIdentity.translate(tx, ty).scale(scale)
+        );
+    }
+
+    // 전체 자동 맞춤 로직
+    function resetZoom(duration = 500) {
+        if (!d3Svg || !rootNodeData) return;
+        const container = document.getElementById('dfsTreeContainer');
+        const width = container.clientWidth || 600;
+        const height = container.clientHeight || 650;
+
+        const root = d3.hierarchy(rootNodeData);
+        d3Tree(root);
+
+        let minX = 0, maxX = 0, maxY = 0;
+        root.each(d => {
+            if (d.x < minX) minX = d.x;
+            if (d.x > maxX) maxX = d.x;
+            if (d.y > maxY) maxY = d.y;
+        });
+
+        if (root.descendants().length <= 1) {
+            d3Svg.transition().duration(duration).call(
+                zoomBehavior.transform,
+                d3.zoomIdentity.translate(width / 2, 40).scale(1)
+            );
+            return;
+        }
+
+        const treeWidth = maxX - minX || 1;
+        const treeHeight = maxY || 1;
+        const paddingX = window.innerWidth < 640 ? 20 : 60;
+        const paddingY = window.innerWidth < 640 ? 30 : 80;
+
+        const scaleX = (width - paddingX * 2) / treeWidth;
+        const scaleY = (height - paddingY * 2) / treeHeight;
+        let scale = Math.min(scaleX, scaleY, 1.2);
+
+        const centerX = (minX + maxX) / 2;
+        const tx = (width / 2) - (centerX * scale);
+        const ty = 40;
+
+        d3Svg.transition().duration(duration).call(
+            zoomBehavior.transform,
+            d3.zoomIdentity.translate(tx, ty).scale(scale)
+        );
+    }
+
+    // 뷰 모드 수동 변경 시 즉각 반영
+    function applyViewMode() {
+        const mode = document.getElementById('treeViewMode').value;
+        if (mode === 'fit') resetZoom(500);
+        else if (mode === 'track' && activeNodeId) focusOnNode(activeNodeId, 500);
+    }
+
+    function updateD3Visuals(duration = 200) {
+        const root = d3.hierarchy(rootNodeData);
+        d3Tree(root);
+
+        const linkGen = d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y);
+
+        const links = d3G.selectAll(".link")
+            .data(root.links(), d => d.target.data.id);
+
+        links.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("fill", "none")
+            .attr("stroke", d => d.target.data.type === 'solution' ? "#f59e0b" : "#475569")
+            .attr("stroke-width", d => d.target.data.type === 'solution' ? 3 : 2)
+            .attr("d", d => linkGen({source: d.source, target: d.source}))
+            .transition().duration(duration)
+            .attr("d", linkGen);
+
+        links.transition().duration(duration)
+            .attr("stroke", d => d.target.data.type === 'solution' ? "#f59e0b" : "#475569")
+            .attr("stroke-width", d => d.target.data.type === 'solution' ? 3 : 2)
+            .attr("d", linkGen);
+
+        const nodes = d3G.selectAll(".node")
+            .data(root.descendants(), d => d.data.id);
+
+        const nodeEnter = nodes.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.parent ? d.parent.x : d.x},${d.parent ? d.parent.y : d.y})`);
+
+        nodeEnter.append("circle")
+            .attr("r", 14)
+            .attr("fill", d => getNodeColor(d.data.type))
+            .attr("stroke", d => d.data.type === 'solution' ? "#f59e0b" : "#1e293b")
+            .attr("stroke-width", d => d.data.type === 'solution' ? 3 : 2);
+
+        nodeEnter.append("text")
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "middle")
+            .attr("fill", d => getTextColor(d.data.type))
+            .attr("font-size", d => d.data.name === "시작" ? "10px" : "9px")
+            .text(d => d.data.name);
+
+        const nodeUpdate = nodeEnter.merge(nodes);
+
+        nodeUpdate.transition().duration(duration)
+            .attr("transform", d => `translate(${d.x},${d.y})`);
+
+        nodeUpdate.select("circle")
+            .transition().duration(duration)
+            .attr("fill", d => getNodeColor(d.data.type))
+            .attr("stroke", d => d.data.type === 'solution' ? "#f59e0b" : "#1e293b")
+            .attr("stroke-width", d => d.data.type === 'solution' ? 3 : 2);
+
+        nodeUpdate.select("text")
+            .transition().duration(duration)
+            .attr("fill", d => getTextColor(d.data.type));
+
+        // 뷰 모드에 따른 화면 업데이트 처리
+        const viewMode = document.getElementById('treeViewMode').value;
+        if (viewMode === 'fit' && root.descendants().length > 1) {
+            resetZoom(duration);
+        } else if (viewMode === 'track' && activeNodeId) {
+            focusOnNode(activeNodeId, duration);
+        }
+    }
+
+    function getNodeColor(type) {
+        if (type === 'root') return '#94a3b8';
+        if (type === 'try') return '#fde047';
+        if (type === 'place') return '#34d399';
+        if (type === 'prune') return '#fb7185';
+        if (type === 'backtrack') return '#64748b';
+        if (type === 'solution') return '#fcd34d';
+        return '#fff';
+    }
+
+    function getTextColor(type) {
+        if (type === 'root') return '#ffffff';
+        if (type === 'try') return '#854d0e';
+        if (type === 'place') return '#064e3b';
+        if (type === 'prune') return '#881337';
+        if (type === 'backtrack') return '#f8fafc';
+        if (type === 'solution') return '#78350f';
+        return '#000';
+    }
+
+    /* =========================================
+       3. N-Queen 제너레이터 기반 알고리즘 및 게임 제어 로직
+    ========================================= */
+
+    function initBoardDOM() {
+        boardEl.innerHTML = '';
+        cellElements = [];
+        for (let r = 0; r < N; r++) {
+            let rowArr = [];
+            for (let c = 0; c < N; c++) {
+                const cell = document.createElement('div');
+                const isWhite = (r + c) % 2 === 0;
+                cell.className = `chess-cell ${isWhite ? 'cell-white' : 'cell-black'}`;
+                boardEl.appendChild(cell);
+                rowArr.push(cell);
+            }
+            cellElements.push(rowArr);
+        }
+        boardEl.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+    }
+
+    function initGame() {
+        clearTimeout(animationTimer);
+        isAnimating = false;
+        isPaused = false;
+        dfsIterator = null;
+        currentStepIndex = 0;
+        totalNodesVisited = 0;
+        nodeCountEl.innerText = "0";
+
+        toggleBtnGroup('idle');
+
+        N = parseInt(document.getElementById('boardSize').value);
+        boardState = Array(N).fill(-1);
+
+        initBoardDOM(); // DOM 최초 1회 생성 최적화
+        treePlaceholder.classList.remove('hidden');
+
+        initD3Tree();
+        renderBoard(boardState);
+        updateStatusText("크기를 설정하고 [AI 자동 탐색]을 누르세요.");
+    }
+
+    function updateStatusText(msg, colorClass = "text-slate-600 bg-slate-100 border-slate-200") {
+        statusText.className = `h-10 font-bold mb-0 transition-colors px-2 text-center w-full flex items-center justify-center rounded-lg border text-sm md:text-base ${colorClass}`;
+        statusText.innerHTML = `<span>${msg}</span>`;
+    }
+
+    function toggleBtnGroup(state) {
+        document.getElementById('btnGroupIdle').classList.add('hidden');
+        document.getElementById('btnGroupPlaying').classList.add('hidden');
+        document.getElementById('btnGroupPaused').classList.add('hidden');
+
+        if (state === 'idle') document.getElementById('btnGroupIdle').classList.remove('hidden');
+        else if (state === 'playing') document.getElementById('btnGroupPlaying').classList.remove('hidden');
+        else if (state === 'paused') document.getElementById('btnGroupPaused').classList.remove('hidden');
+    }
+
+    function isSafeForAI(state, row, col) {
+        for (let i = 0; i < row; i++) {
+            if (state[i] === col || Math.abs(state[i] - col) === Math.abs(i - row)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 제너레이터를 사용하여 브라우저가 멈추지 않게 매 단계마다 양보(yield)합니다.
+    function* dfsGenerator(row, currentPath, tempState) {
+        if (row === N) {
+            yield {type: 'solution', row: row - 1, col: tempState[row - 1], path: currentPath, state: [...tempState]};
+            return true;
+        }
+
+        for (let col = 0; col < N; col++) {
+            let nextPath = currentPath + "-" + col;
+
+            yield {type: 'try', row, col, state: [...tempState], path: nextPath, parentPath: currentPath};
+
+            if (isSafeForAI(tempState, row, col)) {
+                tempState[row] = col;
+                yield {type: 'place', row, col, state: [...tempState], path: nextPath};
+
+                if (yield* dfsGenerator(row + 1, nextPath, tempState)) return true;
+
+                tempState[row] = -1;
+                yield {type: 'backtrack', row, col, state: [...tempState], path: nextPath};
+            } else {
+                yield {type: 'prune', row, col, state: [...tempState], path: nextPath};
+            }
+        }
+        return false;
+    }
+
+    function startAI() {
+        if (isAnimating) return;
+        initGame();
+
+        isAnimating = true;
+        toggleBtnGroup('playing');
+        treePlaceholder.classList.add('hidden');
+
+        let tempState = Array(N).fill(-1);
+        dfsIterator = dfsGenerator(0, "root", tempState);
+
+        updateStatusText("AI가 깊이 우선 탐색(DFS)을 시작합니다.", "text-purple-700 bg-purple-100 border-purple-200");
+        executeNextStep();
+    }
+
+    function stepNextAI() {
+        if (!isAnimating || !isPaused) return;
+        executeNextStep(true);
+    }
+
+    function pauseAI() {
+        if (!isAnimating) return;
+        isPaused = true;
+        clearTimeout(animationTimer);
+        toggleBtnGroup('paused');
+        updateStatusText("⏸️ [일시정지] '다음 단계'를 눌러 확인하세요.", "text-amber-700 bg-amber-100 border-amber-300");
+    }
+
+    function resumeAI() {
+        if (!isAnimating) return;
+        isPaused = false;
+        toggleBtnGroup('playing');
+        updateStatusText("▶️ 탐색을 자동으로 재개합니다.", "text-purple-700 bg-purple-100 border-purple-200");
+        executeNextStep();
+    }
+
+    function highlightSolutionPath(path) {
+        let currentPath = path;
+        while (currentPath && nodeMap[currentPath]) {
+            nodeMap[currentPath].type = 'solution';
+            currentPath = currentPath.substring(0, currentPath.lastIndexOf('-'));
+        }
+        updateD3Visuals(500);
+    }
+
+    function executeNextStep(isManual = false) {
+        if (!isAnimating) return;
+        if (isPaused && !isManual) return;
+
+        const result = dfsIterator.next();
+
+        if (result.done || !result.value) {
+            isAnimating = false;
+            toggleBtnGroup('idle');
+            updateStatusText("🏁 탐색 종료! 모든 탐색을 마쳤거나 정답이 없습니다.", "text-slate-700 bg-slate-100 border-slate-300");
+            return;
+        }
+
+        const step = result.value;
+        activeNodeId = step.path; // 현재 포커싱된 노드 ID 업데이트
+
+        if (step.type === 'solution') {
+            isAnimating = false;
+            toggleBtnGroup('idle');
+            updateStatusText("🎉 탐색 성공! N-Queen 완벽한 배치를 찾았습니다.", "text-emerald-700 bg-emerald-100 border-emerald-300");
+            renderBoard(step.state, null);
+            highlightSolutionPath(step.path);
+            return;
+        }
+
+        renderBoard(step.state, step);
+        syncTreeWithStep(step);
+
+        currentStepIndex++;
+
+        const speedSliderVal = parseInt(document.getElementById('speedSlider').value);
+        let currentDelay = delayMap[speedSliderVal];
+
+        if (isManual) {
+            updateStatusText(`[수동 탐색] 단계 ${currentStepIndex} : 상태 트리 확인`, "text-indigo-700 bg-indigo-100 border-indigo-300");
+        } else {
+            if (step.type === 'prune' || step.type === 'backtrack') currentDelay += 100;
+            if (currentDelay < 20) currentDelay = delayMap[speedSliderVal]; // 최고 속도일 때 딜레이 가중치 무시
+
+            animationTimer = setTimeout(() => executeNextStep(false), currentDelay);
+        }
+    }
+
+    function renderBoard(stateArray, activeStep = null) {
+        for (let r = 0; r < N; r++) {
+            for (let c = 0; c < N; c++) {
+                const cell = cellElements[r][c];
+                const isWhite = (r + c) % 2 === 0;
+
+                cell.className = `chess-cell ${isWhite ? 'cell-white' : 'cell-black'}`;
+                cell.innerHTML = '';
+
+                // 활성화된 스텝 처리 (하이라이트)
+                if (activeStep && activeStep.row === r && activeStep.col === c) {
+                    if (activeStep.type === 'try') {
+                        cell.classList.add('cell-try');
+                        if (!isPaused) updateStatusText(`🔍 시도: ${r + 1}행 ${c + 1}열 배치를 검사합니다.`, "text-amber-700 bg-amber-50 border-amber-200");
+                    } else if (activeStep.type === 'place') {
+                        cell.classList.add('cell-place');
+                        if (!isPaused) updateStatusText(`✅ 안전: 충돌이 없어 자식 노드로 이동합니다.`, "text-emerald-700 bg-emerald-50 border-emerald-200");
+                    } else if (activeStep.type === 'prune') {
+                        cell.classList.add('cell-conflict');
+                        if (!isPaused) updateStatusText(`✂️ 가지치기: 충돌! 이 경로는 탐색하지 않습니다.`, "text-rose-700 bg-rose-50 border-rose-200");
+                    } else if (activeStep.type === 'backtrack') {
+                        cell.classList.add('cell-paused');
+                        if (!isPaused) updateStatusText(`🔙 백트래킹: 답이 없어 이전으로 돌아갑니다.`, "text-slate-700 bg-slate-200 border-slate-300");
+                    }
+                }
+
+                // 퀸 렌더링 로직
+                if (stateArray[r] === c) {
+                    const queen = document.createElement('i');
+                    queen.className = 'fa-solid fa-chess-queen queen-icon';
+                    cell.appendChild(queen);
+                } else if (activeStep && activeStep.row === r && activeStep.col === c && (activeStep.type === 'try' || activeStep.type === 'prune')) {
+                    const queen = document.createElement('i');
+                    queen.className = 'fa-solid fa-chess-queen queen-icon';
+
+                    if (activeStep.type === 'prune') {
+                        queen.classList.add('queen-conflict');
+                    } else {
+                        queen.style.opacity = '0.4';
+                    }
+                    cell.appendChild(queen);
+                }
+            }
+        }
+    }
+
+    function syncTreeWithStep(step) {
+        const speedSliderVal = parseInt(document.getElementById('speedSlider').value);
+        const currentDelay = delayMap[speedSliderVal];
+
+        // 고속 모드일 경우 D3 애니메이션 병목 방지
+        const duration = currentDelay === 0 ? 0 : (!isPaused && currentDelay < 150 ? 50 : 250);
+
+        if (step.type === 'try') {
+            totalNodesVisited++;
+            nodeCountEl.innerText = totalNodesVisited;
+
+            let newNode = {
+                id: step.path,
+                name: `R${step.row + 1}C${step.col + 1}`,
+                type: 'try',
+                children: []
+            };
+
+            if (nodeMap[step.parentPath]) {
+                nodeMap[step.parentPath].children.push(newNode);
+                nodeMap[step.path] = newNode;
+            }
+        } else {
+            if (nodeMap[step.path]) {
+                nodeMap[step.path].type = step.type;
+            }
+        }
+
+        updateD3Visuals(duration);
+    }
+
+    window.onload = () => {
+        initGame();
+        iqInit(8); // 직접 해보기 섹션 초기화
+    };
+
+    /* =========================================
+       직접 해보기 섹션 — 인터랙티브 퀸 배치기 (iq_ 네임스페이스)
+       독립 IIFE로 기존 변수와 완전히 격리
+    ========================================= */
+    (function () {
+        'use strict';
+
+        /* ── 상태 ── */
+        let iqN = 8;
+        let iqBoard = [];        // boolean[N][N] — true = 퀸 있음
+        let iqConflicts = new Set();  // "r,c" 형식의 충돌 좌표 집합
+        let iqHoverCell = null;  // { r, c } 현재 호버 셀
+
+        /* ── 힌트용 솔루션 캐시 ── */
+        const iqSolutions = {
+            4: [[1, 3, 0, 2]],
+            5: [[0, 2, 4, 1, 3]],
+            6: [[1, 3, 5, 0, 2, 4]],
+            8: [[0, 4, 7, 5, 2, 6, 1, 3]]
+        };
+
+        /* ── 초기화 ── */
+        function iqInit(n) {
+            iqN = (n && [4, 5, 6, 8].includes(parseInt(n))) ? parseInt(n) : 8;
+            iqBoard = Array.from({length: iqN}, () => Array(iqN).fill(false));
+            iqConflicts = new Set();
+            iqHoverCell = null;
+
+            const sel = document.getElementById('iq-size-select');
+            if (sel) sel.value = String(iqN);
+
+            document.getElementById('iq-hint-box')?.classList.add('hidden');
+
+            iqBuildDOM();
+            iqValidate();
+            iqRenderAll();
+        }
+
+        /* ── DOM 생성 ── */
+        function iqBuildDOM() {
+            const board = document.getElementById('iq-chess-board');
+            if (!board) return;
+            board.innerHTML = '';
+            board.style.gridTemplateColumns = `repeat(${iqN}, 1fr)`;
+
+            for (let r = 0; r < iqN; r++) {
+                for (let c = 0; c < iqN; c++) {
+                    const cell = document.createElement('div');
+                    cell.id = `iq-cell-${r}-${c}`;
+                    const isLight = (r + c) % 2 === 0;
+                    cell.className = `iq-cell ${isLight ? 'iq-cell-light' : 'iq-cell-dark'}`;
+                    cell.setAttribute('aria-label', `${r + 1}행 ${c + 1}열`);
+                    cell.addEventListener('click', () => iqToggleQueen(r, c));
+                    cell.addEventListener('mouseenter', () => {
+                        iqHoverCell = {r, c};
+                        iqRenderAll();
+                    });
+                    cell.addEventListener('mouseleave', () => {
+                        iqHoverCell = null;
+                        iqRenderAll();
+                    });
+                    // 터치 디바이스 지원
+                    cell.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        iqToggleQueen(r, c);
+                    }, {passive: false});
+                    board.appendChild(cell);
+                }
+            }
+        }
+
+        /* ── 퀸 토글 ── */
+        function iqToggleQueen(r, c) {
+            iqBoard[r][c] = !iqBoard[r][c];
+            iqValidate();
+            iqRenderAll();
+        }
+
+        /* ── 검증 로직: 충돌 좌표 집합 계산 ── */
+        function iqValidate() {
+            iqConflicts = new Set();
+            const queens = [];
+            for (let r = 0; r < iqN; r++)
+                for (let c = 0; c < iqN; c++)
+                    if (iqBoard[r][c]) queens.push([r, c]);
+
+            for (let i = 0; i < queens.length; i++) {
+                for (let j = i + 1; j < queens.length; j++) {
+                    const [r1, c1] = queens[i];
+                    const [r2, c2] = queens[j];
+                    const sameRow = r1 === r2;
+                    const sameCol = c1 === c2;
+                    const sameDiag = Math.abs(r1 - r2) === Math.abs(c1 - c2);
+                    if (sameRow || sameCol || sameDiag) {
+                        iqConflicts.add(`${r1},${c1}`);
+                        iqConflicts.add(`${r2},${c2}`);
+                    }
+                }
+            }
+        }
+
+        /* ── 호버 공격 범위 계산 ── */
+        function iqGetAttackRange(r, c) {
+            const attacked = new Set();
+            for (let i = 0; i < iqN; i++) {
+                if (i !== c) attacked.add(`${r},${i}`);   // 같은 행
+                if (i !== r) attacked.add(`${i},${c}`);   // 같은 열
+            }
+            for (let d = 1; d < iqN; d++) {
+                const dirs = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+                dirs.forEach(([dr, dc]) => {
+                    const nr = r + dr * d, nc = c + dc * d;
+                    if (nr >= 0 && nr < iqN && nc >= 0 && nc < iqN)
+                        attacked.add(`${nr},${nc}`);
+                });
+            }
+            return attacked;
+        }
+
+        /* ── 전체 렌더링 ── */
+        function iqRenderAll() {
+            let queenCount = 0;
+            for (let r = 0; r < iqN; r++)
+                for (let c = 0; c < iqN; c++)
+                    if (iqBoard[r][c]) queenCount++;
+
+            // 호버 공격 범위
+            let hoverRange = new Set();
+            if (iqHoverCell) hoverRange = iqGetAttackRange(iqHoverCell.r, iqHoverCell.c);
+
+            for (let r = 0; r < iqN; r++) {
+                for (let c = 0; c < iqN; c++) {
+                    const cell = document.getElementById(`iq-cell-${r}-${c}`);
+                    if (!cell) continue;
+
+                    const isLight = (r + c) % 2 === 0;
+                    const hasQueen = iqBoard[r][c];
+                    const isConflict = iqConflicts.has(`${r},${c}`);
+                    const isHover = iqHoverCell && iqHoverCell.r === r && iqHoverCell.c === c;
+                    const isAttacked = hoverRange.has(`${r},${c}`);
+
+                    // 배경 결정 (우선순위: conflict > hover > attacked > 기본)
+                    let bgClass = isLight ? 'iq-cell-light' : 'iq-cell-dark';
+                    if (isConflict) bgClass = 'iq-cell-conflict';
+                    else if (isHover) bgClass = `${isLight ? 'iq-cell-light' : 'iq-cell-dark'} iq-cell-hover`;
+                    else if (isAttacked && !hasQueen) bgClass = 'iq-cell-attacked';
+
+                    cell.className = `iq-cell ${bgClass}`;
+                    cell.innerHTML = '';
+
+                    if (hasQueen) {
+                        const icon = document.createElement('i');
+                        icon.className = `fa-solid fa-chess-queen iq-queen${isConflict ? ' iq-queen-conflict' : ''}`;
+                        cell.appendChild(icon);
+                    } else if (isHover) {
+                        const ghost = document.createElement('i');
+                        ghost.className = 'fa-solid fa-chess-queen iq-queen-ghost';
+                        cell.appendChild(ghost);
+                    }
+                }
+            }
+
+            iqUpdatePanel(queenCount);
+        }
+
+        /* ── 사이드 패널 & 상태바 업데이트 ── */
+        function iqUpdatePanel(queenCount) {
+            const statusEl = document.getElementById('iq-status');
+            const countEl = document.getElementById('iq-queen-count');
+            const goalEl = document.getElementById('iq-queen-goal');
+            const progressEl = document.getElementById('iq-progress-bar');
+            const conflictListEl = document.getElementById('iq-conflict-details');
+            const goalTextEl = document.getElementById('iq-goal-text');
+            const successEl = document.getElementById('iq-success-banner');
+
+            if (countEl) countEl.textContent = queenCount;
+            if (goalEl) goalEl.textContent = `/ ${iqN} 개`;
+            if (goalTextEl) goalTextEl.textContent = `${iqN}개 배치 + 충돌 없음`;
+
+            // 진행 바
+            if (progressEl) {
+                const pct = Math.round((queenCount / iqN) * 100);
+                progressEl.style.width = `${pct}%`;
+                const hasConflictsForBar = iqConflicts.size > 0;
+                progressEl.className = `iq-progress-fill h-3 rounded-full ${
+                    hasConflictsForBar ? 'bg-rose-400' :
+                        queenCount === iqN ? 'bg-emerald-400' : 'bg-indigo-400'
+                }`;
+            }
+
+            // 충돌 목록
+            if (conflictListEl) {
+                if (iqConflicts.size > 0) {
+                    const items = [...iqConflicts].map(k => {
+                        const [rr, cc] = k.split(',').map(Number);
+                        return `<span class="inline-flex items-center bg-rose-100 text-rose-700 text-xs font-bold px-2 py-0.5 rounded-full">${rr + 1}행 ${cc + 1}열</span>`;
+                    });
+                    conflictListEl.innerHTML = items.join(' ');
+                } else {
+                    conflictListEl.innerHTML = '<span class="text-slate-400 text-xs">충돌 없음 ✓</span>';
+                }
+            }
+
+            // 상태 메시지
+            if (!statusEl) return;
+            const hasConflicts = iqConflicts.size > 0;
+            const isComplete = queenCount === iqN && !hasConflicts;
+
+            if (isComplete) {
+                statusEl.className = 'iq-status iq-status-success';
+                statusEl.innerHTML = '<i class="fa-solid fa-trophy mr-2"></i>🎉 완벽합니다! N-Queen 문제를 해결했습니다!';
+                if (successEl) successEl.classList.remove('hidden');
+            } else if (hasConflicts) {
+                const pairs = iqConflicts.size / 2;
+                statusEl.className = 'iq-status iq-status-conflict';
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>충돌 발생! 빨간 퀸 ${iqConflicts.size}개가 서로 공격 중입니다.`;
+                if (successEl) successEl.classList.add('hidden');
+            } else if (queenCount === 0) {
+                statusEl.className = 'iq-status iq-status-idle';
+                statusEl.innerHTML = '<i class="fa-solid fa-hand-pointer mr-2"></i>체스판을 클릭하여 퀸을 배치해보세요!';
+                if (successEl) successEl.classList.add('hidden');
+            } else {
+                statusEl.className = 'iq-status iq-status-ok';
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i>${queenCount}개 배치됨 — 충돌 없음! (목표: ${iqN}개)`;
+                if (successEl) successEl.classList.add('hidden');
+            }
+        }
+
+        /* ── 힌트 표시 ── */
+        function iqShowHint() {
+            const hintBox = document.getElementById('iq-hint-box');
+            const hintText = document.getElementById('iq-hint-text');
+            if (!hintBox || !hintText) return;
+
+            // 이미 열려있으면 닫기
+            if (!hintBox.classList.contains('hidden')) {
+                hintBox.classList.add('hidden');
+                return;
+            }
+
+            const sol = iqSolutions[iqN];
+            if (sol) {
+                const colLetters = Array.from({length: iqN}, (_, i) => String.fromCharCode(65 + i));
+                const desc = sol[0].map((c, r) => `${r + 1}행→${colLetters[c]}열`).join(', ');
+                hintText.textContent = `정답 예시: ${desc}`;
+            } else {
+                hintText.textContent = '이 크기에 대한 힌트는 준비 중입니다.';
+            }
+            hintBox.classList.remove('hidden');
+        }
+
+        /* ── 전역 노출 (HTML onchange/onclick 연결용) ── */
+        window.iqInit = iqInit;
+        window.iqReset = () => iqInit(iqN);
+        window.iqChangeSize = (n) => iqInit(parseInt(n));
+        window.iqShowHint = iqShowHint;
+
+    })();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 1-2-1. 사물 인터넷의 원리</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #dcd3c6; margin: 0; padding: 3rem 1rem; color: #333; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#d3c8b8 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #fdfbf7; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #dcd3c6; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #d1c8b8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #9c9284; font-size: 0.95rem; }
+        .concept-box { background-color: #fffbdf; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.06); margin-bottom: 2rem; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "📌"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .alert-box { background-color: #ffefef; border-left: 5px solid #ff7b7b; padding: 1.5rem; margin-bottom: 2rem; position: relative; transform: rotate(0.4deg); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        th { background-color: #f5f0e6; font-weight: 600; text-align: center; padding: 1rem; border: 1px solid #e1d8c8; color: #5c5446; }
+        td { padding: 1rem; border: 1px solid #e1d8c8; color: #4B5563; text-align: left; }
+        .highlighter { background: linear-gradient(to top, #ffe566 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-purple-800 uppercase bg-purple-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 1. 정보 문화
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
+                1-2-1. 사물 인터넷의 원리
+            </h1>
+            <p class="text-lg text-gray-600 font-medium">모든 주변 사물들이 인터넷으로 대화를 나누는 초연결 세상</p>
+        </header>
+
+        <main class="text-gray-800 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-amber-900 mb-2">💡 스마트폰 하나로 집안을 조종한다고?</h3>
+                <p class="text-amber-800">
+                    냉장고, 에어컨, 심지어 가로등이나 자동차 안에는 원래 '컴퓨터'가 들어있지 않았습니다. 그런데 이 사물들에 <strong>아주 작은 컴퓨터 칩(센서와 통신 모듈)</strong>을 달아서 인터넷에 연결되게 만들면 어떻게 될까요?<br><br>
+                    이렇게 사람과 사물, 사물과 사물들이 네트워크로 정보를 주고받으며 우리에게 맞춤형 서비스를 제공하는 기술을 바로 <span class="bg-amber-200 px-1 font-bold rounded">사물 인터넷(IoT: Internet of Things)</span>이라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. IoT 시스템은 어떻게 굴러갈까? (5단계 동작 원리)</h2>
+            <p class="mb-5 text-gray-700">사물 인터넷이 스스로 판단하고 물건을 움직이게 하는 데는 크게 5가지 순서를 거칩니다.</p>
+
+            <div class="bg-white p-5 border shadow-sm rounded-lg mb-8">
+                <ol class="list-decimal list-inside space-y-3 font-medium text-gray-800">
+                    <li><span class="text-blue-600">데이터 수집:</span> 각종 <strong>센서</strong>(온도, 조도, 위치 등)를 통해 주변 환경 정보를 알아냅니다.</li>
+                    <li><span class="text-blue-600">데이터 전송 및 저장:</span> 수집한 측정값을 와이파이나 블루투스를 통해 <strong>클라우드(거대한 저장소)</strong>로 보냅니다.</li>
+                    <li><span class="text-blue-600">데이터 분석 및 처리:</span> 인공지능이나 <strong>빅데이터 시스템</strong>이 이 수치를 분석해서 어떻게 할지 결정을 내립니다.</li>
+                    <li><span class="text-blue-600">제어 명령 전송:</span> "에어컨을 켜라!" 라는 명령을 사물에 부착된 <strong>액추에이터(Actuator)</strong>에 전달합니다.</li>
+                    <li><span class="text-blue-600">사용자에게 서비스 제공:</span> 핸드폰 앱으로 결과를 알려주고, 실제 온도가 내려가서 사용자는 쾌적함을 느낍니다.</li>
+                </ol>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. IoT의 꽃, 자율주행 자동차!</h2>
+            <p class="mb-4">가장 대표적이고 거대한 사물 인터넷 덩어리가 바로 <strong>자율주행 자동차</strong>입니다. 어떤 기술들로 이루어져 있을까요?</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 my-6 text-[0.95rem]">
+                <div class="bg-indigo-50 p-4 rounded text-center border-t-2 border-indigo-400">
+                    <div class="font-bold text-indigo-900 mb-1">👀 센서 기술</div>
+                    <p class="text-xs text-gray-600">카메라, 레이더, 라이다(LiDAR)로 거리와 사물을 파악함.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded text-center border-t-2 border-indigo-400">
+                    <div class="font-bold text-indigo-900 mb-1">📡 네트워크 기술</div>
+                    <p class="text-xs text-gray-600">다른 자동차나 신호등 서버와 실시간으로 통신함.</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded text-center border-t-2 border-indigo-400">
+                    <div class="font-bold text-indigo-900 mb-1">🧠 인공지능 기술</div>
+                    <p class="text-xs text-gray-600">복잡한 도로 상황을 학습하고 스스로 운전 습관을 판단함.</p>
+                </div>
+            </div>
+
+            <div class="alert-box mt-10">
+                <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
+                    <span class="mr-2 text-2xl">⚠️</span> 센서(Sensor)와 액추에이터(Actuator) 헷갈림 주의!
+                </h3>
+                <p class="text-red-900 leading-snug">
+                    <span class="highlighter">센서</span>는 눈과 귀입니다. 밖에서 벌어지는 온도나 불빛 같은 데이터를 우리 <strong>입력</strong>받는 친구입니다.<br>
+                    반면 <span class="highlighter">액추에이터</span>는 팔과 다리입니다! 컴퓨터가 "모터 돌려! LED 불 켜!" 라고 명령을 내리면 실제로 물리적인 작동(<strong>출력</strong>)을 수행하는 행동 대장입니다. 이 둘의 차이를 반드시 기억하세요!
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 생활을 바꾸는 스마트 시스템 사례 모음</h2>
+            <ul class="list-none space-y-4 mb-8">
+                <li class="p-4 bg-gray-50 border border-gray-200 rounded">
+                    <strong>🏠 스마트 홈 (Smart Home):</strong> 보일러, 가스록, 전등을 밖에서 스마트폰 앱으로 자동 제어.
+                </li>
+                <li class="p-4 bg-gray-50 border border-gray-200 rounded">
+                    <strong>🏭 스마트 팩토리 (Smart Factory):</strong> 생산 공장의 불량률을 센서로 실시간 체크하고 로봇이 고장 난 장비를 바로 식별함.
+                </li>
+                <li class="p-4 bg-gray-50 border border-gray-200 rounded">
+                    <strong>🚜 스마트 팜 (Smart Farm):</strong> 농장의 습도와 이산화탄소를 자동으로 측정하여 농작물에 자동으로 물과 영양분을 뿌려줌.
+                </li>
+            </ul>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                        <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
+                            스마트 수조(어항) 시스템을 구상 중입니다. "물 온도가 25도보다 낮아지면 수조의 히터(Heater)를 켠다." 라는 과정에서, 물 온도를 감지하는 장치와 히터를 켜서 물리적으로 열을 내는 장치를 IoT 용어로 각각 무엇이라고 부를까요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
+                                <strong>정답: 센서(Sensor) 그리고 액추에이터(Actuator)</strong><br>
+                                물 온도를 측정하는 온도계 역할은 센서가 하고, 실제 열을 방출하도록 모터나 코일을 작동시키는 출력 장치는 액추에이터입니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 2-2-1. 빅데이터의 이해</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #dcd3c6; margin: 0; padding: 3rem 1rem; color: #333; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#d3c8b8 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #fdfbf7; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #dcd3c6; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #d1c8b8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #9c9284; font-size: 0.95rem; }
+        .concept-box { background-color: #fffbdf; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.06); margin-bottom: 2rem; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "📌"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .alert-box { background-color: #ffefef; border-left: 5px solid #ff7b7b; padding: 1.5rem; margin-bottom: 2rem; position: relative; transform: rotate(0.4deg); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        th { background-color: #f5f0e6; font-weight: 600; text-align: center; padding: 1rem; border: 1px solid #e1d8c8; color: #5c5446; }
+        td { padding: 1rem; border: 1px solid #e1d8c8; color: #4B5563; text-align: left; }
+        .highlighter { background: linear-gradient(to top, #ffe566 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-green-800 uppercase bg-green-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 2. 데이터
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
+                2-2-1. 빅데이터의 이해
+            </h1>
+            <p class="text-lg text-gray-600 font-medium">거대한 데이터의 바다에서 새로운 가치를 낚아 올리는 기술</p>
+        </header>
+
+        <main class="text-gray-800 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-amber-900 mb-2">💡 유튜브는 내가 좋아하는 영상을 어떻게 알까?</h3>
+                <p class="text-amber-800">
+                    내가 어제 검색한 내용, 버스 카드를 찍은 시간, 점심에 시켜 먹은 배달 음식까지! 우리의 모든 일상은 끊임없이 <span class="bg-amber-200 px-1 font-bold rounded">데이터</span>로 만들어지고 있습니다.<br><br>
+                    이렇게 기존의 소프트웨어로는 감당할 수 없을 만큼 규모가 크고 복잡한 데이터를 수집·분석하여 <span class="highlighter">가치 있는 정보(패턴)</span>를 찾아내는 기술을 바로 <strong>빅데이터(Big Data)</strong>라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 빅데이터의 3대 특징 (3V) + 뉴 6V</h2>
+            <p class="mb-4 text-gray-700">과거의 단순한 장부 데이터와 달리, 빅데이터라고 부르기 위해서는 핵심적인 3가지 특징을 만족해야 합니다. 이를 영어 앞 글자를 따서 <span class="text-blue-600 font-bold underline">3V</span>라고 부릅니다.</p>
+
+            <ul class="list-none space-y-4 mb-8">
+                <li class="flex items-start">
+                    <span class="text-3xl mr-3">🌊</span>
+                    <div>
+                        <strong class="text-blue-800 text-xl">규모 (Volume)</strong>
+                        <p class="text-sm mt-1">테라바이트(TB)나 페타바이트(PB)를 넘어서 엑사바이트(EB), 심지어 제타바이트(ZB)에 이르기까지 그 양이 상상을 초월할 정도로 거대합니다.</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-3xl mr-3">🏎️</span>
+                    <div>
+                        <strong class="text-blue-800 text-xl">속도 (Velocity)</strong>
+                        <p class="text-sm mt-1">초고속 통신과 스트리밍 기술로 인해 데이터가 생성되고 유통, 수집되는 속도가 놀랍도록 빠릅니다. (실시간 서비스 필수)</p>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-3xl mr-3">🎨</span>
+                    <div>
+                        <strong class="text-blue-800 text-xl">다양성 (Variety)</strong>
+                        <p class="text-sm mt-1">숫자로 된 정렬된 정형 데이터뿐만 아니라 문서, <strong>텍스트, 이미지, 소리, 동영상 등</strong> 형태가 제각각인 비정형 데이터까지 모두 포함합니다.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="bg-indigo-50 border border-indigo-200 p-5 rounded">
+                <h4 class="font-bold text-indigo-800 mb-2">⭐ 최근 추가된 6V (빅데이터의 확장)</h4>
+                <p class="text-sm text-gray-700">기존 3V에 더해 <strong>진실성(Veracity)</strong>(믿을 수 있는 데이터인가?), <strong>시각화(Visualization)</strong>(한눈에 패턴이 보이는가?), 인류를 이롭게 하는 <strong>가치(Value)</strong>를 합쳐 빅데이터 6V로 정의하고 있습니다.</p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 우리의 삶을 바꾸는 빅데이터 활용 사례</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-6">
+                <!-- 복지 -->
+                <div class="bg-white p-5 border shadow-sm rounded-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-gray-900 border-b pb-2 mb-3">🏥 의료 및 복지 서비스</h4>
+                    <p class="text-[0.95rem] text-gray-700 mb-2">• <strong>위기 징후 알림:</strong> 전기료/통신비 장기 체납 데이터를 모아 복지 사각지대의 이웃을 구출해냄!</p>
+                    <p class="text-[0.95rem] text-gray-700">• <strong>신약 개발 단축:</strong> 수백만 건의 논문과 임상 데이터를 분석해 백신 개발 기간을 10년 ➔ 1년으로 단축!</p>
+                </div>
+                <!-- 금융 -->
+                <div class="bg-white p-5 border shadow-sm rounded-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-gray-900 border-b pb-2 mb-3">💰 금융 서비스</h4>
+                    <p class="text-[0.95rem] text-gray-700 mb-2">• <strong>사기 예방(FDS):</strong> 이체할 때 과거의 보이스피싱 사기 계좌 패턴과 일치하면 즉시 경고창을 띄워 송금을 차단함.</p>
+                </div>
+                <!-- 경영 -->
+                <div class="bg-white p-5 border shadow-sm rounded-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-gray-900 border-b pb-2 mb-3">👔 경영 및 마케팅</h4>
+                    <p class="text-[0.95rem] text-gray-700 mb-2">• <strong>패션업계 예측:</strong> 옷에 무선 태그(RFID)를 달아 전 세계 실시간 재고를 파악하고, 유행 패턴을 분석해 생산량을 조절함.</p>
+                </div>
+                <!-- 문화 -->
+                <div class="bg-white p-5 border shadow-sm rounded-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-gray-900 border-b pb-2 mb-3">🎵 문화 (엔터테인먼트)</h4>
+                    <p class="text-[0.95rem] text-gray-700 mb-2">• <strong>초맞춤형 추천:</strong> 즐겨 듣는 음악의 비트, 장르 데이터를 모아 개인의 취향을 분석하고 나만의 플레이리스트를 만들어 줌.</p>
+                </div>
+            </div>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                        <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
+                            다음 중 인터넷 댓글, 인스타그램 사진 파일, 유튜브 동영상 데이터처럼 일정한 규격이 없어 크기를 쉽게 가늠하기 힘든 데이터들을 아우르는 빅데이터의 특징(3V)은 무엇인가요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
+                                <strong>정답: 다양성 (Variety)</strong><br>
+                                숫자 중심이었던 과거와 달리 현재는 이미지나 형태가 불규칙한 비정형 데이터가 폭발적으로 증가하는 현상을 가리킵니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

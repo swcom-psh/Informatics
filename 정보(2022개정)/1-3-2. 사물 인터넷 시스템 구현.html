@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 1-3-2. 사물 인터넷 시스템 구현</title>
+    <!-- 폰트: 프리텐다드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #dcd3c6; margin: 0; padding: 3rem 1rem; color: #333; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#d3c8b8 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #fdfbf7; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #dcd3c6; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #d1c8b8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #9c9284; font-size: 0.95rem; }
+        .concept-box { background-color: #fffbdf; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.06); margin-bottom: 2rem; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "📌"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .alert-box { background-color: #ffefef; border-left: 5px solid #ff7b7b; padding: 1.5rem; margin-bottom: 2rem; position: relative; transform: rotate(0.4deg); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        th { background-color: #f5f0e6; font-weight: 600; text-align: center; padding: 1rem; border: 1px solid #e1d8c8; color: #5c5446; }
+        td { padding: 1rem; border: 1px solid #e1d8c8; color: #4B5563; text-align: left; }
+        .highlighter { background: linear-gradient(to top, #ffe566 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-purple-800 uppercase bg-purple-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 1. 정보 문화
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
+                1-3-2. 사물 인터넷 시스템 구현
+            </h1>
+            <p class="text-lg text-gray-600 font-medium">피지컬 컴퓨팅으로 실생활의 문제를 내 손으로 직접 해결하기</p>
+        </header>
+
+        <main class="text-gray-800 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-amber-900 mb-2">💡 손으로 만질 수 있는 프로그래밍</h3>
+                <p class="text-amber-800">
+                    그동안 우리는 화면 속에서만 움직이는 소프트웨어를 주로 만들었습니다.<br>
+                    하지만 빛, 온도, 소리 등 현실 세계의 데이터를 직접 빨아들이고 모터를 움직이려면 모니터 밖의 물리적인 부품이 필요합니다. 컴퓨터와 현실 세계의 하드웨어 장치가 대화하게 만드는 기술을 <span class="bg-amber-200 px-1 font-bold rounded">피지컬 컴퓨팅(Physical Computing)</span>이라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 시스템 구현 4단계 핵심 절차</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                <!-- 1단계 -->
+                <div class="bg-gray-50 border border-gray-200 p-5 rounded-lg relative">
+                    <div class="absolute -top-3 left-4 bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded">Step 1</div>
+                    <h4 class="font-bold text-gray-800 mt-2 mb-1">문제 정의 및 데이터 선정</h4>
+                    <p class="text-[0.95rem] text-gray-600 leading-snug">무엇을 해결할지, 주변 환경에서 어떤 데이터(온도? 조도? 소리?)를 수집할지 목표를 정합니다.</p>
+                </div>
+                <!-- 2단계 -->
+                <div class="bg-blue-50 border border-blue-200 p-5 rounded-lg relative">
+                    <div class="absolute -top-3 left-4 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">Step 2</div>
+                    <h4 class="font-bold text-blue-800 mt-2 mb-1">피지컬 시스템 장치 구현</h4>
+                    <p class="text-[0.95rem] text-gray-600 leading-snug">아두이노, 마이크로비트 같은 두뇌 장치에 필요한 센서를 연결하고 동작 코드를 작성합니다.</p>
+                </div>
+                <!-- 3단계 -->
+                <div class="bg-amber-50 border border-amber-200 p-5 rounded-lg relative">
+                    <div class="absolute -top-3 left-4 bg-amber-600 text-white text-xs font-bold px-2 py-1 rounded">Step 3</div>
+                    <h4 class="font-bold text-amber-800 mt-2 mb-1">데이터 수집 및 분석</h4>
+                    <p class="text-[0.95rem] text-gray-600 leading-snug">수집된 데이터를 스프레드시트 등으로 저장하고 패턴이나 변화를 분석합니다.</p>
+                </div>
+                <!-- 4단계 -->
+                <div class="bg-green-50 border border-green-200 p-5 rounded-lg relative">
+                    <div class="absolute -top-3 left-4 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">Step 4</div>
+                    <h4 class="font-bold text-green-800 mt-2 mb-1">문제 해결 도출</h4>
+                    <p class="text-[0.95rem] text-gray-600 leading-snug">분석 결과를 토대로 솔루션을 찾고 시스템을 수정하며 최종 결과를 만듭니다.</p>
+                </div>
+            </div>
+
+            <div class="alert-box mt-8">
+                <h3 class="font-bold text-xl text-red-800 mb-2 flex items-center">
+                    <span class="mr-2 text-2xl">⚡</span> 마이크로컨트롤러(Microcontroller)
+                </h3>
+                <p class="text-red-900 leading-snug text-[0.95rem]">
+                    센서의 값을 읽어 들이고 모터로 신호를 내보내는 초소형 두뇌입니다. <br>
+                    - <strong class="bg-red-200 px-1">마이크로비트(micro:bit)</strong>: 영국에서 교육용으로 만든 보드로 LED, 온도, 빛, 가속도 센서가 기본 탑재되어 있어 초보자에게 아주 좋습니다.<br>
+                    - <strong class="bg-red-200 px-1">아두이노(Arduino)</strong> 가장 대표적인 피지컬 컴퓨팅 보드<br>
+                    - <strong class="bg-red-200 px-1">라즈베리파이(Raspberry Pi)</strong>: 리눅스 운영체제가 설치되어 일반 소형 컴퓨터처럼 움직이는 매우 강력한 보드
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 실전 프로젝트: 식물이 잘 자라는 최고의 장소 찾기!</h2>
+            <p class="mb-4">우리 학교 안에서 씨앗을 심었을 때 <strong>어디가 가장 광합성을 잘 할수 있을지</strong> 마이크로비트로 증명해 봅시다.</p>
+
+            <ul class="list-none space-y-4 mb-8">
+                <li class="p-4 bg-white border border-gray-300 shadow-sm rounded">
+                    <strong>📍 1단계 (문제 정의)</strong><br>
+                    <span class="text-gray-600">교실 창가, 복도, 옥상 중 어디가 최적일까? 마이크로비트로 일정 시간 동안의 <span class="highlighter">온도와 빛의 세기</span> 데이터를 모조리 수집하자!</span>
+                </li>
+                <li class="p-4 bg-white border border-gray-300 shadow-sm rounded flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex-1">
+                        <strong>🔌 2단계 (장치 구현)</strong><br>
+                        <span class="text-gray-600">마이크로비트에 '데이터 로거(Data Logger)' 기능을 추가하여 전원이 끊겨도 기록이 보존되도록 프로그램한다. 0.1초 혹은 1분에 한 번씩 온도를 자동 기록하게 코딩한다.</span>
+                    </div>
+                    <div class="bg-gray-100 p-2 text-xs font-mono rounded text-center min-w-[200px]">
+                        [A버튼] = 기록 시작<br>
+                        [B버튼] = 기록 일시정지<br>
+                        [A+B버튼] = 기존 로그 삭제
+                    </div>
+                </li>
+                <li class="p-4 bg-white border border-gray-300 shadow-sm rounded">
+                    <strong>📊 3단계 (데이터 분석)</strong><br>
+                    <span class="text-gray-600">수일 후 마이크로비트를 컴퓨터에 꽂아 <code>MY_DATA.HTM</code> 파일을 연 다음, 엑셀/스프레드시트로 변환하여 각 장소의 '평균 조도'와 '평균 온도' 다이어그램을 그린다.</span>
+                </li>
+            </ul>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                        <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
+                            영희는 방 안에서 로봇 강아지가 혼자서 온도를 느끼며 움직이게 하려고 합니다. 화면 속의 그래픽 캐릭터가 아닌, 현실 모래밭에 굴러가는 바퀴와 온도 센서를 조립해서 살아있는 로봇을 제작하는 이 분야(기술)를 무엇이라고 부르나요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
+                                <strong>정답: 피지컬 컴퓨팅(Physical Computing)</strong><br>
+                                컴퓨터와 현실 세계의 센서, 모터 장치를 연결해 정보를 교환하고 실제로 세상과 상호작용하도록 시스템을 설계하는 것을 뜻합니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

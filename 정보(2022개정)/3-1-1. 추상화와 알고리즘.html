@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 3-1-1. 추상화와 알고리즘</title>
+    <!-- 폰트: 프리텐다드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #dcd3c6; margin: 0; padding: 3rem 1rem; color: #333; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#d3c8b8 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #fdfbf7; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #dcd3c6; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #d1c8b8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #9c9284; font-size: 0.95rem; }
+        .concept-box { background-color: #fffbdf; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.06); margin-bottom: 2rem; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "📌"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .alert-box { background-color: #ffefef; border-left: 5px solid #ff7b7b; padding: 1.5rem; margin-bottom: 2rem; position: relative; transform: rotate(0.4deg); }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        th { background-color: #f5f0e6; font-weight: 600; text-align: center; padding: 1rem; border: 1px solid #e1d8c8; color: #5c5446; }
+        td { padding: 1rem; border: 1px solid #e1d8c8; color: #4B5563; text-align: left; }
+        pre { background-color: #1a1b26; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin-bottom: 2rem; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95rem; line-height: 1.5; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3); border: 2px solid #292e42; }
+        .highlighter { background: linear-gradient(to top, #ffe566 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-amber-800 uppercase bg-amber-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 3. 알고리즘과 프로그래밍
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
+                3-1-1. 추상화와 알고리즘
+            </h1>
+            <p class="text-lg text-gray-600 font-medium">쓸데없는 건 과감하게 버리고 핵심만 빼내어 절차를 만들자</p>
+        </header>
+
+        <main class="text-gray-800 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-amber-900 mb-2">💡 지하철 노선도는 진짜 지도일까?</h3>
+                <p class="text-amber-800">
+                    우리가 아는 지하철 노선도는 역들이 반듯한 직선과 동그라미로만 이어진 가짜 지도입니다. 실제 구불구불한 지하철 길이나 위쪽의 강, 도로 같은 <span class="font-bold">불필요한 요소는 모조리 지우고</span>, 우리가 환승하기 위해 꼭 필요한 <strong>핵심 정보(역과 역의 순서)</strong>만 뽑아서 그린 것이죠.<br><br>
+                    컴퓨터에게 일을 시킬 때도 마찬가지입니다. 세상의 복잡한 문제를 컴퓨터가 풀 수 있도록 불필요한 속성을 제거하고 본질에 집중하는 과정을 <span class="bg-amber-200 px-1 font-bold rounded">추상화(Abstraction)</span>라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 컴퓨터 세상을 지배하는 두 가지 단어</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <!-- 추상화 -->
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 shadow-sm relative">
+                    <div class="absolute -top-3 left-4 bg-blue-600 text-white font-bold px-3 py-1 text-sm rounded shadow">개념 1</div>
+                    <h4 class="font-bold text-blue-800 text-xl border-b border-blue-200 pb-2 mb-3 mt-2">✨ 추상화 (Abstraction)</h4>
+                    <p class="text-gray-700 leading-snug">
+                        현실의 복잡한 문제 상황 속에서, <strong>문제 해결에 불필요한 요소를 버리고 핵심 요소만 추출</strong>하여 모델링(간단하게 표현)하는 과정입니다.<br>
+                        <span class="text-sm text-blue-600 font-bold block mt-2">예: 2D 게임을 만들 때 주인공의 복잡한 근육이나 표정은 그리지 않고 사각형 네비게이션 박스로만 취급(Hitbox 추상화)하는 것.</span>
+                    </p>
+                </div>
+
+                <!-- 알고리즘 -->
+                <div class="bg-amber-50 p-6 rounded-lg border border-amber-200 shadow-sm relative">
+                    <div class="absolute -top-3 left-4 bg-amber-600 text-white font-bold px-3 py-1 text-sm rounded shadow">개념 2</div>
+                    <h4 class="font-bold text-amber-800 text-xl border-b border-amber-200 pb-2 mb-3 mt-2">⚙️ 알고리즘 (Algorithm)</h4>
+                    <p class="text-gray-700 leading-snug">
+                        추상화된 문제를 해결하기 위해 컴퓨터가 알아들을 수 있는 <strong>명확하고 순서대로 나열된 처방전(명령 절차)</strong>입니다.<br>
+                        <span class="text-sm text-amber-600 font-bold block mt-2">예: 라면 끓이는 순서(1. 물 끓이기 ➔ 2. 면스프 넣기 ➔ 3. 3분 기다리기) 그 자체!</span>
+                    </p>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 추상화 ➔ 알고리즘 실전 연습: 자판기 만들기</h2>
+            <p class="mb-4">자판기(Vending Machine)를 프로그래밍하기 위해 <strong>추상화</strong>를 먼저 해봅시다.</p>
+            
+            <div class="bg-white p-5 border border-dashed border-gray-400 rounded">
+                <h4 class="font-bold text-gray-900 border-b pb-2 mb-3">🥤 자판기 문제 상황 파악하기</h4>
+                <ul class="list-none space-y-2 text-base text-gray-700">
+                    <li><span class="text-red-500 font-bold">[버릴 것 (불필요 요소)]</span>: 기계의 파란색 껍데기, 지폐 투입구의 철판 두께, 음료수 캔의 디자인</li>
+                    <li><span class="text-blue-600 font-bold">[남길 것 (핵심 속성)]</span>: 전체 투입 금액(변수), 음료별 가격(데이터), 사용자 버튼 입력(판단), 잔돈 방출 기능</li>
+                </ul>
+            </div>
+
+            <br>
+            <p>핵심만 뽑아냈다면 <strong>알고리즘</strong> 순서를 자연어로 설계합니다.</p>
+            <div class="bg-gray-50 p-5 border-l-4 border-gray-800 rounded font-mono text-sm">
+                1: 사용자로부터 돈을 입력받는다.<br>
+                2: 현재까지 투입된 <strong>[총 금액]</strong>에 더한다.<br>
+                3: 음료 버튼이 눌렸는지 확인한다. 눌렸다면 <strong>[총 금액]</strong> > <strong>[음료 가격]</strong>인지 판단한다.<br>
+                4: 크다면, <strong>[음료 방출]</strong> 후 총 금액에서 차감한다. 작다면, '금액 부족' 램프를 켠다.<br>
+                5: '반환' 버튼이 눌리면 <strong>[총 금액]</strong>을 반환출구로 배출한다.
+            </div>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                        <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
+                            여러분은 네비게이션 앱을 개발하고 있습니다. 사용자가 '강남역'에서 '홍대'로 가는 길을 찾으려 합니다. 다음 길 찾기 과정에서 '추상화'를 올바르게 적용한 예시는 무엇일까요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
+                                <strong>정답: 강변의 예쁜 벚꽃나무 풍경은 고려하지 않고, 지도 데이터에서 교차로의 시간당 차량 통과 대수(정체율)와 도로의 이어진 거리 데이터만 남긴다.</strong><br>
+                                최단경로 도출이라는 '목적' 달성에 방해되거나 필요가 없는 시각적/예술적 정보는 가차 없이 잘라내는 것이 핵심입니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
