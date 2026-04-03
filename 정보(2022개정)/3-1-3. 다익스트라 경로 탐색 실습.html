@@ -1191,10 +1191,11 @@ def dijkstra(graph, start):
                     bgColor = "bg-green-50 border-green-200 ring-2 ring-green-100";
                     badgeColor = "text-green-700 font-extrabold";
                     shadow = "shadow-md";
-                    cursor = "";
+                    cursor = "cursor-pointer hover:bg-green-100 hover:border-green-300";
                 }
 
                 item.className = `p-4 rounded-xl border ${bgColor} ${shadow} flex flex-col gap-2 transition-all ${cursor}`;
+                item.style.cursor = 'pointer'; // 명시적 커서 지정
 
                 const badgeText = idx === 0
                     ? `<i class="fa-solid fa-trophy text-amber-500 mr-1"></i> 1위 (최단 경로)`
@@ -1210,10 +1211,8 @@ def dijkstra(graph, start):
                     </div>
                 `;
 
-                // 2등, 3등 클릭 시 해당 경로 하이라이트
-                if (idx > 0) {
-                    item.addEventListener('click', () => highlightAlternatePath(p));
-                }
+                // 모든 순위 클릭 시 해당 경로 하이라이트 (1위는 원래 초록색, 2~3위는 보라색)
+                item.addEventListener('click', () => highlightAlternatePath(p, idx === 0));
 
                 list.appendChild(item);
             });
@@ -1222,36 +1221,39 @@ def dijkstra(graph, start):
         }
 
         /**
-         * 대안 경로(2등, 3등)를 클릭하면 해당 엣지를 하이라이트
+         * 대안 경로(2등, 3등) 또는 1등 경로를 클릭하면 해당 엣지를 하이라이트
          */
-        function highlightAlternatePath(p) {
+        function highlightAlternatePath(p, isFirst = false) {
             const nodeLabels = {};
             nodes.get().forEach(n => nodeLabels[n.id] = n.label.split('\n')[0]);
 
-            // 경로에 포함된 간선 ID 추출
+            // 경로에 포함된 간선 ID 추출 (유연한 비교 == 사용)
             let pathEdgeIds = [];
             for (let i = 0; i < p.nodes.length - 1; i++) {
                 let e = edges.get({
                     filter: edge =>
-                        (edge.from === p.nodes[i] && edge.to === p.nodes[i + 1]) ||
-                        (edge.from === p.nodes[i + 1] && edge.to === p.nodes[i])
+                        (edge.from == p.nodes[i] && edge.to == p.nodes[i + 1]) ||
+                        (edge.from == p.nodes[i + 1] && edge.to == p.nodes[i])
                 })[0];
                 if (e) pathEdgeIds.push(e.id);
             }
+
+            const mainColor = isFirst ? '#22C55E' : '#818CF8';
+            const borderColor = isFirst ? '#14532D' : '#4338CA';
 
             // 노드 스타일 업데이트
             nodes.update(nodes.get().map(n => ({
                 id: n.id,
                 label: nodeLabels[n.id],
-                color: p.nodes.includes(n.id)
-                    ? { background: '#818CF8', border: '#4338CA' } // 보라색 하이라이트
+                color: p.nodes.some(nodeId => nodeId == n.id)
+                    ? { background: mainColor, border: borderColor }
                     : { background: '#E5E7EB', border: '#9CA3AF' }
             })));
 
             // 간선 스타일 업데이트
             edges.update(edges.get().map(e => ({
                 id: e.id,
-                color: { color: pathEdgeIds.includes(e.id) ? '#818CF8' : '#E5E7EB' },
+                color: { color: pathEdgeIds.includes(e.id) ? mainColor : '#E5E7EB' },
                 width: pathEdgeIds.includes(e.id) ? 5 : 2
             })));
         }
