@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 3-2-6. 프로그램 공유 및 성능 평가</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #fefce8; margin: 0; padding: 3rem 1rem; color: #334155; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#fef08a 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #ffffff; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.08), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #fefce8; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,1); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #fef08a; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #94a3b8; font-size: 0.95rem; }
+        .concept-box { background-color: #fef9c3; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; border-left: 5px solid #ca8a04; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "🔎"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        pre { background-color: #1e293b; color: #f8fafc; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/googlecode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg> 
+            메인으로
+        </a>
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-yellow-800 uppercase bg-yellow-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 3. 프로그래밍
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 font-serif tracking-tight">
+                3-2-6. 프로그램 공유 및 성능 평가
+            </h1>
+            <p class="text-lg text-slate-500 font-medium">내가 만든 코드가 완벽할까? 버그를 찾고 더 빠르게 개선하기!</p>
+        </header>
+
+        <main class="text-slate-700 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-yellow-900 mb-2">🤔 에러 없이 켜진다고 전부 완벽한 무기일까?</h3>
+                <p class="text-yellow-800">
+                    프로그램이 단순히 돌아간다고 끝이 아닙니다. 내가 못 본 "무한 루프의 늪"이 숨어있을 수도 있고 음수 값이 들어오면 뻗어버릴 수도 있습니다.<br>
+                    컴퓨터 자원을 아끼고, 사용자가 어떤 값을 입력해도 버텨내는 튼튼한 코드를 위해 <strong>성능 평가와 코드 공유(코드 리뷰)</strong>는 필수입니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">1. 프로그램 건강 검진 (체크리스트)</h2>
+            <ul class="list-none space-y-4 mb-8 text-[0.95rem]">
+                <li class="flex items-start bg-slate-50 p-4 border border-slate-200 rounded">
+                    <span class="text-2xl mr-4 px-2 bg-slate-200 rounded">✅</span>
+                    <div>
+                        <strong class="text-slate-800 block mb-1">의도한 입출력이 잘 처리되는가?</strong>
+                        <span class="text-slate-600">만약 사람 수가 음수(-1명)가 되는 황당한 상황이 벌어지지 않도록, 선택 구조(If문)로 "음수는 입력 불가!" 라고 막아두었는지 확인합니다.</span>
+                    </div>
+                </li>
+                <li class="flex items-start bg-slate-50 p-4 border border-slate-200 rounded">
+                    <span class="text-2xl mr-4 px-2 bg-slate-200 rounded">✅</span>
+                    <div>
+                        <strong class="text-slate-800 block mb-1">무한 반복(Infinite Loop)에 빠지지 않는가?</strong>
+                        <span class="text-slate-600">While문의 탈출 조건이 영원히 거짓(False)이 되어, 컴퓨터가 뻗어버리는 좀비 코드가 되지 않게 점검합니다.</span>
+                    </div>
+                </li>
+                <li class="flex items-start bg-slate-50 p-4 border border-slate-200 rounded">
+                    <span class="text-2xl mr-4 px-2 bg-slate-200 rounded">✅</span>
+                    <div>
+                        <strong class="text-slate-800 block mb-1">더 효율적인 최적의 알고리즘이 있는가?</strong>
+                        <span class="text-slate-600">동일한 기능을 하더라도 100줄짜리 복잡한 연산보다는, 5줄짜리 빠른 연산 코드로 교체할 수 없는지 다른 친구들과 공유하며 고민합니다.</span>
+                    </div>
+                </li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">2. 실전 파일 데이터 분석 프로젝트 (Pandas 활용)</h2>
+            <p class="mb-4">성능 좋은 프로그램을 만들면 엄청나게 많은 외부 데이터를 불러와 순식간에 분석할 수 있습니다. <strong>데이터프레임(DataFrame)</strong>을 사용하는 <code>pandas</code> 라이브러리를 활용합니다.</p>
+
+<pre><code class="language-python"># 1. 엑셀 파일 마법의 도구(pandas) 부르기
+import pandas as pd
+
+# 2. 엑셀이나 csv 등 파일을 불러와서 변수에 담기 (데이터프레임화)
+data = pd.read_excel('nation.xlsx')
+
+# 3. 면적이 가장 큰 나라는 어디일까?
+max_nation = data[data['면적'] == data['면적'].max()]
+
+# 4. 내림차순(높은 순서)으로 데이터 정렬하기
+# ascending = False 면 높은 숫자부터 보여줍니다(내림차순).
+data.sort_values(by = '유아사망률', ascending = False)</code></pre>
+
+            <div class="bg-blue-50 p-5 rounded-lg border border-blue-200 mt-6">
+                <h4 class="font-bold text-blue-800 flex items-center border-b border-blue-200 pb-2 mb-3">
+                    <span class="mr-2">📈</span> 데이터 시각화 보너스 지식! (matplotlib)
+                </h4>
+                <p class="text-sm text-slate-700 leading-snug">
+                    숫자만 보면 어지러우니까 그래프를 그릴 수 있습니다!<br>
+                    <code>kind = 'bar'</code> 는 <strong>막대그래프</strong>, <code>'line'</code> 은 <strong>선그래프</strong>, <code>'pie'</code> 는 <strong>원그래프</strong>, <code>'scatter'</code> 는 점을 찍는 <strong>산점도</strong> 입니다.<br>
+                    <code>figsize=(15, 5)</code> 로 그래프의 사이즈를 시원하게 키울 수도 있습니다.
+                </p>
+            </div>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2 text-slate-800">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-slate-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-slate-200 px-3 py-1 rounded-bl font-bold text-xs text-slate-600">Q 1</div>
+                        <p class="font-medium text-lg mt-4 text-slate-800 mb-3">
+                            작성한 코드가 똑같은 결괏값을 내더라도 여러 친구들과 "공유" 하면서 피드백을 받는 것이 왜 중요할까요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-yellow-600 font-medium hover:text-yellow-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-slate-700 p-3 bg-yellow-50 border border-yellow-200 rounded text-[0.95rem]">
+                                <strong>정답:</strong><br>
+                                다양한 사람들의 관점을 통해 내가 발견하지 못한 에러(예외 상황)를 찾을 수 있고, 더 빠르고 자원을 적게 쓰는 "효율적인 알고리즘"으로 코드를 업그레이드(성능 개선) 할 수 있기 때문입니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

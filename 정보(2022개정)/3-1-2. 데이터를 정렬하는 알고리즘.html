@@ -173,6 +173,13 @@
 <body>
 
     <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg> 
+            메인으로
+        </a>
         
         <!-- 바인더 구멍 세트 -->
         <div class="binder-holes">
@@ -211,73 +218,128 @@
                 <span class="font-bold bg-amber-200 px-1 rounded">버블 정렬(Bubble Sort)</span>은 바로 옆에 있는 **인접한 두 데이터의 크기를 비교**해서 조건(예: 오름차순 일 때 왼쪽이 더 크다면)에 맞지 않으면 두 자리의 순서를 서로 <span class="text-red-600 font-bold underline">교환(Swap)</span>하는 방식입니다. 마치 거품이 뽀글뽀글 위로 올라가듯이 큰 값이 점차 배열의 끝으로 이동하게 됩니다.
             </p>
 
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 shadow-sm">
-                <h4 class="font-bold text-blue-700 mb-4">[ 데이터: 4, 8, 7, 1, 5 ] 오름차순으로 정렬하기 (1회차)</h4>
+            <div class="bg-gray-50 p-6 text-[0.95rem] rounded-lg border border-gray-200 mb-6 shadow-sm">
+                <h4 class="font-bold text-blue-700 mb-4">[ 2, 5, 4, 6, 1, 3 ] 오름차순 버블 정렬 상세 (i=0, 1)</h4>
                 <div class="space-y-3 ms-2">
-                    <p><strong>① 1번(4)과 2번(8) 비교</strong> ➔ (4 < 8) 순서 변경 없음 ➔ 진행: [4, 8, 7, 1, 5]</p>
-                    <p><strong>② 2번(8)과 3번(7) 비교</strong> ➔ (8 > 7) <span class="text-red-500 font-bold">순서 교환! 🔄</span> ➔ 진행: [4, 7, <strong>8</strong>, 1, 5]</p>
-                    <p><strong>③ 3번(8)과 4번(1) 비교</strong> ➔ (8 > 1) <span class="text-red-500 font-bold">순서 교환! 🔄</span> ➔ 진행: [4, 7, 1, <strong>8</strong>, 5]</p>
-                    <p><strong>④ 4번(8)과 5번(5) 비교</strong> ➔ (8 > 5) <span class="text-red-500 font-bold">순서 교환! 🔄</span> ➔ 완료: [4, 7, 1, 5, <span class="bg-blue-100 font-bold px-1 rounded">8</span>]</p>
-                </div>
-                <div class="mt-4 p-3 bg-blue-50 text-blue-800 rounded border-l-4 border-blue-500 font-medium tracking-tight">
-                    🌟 1회차가 끝났을 때 <strong>가장 큰 데이터인 '8'이 맨 마지막 위치에 확정</strong>된 것을 볼 수 있습니다. (전체 비교 4회, 교환 3회)
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mb-1">▶ i = 0 (1회차) : 맨 뒤 자리를 찾아가는 과정</p>
+                    <p><strong>j = 0 비교</strong> : 2와 5 비교. (2 &lt; 5) ➔ <span class="text-blue-500 font-bold">통과 (자리 유지)</span></p>
+                    <p><strong>j = 1 비교</strong> : 5와 4 비교. (5 &gt; 4) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 6, 1, 3]</code></p>
+                    <p><strong>j = 2 비교</strong> : 5와 6 비교. (5 &lt; 6) ➔ <span class="text-blue-500 font-bold">통과 (자리 유지)</span></p>
+                    <p><strong>j = 3 비교</strong> : 6과 1 비교. (6 &gt; 1) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 6, 3]</code></p>
+                    <p><strong>j = 4 비교</strong> : 6과 3 비교. (6 &gt; 3) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 3, 6]</code></p>
+                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=0 종료 후, 가장 큰 값인 '6'이 맨 마지막에 확정됩니다!</p>
+
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 1 (2회차)</p>
+                    <p><strong>j = 0 비교</strong> : 2와 4 비교 ➔ <span class="text-blue-500">통과</span></p>
+                    <p><strong>j = 1 비교</strong> : 4와 5 비교 ➔ <span class="text-blue-500">통과</span></p>
+                    <p><strong>j = 2 비교</strong> : 5와 1 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>1 번째 [2, 4, 1, 5, 3, 6]</code></p>
+                    <p><strong>j = 3 비교</strong> : 5와 3 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>1 번째 [2, 4, 1, 3, 5, 6]</code></p>
+                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=1 종료 후, 다음으로 큰 '5'가 뒤에서 두 번째 자리에 확정됩니다. 이렇게 전체가 맞춰질 때까지 i는 늘어나고 j 범위는 줄어들며 반복합니다.</p>
                 </div>
             </div>
 
             <ul class="list-disc list-inside mb-6 space-y-2 text-gray-700">
-                <li>총 5개의 데이터가 있을 때, **1회차엔 4번**, **2회차엔 3번** 등 비교해야 하는 횟수가 줄어듭니다.</li>
-                <li><strong>장점:</strong> 구조가 단순하여 알고리즘을 코드로 구현하기 무척 쉽습니다.</li>
-                <li><strong>단점:</strong> 모든 데이터를 매번 앞뒤로 비교하고 교환해야 하므로 처리 <span class="highlighter">속도가 매우 느립니다.</span></li>
+                <li>총 6개의 데이터가 있을 때, <strong>장점:</strong> 구조가 단순하여 알고리즘을 코드로 구현하기 쉽습니다.</li>
+                <li><strong>단점:</strong> 모든 데이터를 계속 앞뒤로 짝지어 비교하고 자리도 수시로 교환해야 하므로 <span class="highlighter">속도가 매우 느립니다.</span></li>
             </ul>
 
-<pre><code class="language-python"># 버블 정렬 파이썬 코드 예제
+<pre><code class="language-python"># 1. 버블정렬
+lst = [2, 5, 4, 6, 1, 3]
+temp = 0
+
 def bubble_sort(arr):
     n = len(arr)
-    for i in range(n - 1): # 전체 회차 반복
-        # 맨 끝에서부터 확정된 자리를 제외하고 비교
-        for j in range(n - 1 - i):
-            if arr[j] > arr[j + 1]: # 앞의 데이터가 더 크다면
-                # 두 데이터의 자리를 바꾼다 (교환 알고리즘)
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    # i는 정렬을 확정지을 회차 (0부터 n-1까지)
+    for i in range(n):
+        # j는 앞에서부터 인접한 두 값을 짝지어 비교할 인덱스
+        for j in range(0, n-i-1):
+            if arr[j] &gt; arr[j+1]:
+              # 앞의 값이 더 크면 위치를 바꾼다 (swap)
+              temp = arr[j]
+              arr[j] = arr[j+1]
+              arr[j+1] = temp
+              # 조건문 안에서 교환될 때만 print 실행!
+              print(f'{i} 번째 {arr}')
     return arr
 
-data = [4, 8, 7, 1, 5]
-print(bubble_sort(data)) # [1, 4, 5, 7, 8]
+print(f'처음: {lst}')
+bubble_sort(lst)
 </code></pre>
+
+<div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre" style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
+처음: [2, 5, 4, 6, 1, 3]
+0 번째 [2, 4, 5, 6, 1, 3]
+0 번째 [2, 4, 5, 1, 6, 3]
+0 번째 [2, 4, 5, 1, 3, 6]
+1 번째 [2, 4, 1, 5, 3, 6]
+1 번째 [2, 4, 1, 3, 5, 6]
+2 번째 [2, 1, 4, 3, 5, 6]
+2 번째 [2, 1, 3, 4, 5, 6]
+3 번째 [1, 2, 3, 4, 5, 6]</div>
 
             <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 최솟값을 쏙쏙 골라 앞으로 보내는 '선택 정렬'</h2>
             <p class="mb-4">
                 <span class="font-bold bg-amber-200 px-1 rounded">선택 정렬(Selection Sort)</span>은 전체 데이터(정렬 안 된 부분) 중에서 <span class="text-indigo-600 font-bold underline">가장 작은(또는 큰) 값 하나를 콕 집어 찾은 뒤</span>, 그 값을 맨 앞자리와 순서를 바꾸는 방식입니다.
             </p>
 
-            <div class="bg-gray-50 p-6 rounded border border-gray-200 mb-6 shadow-sm">
-                <h4 class="font-bold text-indigo-700 mb-4">[ 데이터: 4, 8, 7, 1, 5 ] О름차순으로 정렬하기 (1회차)</h4>
+            <div class="bg-gray-50 p-6 text-[0.95rem] rounded border border-gray-200 mb-6 shadow-sm">
+                <h4 class="font-bold text-indigo-700 mb-4">[ 2, 5, 4, 6, 1, 3 ] 오름차순 선택 정렬 상세 과정</h4>
                 <div class="space-y-3 ms-2">
-                    <p><strong>① 최솟값 탐색:</strong> 4, 8, 7, 1, 5 전체를 스캔해 가장 작은 숫자를 찾습니다. ➔ <span class="bg-yellow-200 rounded px-1 font-bold">찾았다! 최솟값 = 1</span></p>
-                    <p><strong>② 맨 앞 데이터와 위치 교환:</strong> 찾아낸 최솟값 '1'과, 현재 범위의 가장 맨 앞자리 데이터인 '4'의 자리를 바꿉니다. ➔ <span class="text-red-500 font-bold">순서 교환! 🔄</span></p>
-                    <p><strong>③ 1회차 결과:</strong> [<span class="bg-indigo-100 font-bold px-1 rounded">1</span>, 8, 7, 4, 5]</p>
-                </div>
-                <div class="mt-4 p-3 bg-indigo-50 text-indigo-800 rounded border-l-4 border-indigo-500 font-medium tracking-tight">
-                    🌟 1회차가 끝났을 때 <strong>가장 작은 데이터인 '1'이 맨 앞 위치에 확정</strong>된 것을 볼 수 있습니다. (전체 비교 4회, 교환 딱 1회)
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mb-1">▶ i = 0 번째 반복</p>
+                    <p>현재 탐색 범위 전체에서 가장 작은 값을 찾아봅니다. (j 반복) <br>➔ 가장 작은 값은 <strong>1 (인덱스 4)</strong>로 선택됨!</p>
+                    <p>원래 i=0 위치의 값 <span class="line-through decoration-red-500 font-bold">2</span>와 최솟값 <span class="bg-yellow-200 font-bold px-1 rounded">1</span>의 자리를 <span class="text-red-500 font-bold">교환</span>합니다.</p>
+                    <p>➔ 출력: <code>0번째 [1, 5, 4, 6, 2, 3]</code> <span class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 맨 앞에 최솟값 1 확정!</span></p>
+
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 1 번째 반복</p>
+                    <p>나머지 배열(인덱스 1~5)인 [5, 4, 6, 2, 3] 안에서만 가장 작은 값을 탐색합니다. <br>➔ 두 번째 최솟값은 <strong>2 (인덱스 4)</strong>로 선택됨!</p>
+                    <p>현재 i=1 위치의 값 <span class="line-through decoration-red-500 font-bold">5</span>와 방금 찾은 <span class="bg-yellow-200 font-bold px-1 rounded">2</span>의 자리를 <span class="text-red-500 font-bold">교환</span>합니다.</p>
+                    <p>➔ 출력: <code>1번째 [1, 2, 4, 6, 5, 3]</code> <span class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 앞에서 두 번째에 2 확정!</span></p>
+
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 2 ~ 5 번째 반복 요약</p>
+                    <p><strong>i = 2</strong> : 최소값 '3'(인덱스 5)을 찾아 i=2 위치('4')와 교환 ➔ <code>2번째 [1, 2, 3, 6, 5, 4]</code></p>
+                    <p><strong>i = 3</strong> : 최소값 '4'(인덱스 5)를 찾아 i=3 위치('6')와 교환 ➔ <code>3번째 [1, 2, 3, 4, 5, 6]</code></p>
+                    <p><strong>i = 4, 5</strong> : 이미 위치가 다 맞춰져 있어 자기 자신과 교환이 일어남 ➔ 배열 변화 없이 <code>[1, 2, 3, 4, 5, 6]</code> 출력 (4번째, 5번째)</p>
                 </div>
             </div>
 
-<pre><code class="language-python"># 선택 정렬 파이썬 코드 예제
+<pre><code class="language-python"># 2. 선택정렬
+lst = [2, 5, 4, 6, 1, 3]
+temp = 0
+
+print(f'처음: {lst}')
+temp = 0
 def selection_sort(arr):
     n = len(arr)
+    # i는 현재 정렬 위치 (가장 앞자리부터 오름차순으로 채워나감)
     for i in range(n):
-        min_index = i # 최솟값이 있다고 가정할 위치 저장
-        # 정렬되지 않은 나머지 데이터에서 진짜 최솟값의 위치 탐색
-        for j in range(i + 1, n):
-            if arr[j] < arr[min_index]:
-                min_index = j
-        # 찾아낸 최솟값을 맨 앞(i 위치)과 교환한다
-        arr[i], arr[min_index] = arr[min_index], arr[i]
+        min_idx = i # 일단 i번째 숫자를 최솟값의 위치라 가정
+        
+        # i 뒤에 남은 배열(i+1 ~ 끝)을 처음부터 끝까지 스캔해 진짜 최솟값을 찾음
+        for j in range(i+1, n):
+            if arr[j] &lt; arr[min_idx]:
+                min_idx = j # 최솟값이 발견되면 갱신
+
+        # 탐색이 끝난 후 한 회차(i)마다 딱 1번만! 
+        # 처음 지정했던 i 자리의 숫자와 찾아낸 최솟값의 자리를 교환 (swap)
+        temp = arr[i]
+        arr[i] = arr[min_idx]
+        arr[min_idx] = temp
+        
+        # 버블정렬과 달리 한 회차가 끝날 때마다 결과가 출력됨!
+        print(f'{i}번째 {arr}')
     return arr
 
-data = [4, 8, 7, 1, 5]
-print(selection_sort(data)) # [1, 4, 5, 7, 8]
+selection_sort(lst)
 </code></pre>
+
+<div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre" style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
+처음: [2, 5, 4, 6, 1, 3]
+0번째 [1, 5, 4, 6, 2, 3]
+1번째 [1, 2, 4, 6, 5, 3]
+2번째 [1, 2, 3, 6, 5, 4]
+3번째 [1, 2, 3, 4, 5, 6]
+4번째 [1, 2, 3, 4, 5, 6]
+5번째 [1, 2, 3, 4, 5, 6]</div>
 
             <div class="alert-box mt-10">
                 <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
@@ -296,16 +358,16 @@ print(selection_sort(data)) # [1, 4, 5, 7, 8]
 
             <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 그럼 둘 중 뭐가 더 좋을까? (정렬 알고리즘 효율성 분석)</h2>
             <p class="mb-4">
-               데이터 5개를 정렬할 때 비교 횟수와 교환 횟수가 어떻게 달랐는지 살펴봅시다.
+               데이터 6개( [2, 5, 4, 6, 1, 3] )를 정렬할 때 비교 횟수와 교환 횟수가 각각 어떻게 달랐는지 아래 표를 통해 정리해 봅시다.
             </p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>알고리즘</th>
-                        <th>동작 원리</th>
-                        <th>총 비교 횟수</th>
-                        <th>총 교환 횟수</th>
+                        <th class="whitespace-nowrap px-2 relative z-10">알고리즘</th>
+                        <th class="min-w-[160px] px-2">동작 원리</th>
+                        <th class="whitespace-nowrap px-4">총 비교 횟수</th>
+                        <th class="whitespace-nowrap px-4">총 교환 횟수</th>
                         <th class="w-1/3">특징</th>
                     </tr>
                 </thead>
@@ -313,19 +375,49 @@ print(selection_sort(data)) # [1, 4, 5, 7, 8]
                     <tr>
                         <td class="font-bold whitespace-nowrap">버블 정렬 🫧</td>
                         <td>인접한 바로 옆 데이터와 비교하여 교환</td>
-                        <td>10회</td>
-                        <td class="font-bold text-red-600 bg-red-50">6회</td>
-                        <td class="text-left text-sm leading-snug">수시로 자리를 바꿔야 해서 교환 횟수가 많아 처리 속도가 매우 느리다.</td>
+                        <td>15회</td>
+                        <td class="font-bold text-red-600 bg-red-50">8회</td>
+                        <td class="text-left text-[0.95rem] leading-snug">수시로 자리를 바꿔야 해서 교환 횟수가 많아 처리 속도가 매우 느리다.</td>
                     </tr>
                     <tr>
                         <td class="font-bold whitespace-nowrap">선택 정렬 🎯</td>
-                        <td>정렬되지 않은 값 중에서 최솟값을 찾아서 맨 앞과 교환</td>
-                        <td>10회</td>
-                        <td class="font-bold text-blue-600 bg-blue-50">4회</td>
-                        <td class="text-left text-sm leading-snug">비교하는 횟수는 버블 정렬과 같지만, 교환은 회차당 딱 1번만 일어난다.</td>
+                        <td>정렬되지 않은 값 중에서 최솟값을 찾아서 맨 앞자리와 교환</td>
+                        <td>15회</td>
+                        <td class="font-bold text-blue-600 bg-blue-50">6회</td>
+                        <td class="text-left text-[0.95rem] leading-snug">조건 비교 횟수는 버블 정렬과 완전히 같지만, 데이터 교환은 한 회차당 딱 1번만 일어난다.</td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- 추가된 점근적 표기법 및 시간 복잡도 영역 -->
+            <div class="mt-14 mb-10">
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b border-dashed border-gray-300">4. 알고리즘의 효율성을 나타내는 '시간 복잡도' (Big-O)</h2>
+                <div class="concept-box mb-6">
+                    <h3 class="font-bold text-xl text-amber-900 mb-2">⏱ 알고리즘의 실제 실행 시간 = "비교" 횟수 + "교환" 횟수</h3>
+                    <p class="text-amber-800">
+                        컴퓨터가 정렬을 수행할 때 가장 시간이 집중적으로 걸리는 매우 핵심적인 작업 두 가지는 두 데이터의 크기를 살펴보는 <strong class="bg-amber-200 px-1 rounded">비교(Compare)</strong> 작업과, 메모리 안에서 두 데이터의 위치를 직접 뒤바꾸는 <strong class="bg-amber-200 px-1 rounded">교환(Swap)</strong> 작업입니다.<br><br>
+                        따라서 어떤 정렬 알고리즘이 얼마나 효율적인지 판단하는 평가지표인 <strong>시간 복잡도(Time Complexity)</strong>는 근본적으로 <u>총 발생한 비교 횟수와 총 발생한 교환 횟수를 더한 것</u>에 비례하여 결정됩니다.
+                    </p>
+                </div>
+
+                <p class="mb-4">
+                    데이터의 총 개수를 <strong>n</strong>이라고 할 때, 처리해야 할 데이터가 점차 많아질수록 알고리즘의 연산 횟수가 어떤 비율로 증가하는지를 추세적(Trend)으로 묶어서 표현하는 방식을 <span class="font-bold text-blue-700 bg-blue-50 px-1 rounded">점근적 표기법(대문자 O 표기법, Big-O Notation)</span>이라고 부릅니다.
+                </p>
+
+                <div class="bg-gray-50 border-l-4 border-gray-400 p-5 rounded mt-4">
+                    <h4 class="font-bold text-gray-800 mb-3">🤔 버블 정렬과 선택 정렬은 둘 다 시간 복잡도가 O(n²) 입니다. 왜 그럴까요?</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 leading-relaxed">
+                        <li>데이터가 <strong>6개</strong>일 때 총 비교를 몇 번 했는지 떠올려 봅시다. <code>5 + 4 + 3 + 2 + 1 = 총 15번</code> 비교하게 됩니다.</li>
+                        <li>데이터 개수를 <strong>n개</strong>라고 두고 수학 공식으로 일반화하면 <code>(n-1) + (n-2) + ... + 1 = n(n-1)/2</code> 번 비교하게 됩니다.</li>
+                        <li>이 식에서 가장 영향력이 강한 최고차항인 <span class="font-bold bg-gray-200 px-1 rounded text-lg">n²</span>만 기준점으로서 남겨두고 미미한 나머지(-n/2 상수항 구간 등)를 무시하여 간략히 표기한 것이 바로 <strong>O(n²)</strong>입니다. 거대한 단위의 데이터 그룹을 다룰 때 <u>데이터 수가 10배 늘어나면 연산 시간이 100배로 제곱해서 커진다는 무시무시한 의미</u>입니다!</li>
+                    </ul>
+                    <p class="mt-4 text-[0.95rem] text-indigo-700 bg-indigo-50 p-3 rounded font-medium border border-indigo-100">
+                        <strong>✨ 핵심 결론:</strong> 이처럼 점근적 표기법 상으로는 두 알고리즘 모두 O(n²)이라는 동일하게 부진한 평가를 받지만, 
+                        위 효율성 분석 표에서 보셨듯이 <strong>수시로 값이 오가는 무겁고 느린 교환(Swap) 작업의 발생 횟수가 선택 정렬 쪽이 훨씬 적기 때문에</strong>
+                        현실적인 체감 실행 속도에서는 <u>선택 정렬이 버블 정렬보다 약간 더 안정적이고 빠르다는 사실!</u> 기억해 두세요.
+                    </p>
+                </div>
+            </div>
 
             <!-- 이해 확인 퀴즈 영역 -->
             <div class="mt-14 mb-8">

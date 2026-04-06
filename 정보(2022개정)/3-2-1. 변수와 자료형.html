@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 3-2-1. 변수와 자료형</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f5f3ff; margin: 0; padding: 3rem 1rem; color: #334155; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#ddd6fe 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #ffffff; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.08), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #f5f3ff; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,1); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #ddd6fe; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #94a3b8; font-size: 0.95rem; }
+        .concept-box { background-color: #f5f3ff; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; border-left: 5px solid #8b5cf6; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "📦"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; overflow: hidden; }
+        th { background-color: #ede9fe; font-weight: 700; text-align: center; padding: 1rem; border: 1px solid #ddd6fe; color: #4c1d95; }
+        td { padding: 1rem; border: 1px solid #ddd6fe; color: #334155; font-size: 0.95rem; text-align: center; }
+        .highlighter { background: linear-gradient(to top, #ddd6fe 40%, transparent 40%); font-weight: bold; display: inline; }
+        pre { background-color: #1e293b; color: #f8fafc; padding: 1rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/googlecode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg> 
+            메인으로
+        </a>
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-violet-800 uppercase bg-violet-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 3. 프로그래밍
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 font-serif tracking-tight">
+                3-2-1. 변수와 자료형
+            </h1>
+            <p class="text-lg text-slate-500 font-medium">데이터를 담는 상자와 상자의 종류를 알아보자!</p>
+        </header>
+
+        <main class="text-slate-700 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-violet-900 mb-2">🤔 게임 캐릭터의 HP는 어디에 저장될까?</h3>
+                <p class="text-violet-800">
+                    프로그래밍에서 언제든지 변할 수 있는 값을 저장해 두는 기억 공간(상자)을 <span class="bg-violet-200 px-1 font-bold rounded">변수(Variable)</span>라고 부릅니다. 사과 가격이 2,300원이라면 코딩할 때는 <code>apple = 2300</code> 이라고 멋지게 저장합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">1. 변수명 짓기 꿀팁 (규칙)</h2>
+            <ul class="list-disc list-inside space-y-2 mb-8 ml-2 text-slate-600">
+                <li>대·소문자를 확실히 구분합니다. (<code class="bg-slate-100 px-1">Apple</code>과 <code class="bg-slate-100 px-1">apple</code>은 다름)</li>
+                <li>언더바(_) 이외의 특수문자는 사용할 수 없습니다.</li>
+                <li>공백이 들어갈 수 없어요! 숫자부터 시작할 수도 없습니다. (예: 1apple 안됨)</li>
+                <li>if, for, print 등 파이썬이 이미 쓰는 예약어는 내 변수명으로 뺏어 쓸 수 없습니다.</li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">2. 컴퓨터만의 산술, 비교 연산자</h2>
+            <p class="mb-4">수학 시간의 몫과 나머지를 컴퓨터는 어떤 기호로 계산할까요?</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <strong class="text-violet-700 block mb-2 border-b border-violet-200 pb-1">산술 연산자</strong>
+                    <ul class="space-y-1 text-[0.95rem]">
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center">+ - * /</code> 기본 사칙연산 (곱하기는 *, 나누기는 /)</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center text-rose-600">**</code> 거듭제곱 (예: 2**3 = 8)</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center text-blue-600">//</code> 몫 구하기</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center text-green-600">%</code> 나머지 구하기</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-violet-700 block mb-2 border-b border-violet-200 pb-1">비교 & 논리 연산자 (결과는 True/False)</strong>
+                    <ul class="space-y-1 text-[0.95rem]">
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center">==</code> 양쪽 값이 같다! (수학의 = 은 프로그래밍에서 대입)</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center">!=</code> 양쪽 값이 다르다!</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center text-orange-600">and</code> 양쪽 모두가 참이어야 참!</li>
+                        <li><code class="font-bold bg-slate-100 p-1 w-12 inline-block text-center text-pink-600">or</code> 하나라도 참이면 참!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">3. 상자(변수)의 종류: 자료형 (Data Type)</h2>
+            <p class="mb-4">컴퓨터는 숫자 2300과 문자 "A 마트"를 구분해서 다룹니다. 이를 <strong>자료형</strong>이라 합니다.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>종류</th>
+                        <th>파이썬 이름</th>
+                        <th>설명 및 예시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold bg-slate-50">정수형</td>
+                        <td><code class="text-violet-700 bg-violet-50 px-1 rounded font-bold">int</code></td>
+                        <td>소수점이 없는 숫자. (예: <code class="bg-slate-100 px-1">2300</code>, <code class="bg-slate-100 px-1">-5</code>)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">실수형</td>
+                        <td><code class="text-violet-700 bg-violet-50 px-1 rounded font-bold">float</code></td>
+                        <td>소수점이 있는 숫자. (예: <code class="bg-slate-100 px-1">3.14</code>, <code class="bg-slate-100 px-1">79.0</code>)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">문자형</td>
+                        <td><code class="text-violet-700 bg-violet-50 px-1 rounded font-bold">str</code></td>
+                        <td>따옴표로 감싼 문자열. (예: <code class="bg-slate-100 px-1">'A 마트'</code>, <code class="bg-slate-100 px-1">'123'</code>)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold bg-slate-50">불형</td>
+                        <td><code class="text-violet-700 bg-violet-50 px-1 rounded font-bold">bool</code></td>
+                        <td>참, 거짓 논리형. (예: <code class="bg-slate-100 px-1">True</code>, <code class="bg-slate-100 px-1">False</code>)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="bg-red-50 p-5 rounded-lg border border-red-200 mb-8 border-l-4 border-l-red-500">
+                <h4 class="font-bold text-red-700 mb-1">⚠️ 주의: 자료형 연산 오류 (TypeError)와 형 변환</h4>
+                <p class="text-sm text-slate-700 mb-3">문자형('무지개')과 정수형(5)을 더하기(+) 하려고 하면 성격이 안 맞아서 에러가 발생합니다! <strong>하지만 문자형 덧셈('정보'+'파이썬')과 곱셈('정보'*5)은 예외적으로 가능합니다.</strong></p>
+<pre><code class="language-python"># 문자 '2'를 정수 2로 형 변환(Casting) 하는 법!
+a_count = '2'
+a_count = int(a_count) # 이제 a_count는 숫자 2가 됩니다.</code></pre>
+            </div>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2 text-slate-800">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-slate-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-slate-200 px-3 py-1 rounded-bl font-bold text-xs text-slate-600">Q 1</div>
+                        <p class="font-medium text-lg mt-4 text-slate-800 mb-2">
+                            다음 코드를 실행했을 때 나오는 결과를 맞혀보세요.
+                        </p>
+<pre><code class="language-python">print('인공' + '지능')
+print('정보' * 3)</code></pre>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-violet-600 font-medium hover:text-violet-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-slate-700 p-3 bg-violet-50 border border-violet-200 rounded text-[0.95rem]">
+                                <strong>정답:</strong><br>
+                                인공지능<br>
+                                정보정보정보
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

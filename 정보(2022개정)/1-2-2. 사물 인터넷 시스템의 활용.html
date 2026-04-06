@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 1-2-2. 사물 인터넷 시스템의 활용</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #fdf4ff; margin: 0; padding: 3rem 1rem; color: #334155; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#fbcfe8 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #ffffff; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.08), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #fdf4ff; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,1); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #fbcfe8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #94a3b8; font-size: 0.95rem; }
+        .concept-box { background-color: #fdf2f8; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; border-left: 5px solid #db2777; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "🚀"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .highlighter { background: linear-gradient(to top, #fbcfe8 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg> 
+            메인으로
+        </a>
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-pink-800 uppercase bg-pink-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 1. 컴퓨팅 시스템
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 font-serif tracking-tight">
+                1-2-2. 사물 인터넷 시스템의 활용
+            </h1>
+            <p class="text-lg text-slate-500 font-medium">IoT가 우리의 삶과 생산, 도시를 어떻게 바꿀까?</p>
+        </header>
+
+        <main class="text-slate-700 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-pink-900 mb-2">✨ 사물이 나를 돕기 시작했다!</h3>
+                <p class="text-pink-800">
+                    센서가 작고 저렴해지면서 거리에 가로등, 온도계, 쓰레기통, 교실 에어컨까지 다양한 사물들이 지능을 가지게 되었습니다. 이제 <span class="bg-pink-200 px-1 font-bold rounded">초연결 사회</span>로 변화하며 똑똑한 사물들이 사람을 지켜주고 생산성을 극대화시켜주는 시대입니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">1. 우리 생활을 지켜주는 든든한 사물 인터넷</h2>
+            <p class="mb-5 text-slate-600">IoT는 집안의 불을 켜는 것을 넘어서 사회 안전망을 구축하고 있습니다.</p>
+
+            <ul class="space-y-4 mb-8">
+                <li class="bg-slate-50 p-4 border border-slate-200 rounded-lg">
+                    <strong class="text-pink-700 text-xl border-b-2 border-pink-200 pb-1 mb-2 inline-block">스마트 지능형 치안</strong><br>
+                    <span class="text-base text-slate-600">누군가가 골목길에서 내는 '비명 소리'를 센서 로봇이나 가로등이 스스로 감지합니다. 관제실이나 112 경찰 센터에 즉시 위치와 함께 상황을 넘겨 범죄를 차단하는 놀라운 예방 시스템입니다!</span>
+                </li>
+                <li class="bg-slate-50 p-4 border border-slate-200 rounded-lg">
+                    <strong class="text-pink-700 text-xl border-b-2 border-pink-200 pb-1 mb-2 inline-block">미세 먼지 및 환경 모니터링</strong><br>
+                    <span class="text-base text-slate-600">하천의 악취, 학교 앞 도로의 미세 먼지 수치를 실시간으로 수집합니다. 수치가 높으면 교실 창문을 자동으로 닫거나 공기청정기를 가동시키는 제어를 수행합니다.</span>
+                </li>
+                <li class="bg-slate-50 p-4 border border-slate-200 rounded-lg">
+                    <strong class="text-pink-700 text-xl border-b-2 border-pink-200 pb-1 mb-2 inline-block">재난 현장 탐지 드론</strong><br>
+                    <span class="text-base text-slate-600">산불, 지진 등 사람이 들어갈 수 없는 붕괴된 위험 구역에 드론과 유독가스 센서를 띄워 생존자를 스캔하고 상황을 실시간으로 중계합니다.</span>
+                </li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">2. 공장과 농장을 지휘하는 지능형 시스템</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                    <div class="bg-indigo-50 p-3 border-b text-center font-bold text-indigo-800">스마트 공장 (Smart Factory)</div>
+                    <div class="p-4 text-[0.95rem]">
+                        기계에서 평소와 다른 미세한 <b>떨림이나 소음</b>이 발생하면 마모 센서가 이를 즉시 감지합니다. 기계가 완전히 망가지기 전에 "이 부품을 교체하세요" 라고 스스로 정비 메시지를 보내 불량률을 없앱니다.
+                    </div>
+                </div>
+                <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                    <div class="bg-green-50 p-3 border-b text-center font-bold text-green-800">스마트 팜 (Smart Farm)</div>
+                    <div class="p-4 text-[0.95rem]">
+                        농장의 흙의 수분, 하우스 안의 이산화탄소 양을 실시간으로 재서, 부족하면 자동으로 천장을 열고 배수관을 틀어 영양분을 공급합니다. 농부는 먼 곳에 앉아 스마트폰만 확인합니다.
+                    </div>
+                </div>
+                <div class="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition md:col-span-2">
+                    <div class="bg-amber-50 p-3 border-b text-center font-bold text-amber-800">스마트 물류 유통 관리 (Cold Chain)</div>
+                    <div class="p-4 text-[0.95rem]">
+                        백신이나 신선한 회, 고기를 운반할 때 배송 트럭 짐칸의 <b>온도를 1초 단위로 감시</b>하는 냉장 센서 패키지가 부착됩니다. 온도가 변하면 기사에게 경고를 울려, 변질된 상태로 도착하는 것을 막습니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2 text-slate-800">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-slate-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-slate-200 px-3 py-1 rounded-bl font-bold text-xs text-slate-600">Q 1</div>
+                        <p class="font-medium text-lg mt-4 text-slate-800 mb-3">
+                            집 안이나 공장이 아닌 <b>자연재해나 산불</b> 같은 외부 위험 현장에서, 사람이 진입하지 않고 현장 정보를 수집하는 데 활약하는 가장 대표적인 무인 비행 장치(사물 인터넷 기기)는 무엇인가요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-pink-600 font-medium hover:text-pink-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-slate-700 p-3 bg-pink-50 border border-pink-200 rounded text-[0.95rem]">
+                                <strong>정답: 드론 (Drone)</strong><br>
+                                다양한 센서를 장착한 드론은 접근 불가 지역의 시야 확보와 데이터 수집에 필수적인 IoT입니다.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>

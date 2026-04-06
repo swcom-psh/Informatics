@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 4-2-1. 지능 에이전트의 이해</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; margin: 0; padding: 3rem 1rem; color: #334155; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px; }
+        .notebook-container { background-color: #ffffff; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.08), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
+        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
+        .hole { width: 18px; height: 18px; background-color: #f8fafc; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,1); position: relative; }
+        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
+        .note-header { border-bottom: 2px dashed #cbd5e1; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #94a3b8; font-size: 0.95rem; }
+        .concept-box { background-color: #f1f5f9; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; border-left: 5px solid #3b82f6; position: relative; transform: rotate(-0.5deg); }
+        .concept-box::before { content: "🕵️‍♂️"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
+        .highlighter { background: linear-gradient(to top, #bfdbfe 40%, transparent 40%); font-weight: bold; display: inline; }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg> 
+            메인으로
+        </a>
+        <!-- 바인더 구멍 -->
+        <div class="binder-holes">
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-blue-800 uppercase bg-blue-100 rounded-sm transform -rotate-1">
+                2022 개정 정보 | 4. 인공지능
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 font-serif tracking-tight">
+                4-2-1. 지능 에이전트의 이해
+            </h1>
+            <p class="text-lg text-slate-500 font-medium">나 대신 알아서 척척 결정하는 디지털 비서!</p>
+        </header>
+
+        <main class="text-slate-700 text-lg">
+            
+            <div class="concept-box">
+                <h3 class="font-bold text-xl text-blue-900 mb-2">💡 계약 대리하는 연예인 에이전트처럼!</h3>
+                <p class="text-blue-800">
+                    스포츠 선수나 배우에게 귀찮은 계약, 스케쥴 관리를 해주는 '에이전트'가 있는 것처럼, 컴퓨터 분야에도 사용자의 번거로운 작업을 대신 해주는 <strong>지능형(AI) 소프트웨어 로봇</strong>이 있습니다. 사용자가 개입하지 않아도 스스로 외부 환경을 감지하고, 이전에 학습한 지식을 추론해 결정을 내리는 프로그램을 <span class="bg-blue-200 px-1 font-bold rounded">지능 에이전트(Intelligent Agent)</span>라고 합니다.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">1. 지능 에이전트의 4단계 생각법</h2>
+            <p class="mb-5 text-slate-600">자율주행 자동차를 빗대어 에이전트가 어떤 순서로 동작하는지 알아봅시다.</p>
+            
+            <div class="flex flex-col space-y-3 mb-8">
+                <div class="flex items-center p-3 bg-slate-50 rounded border border-slate-200">
+                    <div class="w-16 h-16 flex-shrink-0 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold border-2 border-blue-200 mr-4">1</div>
+                    <div>
+                        <strong class="text-slate-800 block text-lg">인식 (Perception)</strong>
+                        <p class="text-slate-600 text-[0.95rem]">카메라(센서)를 통해 "내 앞에 시속 40km로 달리는 버스가 있다"는 주변의 데이터를 알아냅니다.</p>
+                    </div>
+                </div>
+                <div class="flex justify-center -my-3"><div class="h-6 w-0.5 bg-blue-300"></div></div>
+                
+                <div class="flex items-center p-3 bg-slate-50 rounded border border-slate-200">
+                    <div class="w-16 h-16 flex-shrink-0 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold border-2 border-blue-200 mr-4">2</div>
+                    <div>
+                        <strong class="text-slate-800 block text-lg">학습 (Learning)</strong>
+                        <p class="text-slate-600 text-[0.95rem]">수만 건의 과거 사고, 주행 데이터를 토대로 안전거리에 대한 "일정한 패턴"을 학습합니다.</p>
+                    </div>
+                </div>
+                <div class="flex justify-center -my-3"><div class="h-6 w-0.5 bg-blue-300"></div></div>
+                
+                <div class="flex items-center p-3 bg-slate-50 rounded border border-slate-200">
+                    <div class="w-16 h-16 flex-shrink-0 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold border-2 border-blue-200 mr-4">3</div>
+                    <div>
+                        <strong class="text-slate-800 block text-lg">추론 (Reasoning)</strong>
+                        <p class="text-slate-600 text-[0.95rem]">저 버스가 갑자기 브레이크를 밟으면 들이받을 확률이 높다고 계산하여 "속도를 줄여야겠다"는 판단을 내립니다.</p>
+                    </div>
+                </div>
+                <div class="flex justify-center -my-3"><div class="h-6 w-0.5 bg-blue-300"></div></div>
+
+                <div class="flex items-center p-3 bg-slate-50 rounded border border-slate-200">
+                    <div class="w-16 h-16 flex-shrink-0 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold border-2 border-blue-200 mr-4">4</div>
+                    <div>
+                        <strong class="text-slate-800 block text-lg">행동 (Action)</strong>
+                        <p class="text-slate-600 text-[0.95rem]">바퀴 제어 칩(액추에이터)에 즉시 "브레이크를 잡아!" 라고 명령을 보내 실제로 행동합니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-slate-300 text-slate-800">2. 똑똑함의 단계 (에이전트 종류)</h2>
+            <p class="mb-4">모든 지능 에이전트가 알파고처럼 극도로 똑똑하진 않습니다. 환경의 복잡성에 대응하는 능력에 따라 크게 세 종류로 나눕니다.</p>
+
+            <ul class="space-y-4 mb-8 text-[0.95rem]">
+                <li class="bg-white p-4 border border-slate-300 rounded shadow-sm border-l-4 border-l-slate-400">
+                    <strong class="text-slate-800 text-lg">① 단순 반사적 에이전트</strong><br>
+                    <span class="text-slate-600">추론 없이, 입력된 패턴이면 무조건 정해진 행동만 합니다. (예: 사람이 보이면 바로 초록불이 켜지는 버튼식 신호등)</span>
+                </li>
+                <li class="bg-white p-4 border border-slate-300 rounded shadow-sm border-l-4 border-l-indigo-400">
+                    <strong class="text-indigo-900 text-lg">② 목표 기반 에이전트</strong><br>
+                    <span class="text-indigo-800">과거 경험(학습)과 현재의 복잡한 조건 속에서, "달성해야 할 목표(최적화)"를 위해 행동을 결정합니다. (예: 보행자 수와 차량 트래픽을 동시에 고려해 가장 효율적으로 신호등 시간 분배)</span>
+                </li>
+                <li class="bg-white p-4 border border-slate-300 rounded shadow-sm border-l-4 border-l-rose-400">
+                    <strong class="text-rose-900 text-lg">③ 다중 지능 에이전트 (Multi-Agent)</strong><br>
+                    <span class="text-rose-800">나 혼자서 해결하지 않고 여러 개의 에이전트가 서로 협력하고 정보를 교환합니다. (예: 구급차가 지나갈 경로에 있는 모든 교차로 신호등 에이전트들이 실시간으로 대화하여 연동해 초록 신호로 바꿔줌)</span>
+                </li>
+            </ul>
+
+            <!-- 스스로 점검하기 -->
+            <div class="mt-14 mb-8">
+                <h3 class="text-2xl font-bold mb-5 flex items-center border-b pb-2 text-slate-800">
+                    <span class="mr-2">📝</span> 스스로 점검하기
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-white border-2 border-dashed border-slate-300 rounded shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-slate-200 px-3 py-1 rounded-bl font-bold text-xs text-slate-600">Q 1</div>
+                        <p class="font-medium text-lg mt-4 text-slate-800 mb-3">
+                            넷플릭스나 유튜브에서 "사용자가 자주 듣고 보는 영상의 패턴"을 읽고 비슷한 종류의 영화를 <span class="font-bold">추천(행동)</span> 해주는 시스템도 지능 에이전트라고 부를 수 있을까요?
+                        </p>
+                        <details class="cursor-pointer outline-none">
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <p class="mt-3 text-slate-700 p-3 bg-blue-50 border border-blue-200 rounded text-[0.95rem]">
+                                <strong>정답: 네, 맞습니다.</strong><br>
+                                영상 추천 알고리즘은 사용자의 과거 시청 데이터를 <strong>학습</strong>하고, 이를 바탕으로 사용자가 좋아할 영상을 <strong>추론</strong>하여 스크린에 띄워주는 훌륭한 <strong>지능 에이전트</strong>입니다. (소프트웨어 형태의 지능 에이전트)
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
