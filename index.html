@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>고등학교 정보 (2022 개정) - 길벗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Hero 배경 그라데이션 */
+        .hero-gradient {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #8b5cf6 100%);
+        }
+
+        /* 스크롤 시 특정 위치부터 상단 고정되는 네비게이션 */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 섹션 카드 */
+        .section-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            border: 1px solid #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* =========================================
+           공통 링크 카드 스타일 (CSS 변수 활용)
+           ========================================= */
+        .link-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+        }
+
+        .link-card:hover {
+            transform: translateY(-0.25rem);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--theme-border, #7c3aed);
+        }
+
+        .link-card div {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            margin-right: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .link-card:hover div {
+            background-color: var(--theme-color, #a855f7);
+            transform: scale(1.25);
+        }
+
+        .link-card span {
+            font-weight: 500;
+            color: #334155;
+            transition: color 0.2s;
+        }
+
+        .link-card:hover span {
+            color: var(--theme-text, #7e22ce);
+        }
+
+        /* --- 테마별 색상 설정 --- */
+        .theme-blue {
+            --theme-border: #93c5fd;
+            --theme-color: #3b82f6;
+            --theme-text: #1d4ed8;
+        }
+
+        .theme-orange {
+            --theme-border: #fdba74;
+            --theme-color: #f97316;
+            --theme-text: #c2410c;
+        }
+
+        .theme-rose {
+            --theme-border: #fda4af;
+            --theme-color: #f43f5e;
+            --theme-text: #be123c;
+        }
+
+        .theme-emerald {
+            --theme-border: #6ee7b7;
+            --theme-color: #10b981;
+            --theme-text: #047857;
+        }
+
+        /* =========================================
+           실습 버튼 전용 스타일
+           ========================================= */
+        .practice-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.1rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .practice-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+            z-index: -1;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .practice-link:hover {
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-0.25rem) scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .practice-link span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .practice-link i {
+            width: 1.2em;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .grad-purple {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+        }
+    </style>
+</head>
+
+<body class="text-slate-900">
+
+    <header class="hero-gradient text-white py-16 md:py-20 px-6" id="intro">
+        <div class="max-w-6xl mx-auto text-center">
+            <span class="inline-block px-4 py-1.5 bg-white/20 rounded-full font-bold mb-5 backdrop-blur-md shadow-sm">
+                Interactive CS Learning Platform
+            </span>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight tracking-tight">
+                강원대학교사범대학부설고등학교 <br class="hidden md:block">정보 웹 강의노트
+            </h1>
+            <p class="text-base md:text-lg opacity-90 font-medium max-w-2xl mx-auto leading-relaxed">
+                (주)도서출판 길벗 2022 개정 교육과정<br>
+                네트워크, 데이터, 알고리즘, 인공지능까지 핵심 개념을 한눈에!
+            </p>
+        </div>
+    </header>
+
+    <nav class="sticky-nav px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-center items-center">
+            <div class="hidden md:flex space-x-8 text-lg font-bold text-slate-500">
+                <a class="hover:text-blue-600 transition" href="#ch1">1. 네트워크/IoT</a>
+                <a class="hover:text-orange-600 transition" href="#ch2">2. 자료/정보</a>
+                <a class="hover:text-rose-600 transition" href="#ch3">3. 알고리즘/프로그래밍</a>
+                <a class="hover:text-emerald-600 transition" href="#ch4">4. 인공지능</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-16 md:py-24 space-y-20">
+
+        <!-- 1단원 -->
+        <section class="scroll-mt-24" id="ch1">
+            <div class="section-card space-y-10 border-t-4 border-t-blue-500">
+                <div class="text-center space-y-4">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl mb-2">
+                        <i class="fa-solid fa-network-wired text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">1. 컴퓨터 시스템과 네트워크 <span
+                            class="text-lg text-slate-500 font-bold"></span></h2>
+                    <div class="w-16 h-1.5 bg-blue-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-wifi text-blue-500 mr-3"></i> 네트워크의 이해
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-1-1. 네트워크의 이해.html">
+                            <div></div>
+                            <span>1-1. 네트워크의 이해</span>
+                        </a>
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-1-2. 네트워크의 환경.html">
+                            <div></div>
+                            <span>1-2. 네트워크의 환경</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-microchip text-blue-500 mr-3"></i> 사물 인터넷 (IoT)
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-2-1. 사물 인터넷의 원리.html">
+                            <div></div>
+                            <span>2-1. 사물 인터넷의 원리</span>
+                        </a>
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-2-2. 사물 인터넷 시스템의 활용.html">
+                            <div></div>
+                            <span>2-2. 사물 인터넷의 활용</span>
+                        </a>
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-3-1. 사물 인터넷 프로젝트를 위한 준비.html">
+                            <div></div>
+                            <span>3-1. IoT 프로젝트 준비</span>
+                        </a>
+                        <a class="link-card theme-blue" href="정보(2022개정)/1-3-2. 사물 인터넷 시스템 구현.html">
+                            <div></div>
+                            <span>3-2. IoT 시스템 구현</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2단원 -->
+        <section class="scroll-mt-24" id="ch2">
+            <div class="section-card space-y-10 border-t-4 border-t-orange-500">
+                <div class="text-center space-y-4">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl mb-2">
+                        <i class="fa-solid fa-database text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">2. 자료와 정보 <span
+                            class="text-lg text-slate-500 font-bold"></span></h2>
+                    <div class="w-16 h-1.5 bg-orange-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-file-zipper text-orange-500 mr-3"></i> 디지털 데이터
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <a class="link-card theme-orange" href="정보(2022개정)/2-1-1. 디지털 데이터 압축.html">
+                            <div></div>
+                            <span>1-1. 디지털 데이터 압축</span>
+                        </a>
+                        <a class="link-card theme-orange" href="정보(2022개정)/2-1-2. 디지털 데이터 암호화.html">
+                            <div></div>
+                            <span>1-2. 디지털 데이터 암호화</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-chart-pie text-orange-500 mr-3"></i> 빅데이터와 분석
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <a class="link-card theme-orange" href="정보(2022개정)/2-2-1. 빅데이터의 이해.html">
+                            <div></div>
+                            <span>2-1. 빅데이터의 이해</span>
+                        </a>
+                        <a class="link-card theme-orange" href="정보(2022개정)/2-2-2. 문제 해결을 위한 빅데이터 분석.html">
+                            <div></div>
+                            <span>2-2. 문제 해결을 위한 빅데이터 분석</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3단원 -->
+        <section class="scroll-mt-24" id="ch3">
+            <div class="section-card space-y-10 border-t-4 border-t-rose-500">
+                <div class="text-center space-y-4">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-rose-50 text-rose-600 rounded-2xl mb-2">
+                        <i class="fa-solid fa-code text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">3. 알고리즘과 프로그래밍 <span
+                            class="text-lg text-slate-500 font-bold"></span></h2>
+                    <div class="w-16 h-1.5 bg-rose-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-diagram-project text-rose-500 mr-3"></i> 기초 알고리즘
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-1-1. 추상화와 알고리즘.html">
+                            <div></div>
+                            <span>1-1. 추상화와 알고리즘</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-1-2. 데이터를 정렬하는 알고리즘.html">
+                            <div></div>
+                            <span>1-2. 데이터 정렬 알고리즘</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-1-3. 데이터를 탐색하는 알고리즘.html">
+                            <div></div>
+                            <span>1-3. 데이터 탐색 알고리즘</span>
+                        </a>
+                    </div>
+
+                    <!-- 실습 섹션 -->
+                    <div
+                        class="mt-4 p-4 rounded-2xl bg-gradient-to-r from-rose-50 via-pink-50 to-red-50 border border-rose-200">
+                        <div class="flex items-center mb-3">
+                            <i class="fa-solid fa-flask text-rose-600 mr-2"></i>
+                            <h4 class="font-bold text-sm text-slate-800">심화 실습 자료</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <a class="practice-link grad-purple" href="정보(2022개정)/3-1-3. 다익스트라 경로 탐색 실습.html">
+                                <i class="fa-solid fa-route"></i><span>다익스트라 경로 탐색</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-brands fa-python text-rose-500 mr-3"></i> 파이썬 프로그래밍
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-1. 변수와 자료형.html">
+                            <div></div>
+                            <span>2-1. 변수와 자료형</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-2. 표준입출력과 파일입출력.html">
+                            <div></div>
+                            <span>2-2. 입출력과 파일</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-3. 다자원 데이터 구조.html">
+                            <div></div>
+                            <span>2-3. 다차원 데이터 구조</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-4. 제어 구조.html">
+                            <div></div>
+                            <span>2-4. 제어 구조</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-5. 객체와 클래스.html">
+                            <div></div>
+                            <span>2-5. 객체와 클래스</span>
+                        </a>
+                        <a class="link-card theme-rose" href="정보(2022개정)/3-2-6. 프로그램 공유 및 성능 평가.html">
+                            <div></div>
+                            <span>2-6. 프로그램 공유/성능 평가</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4단원 -->
+        <section class="scroll-mt-24" id="ch4">
+            <div class="section-card space-y-10 border-t-4 border-t-emerald-500">
+                <div class="text-center space-y-4">
+                    <div
+                        class="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl mb-2">
+                        <i class="fa-solid fa-robot text-3xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900">4. 인공지능 <span
+                            class="text-lg text-slate-500 font-bold"></span></h2>
+                    <div class="w-16 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-brain text-emerald-500 mr-3"></i> 인공지능 기초
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-1-1. 인공지능의 이해.html">
+                            <div></div>
+                            <span>1-1. 인공지능의 이해</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center bg-slate-50 p-3 rounded-xl">
+                        <i class="fa-solid fa-diagram-project text-emerald-500 mr-3"></i> 지능 에이전트와 기계학습
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-2-1. 지능 에이전트의 이해.html">
+                            <div></div>
+                            <span>2-1. 지능 에이전트의 이해</span>
+                        </a>
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-2-1. 기계학습의 이해.html">
+                            <div></div>
+                            <span>2-2. 기계학습의 이해</span>
+                        </a>
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-2-2. 기계학습의 유형.html">
+                            <div></div>
+                            <span>2-3. 기계학습의 유형</span>
+                        </a>
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-2-3. 기계학습으로 해결하는 사회 문제.html">
+                            <div></div>
+                            <span>2-4. 기계학습과 사회 문제</span>
+                        </a>
+                        <a class="link-card theme-emerald" href="정보(2022개정)/4-2-4. 기계학습 프로젝트.html">
+                            <div></div>
+                            <span>2-5. 기계학습 프로젝트</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-10">
+        <div class="max-w-6xl mx-auto px-6 text-center text-slate-500">
+            <p class="mb-2"><i class="fa-solid fa-book mr-2"></i> 고등학교 정보 (주)도서출판 길벗 (2022 개정)</p>
+            <p class="text-sm">해당 자료는 학습 목적으로 제작된 시각화 보조 자료입니다.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
