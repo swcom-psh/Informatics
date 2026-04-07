@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --primary-glow: rgba(99, 102, 241, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    background-color: #fcfdff;
+    color: #1e293b;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, .font-display {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Sophisticated Mesh Gradient Background */
+.mesh-gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: #f8faff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px 0 rgba(31, 38, 135, 0.08);
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Smooth Navigation */
+.nav-blur {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Modern Button Hover */
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-glow::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-glow:hover::after {
+    opacity: 1;
+}
+
+/* Animation Utilities */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+
+/* Chapter Badges */
+.chapter-badge {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.bg-indigo-soft { background: #eef2ff; color: #4f46e5; border: 1px solid #e0e7ff; }
+.bg-rose-soft { background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; }
+.bg-emerald-soft { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+.bg-amber-soft { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+
+/* Interactive Link Cards */
+.link-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #475569;
+}
+
+.link-item:hover {
+    background: #ffffff;
+    transform: translateX(4px);
+    border-color: #cbd5e1;
+    color: #1e293b;
+    box-shadow: 4px 4px 15px rgba(0,0,0,0.03);
+}
+
+.link-item i {
+    font-size: 0.8rem;
+    margin-right: 12px;
+    opacity: 0.6;
+    transition: transform 0.3s ease;
+}
+
+.link-item:hover i {
+    transform: scale(1.2);
+    opacity: 1;
+}
