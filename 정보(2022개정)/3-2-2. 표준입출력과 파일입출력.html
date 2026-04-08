@@ -1,52 +1,197 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹 강의노트 - 3-2-2. 표준입출력과 파일입출력</title>
     <!-- 폰트: 프리텐다드 -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 코드 하이라이팅 (코랩 스타일) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #dcd3c6; margin: 0; padding: 3rem 1rem; color: #333; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#d3c8b8 1px, transparent 1px); background-size: 20px 20px; }
-        .notebook-container { background-color: #fdfbf7; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
-        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
-        .hole { width: 18px; height: 18px; background-color: #dcd3c6; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8); position: relative; }
-        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
-        .note-header { border-bottom: 2px dashed #d1c8b8; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
-        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #9c9284; font-size: 0.95rem; }
-        .concept-box { background-color: #fffbdf; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.06); margin-bottom: 2rem; position: relative; transform: rotate(-0.5deg); }
-        .concept-box::before { content: "📌"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
-        .alert-box { background-color: #ffefef; border-left: 5px solid #ff7b7b; padding: 1.5rem; margin-bottom: 2rem; position: relative; transform: rotate(0.4deg); }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-        th { background-color: #f5f0e6; font-weight: 600; text-align: center; padding: 1rem; border: 1px solid #e1d8c8; color: #5c5446; }
-        td { padding: 1rem; border: 1px solid #e1d8c8; color: #4B5563; text-align: left; }
-        pre { background-color: #1a1b26; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin-bottom: 2rem; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95rem; line-height: 1.5; box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3); border: 2px solid #292e42; }
-        .highlighter { background: linear-gradient(to top, #ffe566 40%, transparent 40%); font-weight: bold; display: inline; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #dcd3c6;
+            margin: 0;
+            padding: 3rem 1rem;
+            color: #333;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            background-image: radial-gradient(#d3c8b8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .notebook-container {
+            background-color: #fdfbf7;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 4px 12px 12px 4px;
+            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0, 0, 0, 0.05), inset -1px 0 0 rgba(0, 0, 0, 0.03);
+            position: relative;
+            padding: 4rem 4rem 5rem 6rem;
+            min-height: 1000px;
+        }
+
+        .binder-holes {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: 40px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .hole {
+            width: 18px;
+            height: 18px;
+            background-color: #dcd3c6;
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .hole::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 6px;
+            background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6);
+            border-radius: 3px;
+            top: 6px;
+            left: 8px;
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .note-header {
+            border-bottom: 2px dashed #d1c8b8;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .note-header::after {
+            content: "Date: 20__ . __ . __";
+            position: absolute;
+            right: 0;
+            top: -10px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+            color: #9c9284;
+            font-size: 0.95rem;
+        }
+
+        .concept-box {
+            background-color: #fffbdf;
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            position: relative;
+            transform: rotate(-0.5deg);
+        }
+
+        .concept-box::before {
+            content: "📌";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 1.5rem;
+        }
+
+        .alert-box {
+            background-color: #ffefef;
+            border-left: 5px solid #ff7b7b;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            transform: rotate(0.4deg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background-color: #f5f0e6;
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #e1d8c8;
+            color: #5c5446;
+        }
+
+        td {
+            padding: 1rem;
+            border: 1px solid #e1d8c8;
+            color: #4B5563;
+            text-align: left;
+        }
+
+        pre {
+            background-color: #1a1b26;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid #292e42;
+        }
+
+        .highlighter {
+            background: linear-gradient(to top, #ffe566 40%, transparent 40%);
+            font-weight: bold;
+            display: inline;
+        }
     </style>
 </head>
+
 <body>
     <div class="notebook-container">
         <!-- 홈으로 가기 버튼 -->
-        <a href="../index.html" class="absolute top-6 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg> 
+        <a href="../index.html"
+            class="absolute top-16 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50"
+            style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
             메인으로
         </a>
         <!-- 바인더 구멍 -->
         <div class="binder-holes">
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
         </div>
 
         <header class="note-header">
-            <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-green-800 uppercase bg-green-100 rounded-sm transform -rotate-1">
+            <div
+                class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-green-800 uppercase bg-green-100 rounded-sm transform -rotate-1">
                 2022 개정 정보 | 3. 알고리즘과 프로그래밍
             </div>
             <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
@@ -56,17 +201,23 @@
         </header>
 
         <main class="text-gray-800 text-lg">
-            
+
             <div class="concept-box">
                 <h3 class="font-bold text-xl text-amber-900 mb-2">💡 전원을 끄면 대화 기록이 다 날아간다고?</h3>
                 <p class="text-amber-800">
-                    컴퓨터에게 "안녕?" 하고 키보드로 타이핑해서 화면에 대답이 뜨게 만드는 것은 <span class="bg-amber-200 px-1 font-bold rounded">표준 입출력</span>이라고 합니다. কিন্তু 램(RAM)에서 돌아가는 이 대화는 까만 도스 창을 끄면 영영 사라집니다.<br><br>
-                    우리가 작성한 일기장, 온도 센서가 측정한 기록들... 이 소중한 정보들을 컴퓨터의 하드웨어 지퍼백(하드디스크)에 안전하게, <strong>영원히 저장하고 꺼내 보는 기술!</strong> 그것이 바로 프로그램의 핵심인 <span class="bg-amber-200 px-1 font-bold rounded">파일 입출력(File I/O)</span>입니다.
+                    컴퓨터에게 "안녕?" 하고 키보드로 타이핑해서 화면에 대답이 뜨게 만드는 것은 <span class="bg-amber-200 px-1 font-bold rounded">표준
+                        입출력</span>이라고 합니다. কিন্তু 램(RAM)에서 돌아가는 이 대화는 까만 도스 창을 끄면 영영 사라집니다.<br><br>
+                    우리가 작성한 일기장, 온도 센서가 측정한 기록들... 이 소중한 정보들을 컴퓨터의 하드웨어 지퍼백(하드디스크)에 안전하게, <strong>영원히 저장하고 꺼내 보는
+                        기술!</strong> 그것이 바로 프로그램의 핵심인 <span class="bg-amber-200 px-1 font-bold rounded">파일 입출력(File
+                        I/O)</span>입니다.
                 </p>
             </div>
 
-            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 컴퓨터랑 실시간으로 떠들기: 표준 입출력</h2>
-            <p class="text-[0.95rem] text-gray-700">키보드로 값을 받아들이는 <code>input()</code>과 검은색 모니터 창(콘솔)에 바로 결과를 뿌려주는 <code>print()</code>가 있습니다. 기본 중의 기본이죠!</p>
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 컴퓨터랑 실시간으로 떠들기: 표준
+                입출력</h2>
+            <p class="text-[0.95rem] text-gray-700">키보드로 값을 받아들이는 <code>input()</code>과 검은색 모니터 창(콘솔)에 바로 결과를 뿌려주는
+                <code>print()</code>가 있습니다. 기본 중의 기본이죠!
+            </p>
             <pre><code class="language-python"># 컴퓨터야 내 이름을 물어봐 줘!
 name = input("너의 이름은 무엇이니? ")
 
@@ -75,9 +226,11 @@ print("반가워!", name, "오늘도 좋은 하루 보내!")
 </code></pre>
 
 
-            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 하드디스크에 일기 쓰기: 파일 입출력 3단계 법칙</h2>
-            <p class="text-[0.95rem] mb-4 text-gray-700">파일을 다룰 때는 반드시 <strong>문 열기 ➔ 볼일 보기 ➔ 문 닫기</strong> 3단계를 거칩니다. 화장실을 이용하는 것과 완전히 똑같습니다!</p>
-            
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 하드디스크에 일기 쓰기: 파일
+                입출력 3단계 법칙</h2>
+            <p class="text-[0.95rem] mb-4 text-gray-700">파일을 다룰 때는 반드시 <strong>문 열기 ➔ 볼일 보기 ➔ 문 닫기</strong> 3단계를 거칩니다.
+                화장실을 이용하는 것과 완전히 똑같습니다!</p>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 my-6 font-medium text-[0.95rem]">
                 <div class="bg-gray-100 p-4 rounded text-center border-t-4 border-gray-400 shadow-sm">
                     <p class="text-xs text-gray-500 mb-1">Step 1</p>
@@ -104,14 +257,20 @@ print("반가워!", name, "오늘도 좋은 하루 보내!")
                     <span class="mr-2 text-2xl">🚨</span> 파일 여는 모드(Mode) 3총사
                 </h3>
                 <ul class="list-disc list-inside text-red-900 leading-snug">
-                    <li><strong class="bg-red-200 px-1">'r' (Read)</strong>: 읽기 모드 (파일에 적힌 내용을 눈으로 볼 때만 씀) - 파일이 없으면 에러남!</li>
-                    <li><strong class="bg-red-200 px-1">'w' (Write)</strong>: 쓰기 모드 (새로 작성할 때) - 주의! <strong>기존 내용이 싹 지워지고 처음부터 다시 씀.</strong></li>
-                    <li><strong class="bg-red-200 px-1">'a' (Append)</strong>: 추가 보드 (이미 적힌 내용 <strong>맨 밑에 밑줄 긋고 이어서 추가</strong>할 때)</li>
+                    <li><strong class="bg-red-200 px-1">'r' (Read)</strong>: 읽기 모드 (파일에 적힌 내용을 눈으로 볼 때만 씀) - 파일이 없으면
+                        에러남!</li>
+                    <li><strong class="bg-red-200 px-1">'w' (Write)</strong>: 쓰기 모드 (새로 작성할 때) - 주의! <strong>기존 내용이 싹
+                            지워지고 처음부터 다시 씀.</strong></li>
+                    <li><strong class="bg-red-200 px-1">'a' (Append)</strong>: 추가 보드 (이미 적힌 내용 <strong>맨 밑에 밑줄 긋고 이어서
+                            추가</strong>할 때)</li>
                 </ul>
             </div>
 
-            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 파이썬 마법의 키워드: <code>with</code></h2>
-            <p class="text-[0.95rem] mb-4 text-gray-700">인간은 깜빡하는 동물이라서, 파일을 열고 <code>f.close()</code> 명령어를 적어주는 것을 자꾸 잊어버립니다. (메모리가 펑!). 그래서 <strong>알아서 문을 닫아주는 자동문</strong>이 존재합니다!</p>
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 파이썬 마법의 키워드:
+                <code>with</code>
+            </h2>
+            <p class="text-[0.95rem] mb-4 text-gray-700">인간은 깜빡하는 동물이라서, 파일을 열고 <code>f.close()</code> 명령어를 적어주는 것을 자꾸
+                잊어버립니다. (메모리가 펑!). 그래서 <strong>알아서 문을 닫아주는 자동문</strong>이 존재합니다!</p>
 
             <pre><code class="language-python"># with를 쓰면 close()를 안 써도 구역이 끝나면 자동으로 파일을 저장하고 닫아줍니다!
 
@@ -128,14 +287,19 @@ with open("my_diary.txt", "w", encoding="utf-8") as f:
                     <span class="mr-2">📝</span> 스스로 점검하기
                 </h3>
                 <div class="space-y-4">
-                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                    <div
+                        class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div
+                            class="absolute top-0 right-0 bg-gray-200 px-3 py-1 rounded-bl font-bold text-xs text-gray-600">
+                            Q 1</div>
                         <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
                             여러분은 교실에서 매일 온도를 측정해서 기록하는 <code>temp_log.txt</code> 파일을 만들었습니다. 오늘은 이틀째입니다.<br>
-                            어제 기록한 내용이 지워지지 않고, 어제 내용 그 아랫줄에 오늘 측정한 온도를 추가해서 적고 싶은데, open 함수 두 번째 칸 문자에 모드(Mode)를 어떤 영단어로 써넣어야 할까요?
+                            어제 기록한 내용이 지워지지 않고, 어제 내용 그 아랫줄에 오늘 측정한 온도를 추가해서 적고 싶은데, open 함수 두 번째 칸 문자에 모드(Mode)를 어떤
+                            영단어로 써넣어야 할까요?
                         </p>
                         <details class="cursor-pointer outline-none">
-                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답
+                                확인하기</summary>
                             <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
                                 <strong>정답: 'a' (Append, 추가 모드)</strong><br>
                                 만약 'w'를 쓰면 어제 적었던 소중한 기록이 싹 날아가고 텅 빈 하얀 백지가 되어버리니 절대 주의하세요!
@@ -148,4 +312,5 @@ with open("my_diary.txt", "w", encoding="utf-8") as f:
         </main>
     </div>
 </body>
+
 </html>

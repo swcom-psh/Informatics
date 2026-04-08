@@ -20,7 +20,10 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, .font-display {
+h1,
+h2,
+h3,
+.font-display {
     font-family: 'Outfit', sans-serif;
 }
 
@@ -33,7 +36,7 @@ h1, h2, h3, .font-display {
     height: 100%;
     z-index: -1;
     background-color: #f8faff;
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
         radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
@@ -80,7 +83,7 @@ h1, h2, h3, .font-display {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -95,6 +98,7 @@ h1, h2, h3, .font-display {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -105,10 +109,21 @@ h1, h2, h3, .font-display {
     animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-.delay-4 { animation-delay: 0.4s; }
+.delay-1 {
+    animation-delay: 0.1s;
+}
+
+.delay-2 {
+    animation-delay: 0.2s;
+}
+
+.delay-3 {
+    animation-delay: 0.3s;
+}
+
+.delay-4 {
+    animation-delay: 0.4s;
+}
 
 /* Chapter Badges */
 .chapter-badge {
@@ -119,10 +134,29 @@ h1, h2, h3, .font-display {
     letter-spacing: 0.02em;
 }
 
-.bg-indigo-soft { background: #eef2ff; color: #4f46e5; border: 1px solid #e0e7ff; }
-.bg-rose-soft { background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; }
-.bg-emerald-soft { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
-.bg-amber-soft { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+.bg-indigo-soft {
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #e0e7ff;
+}
+
+.bg-rose-soft {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #ffe4e6;
+}
+
+.bg-emerald-soft {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #d1fae5;
+}
+
+.bg-amber-soft {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+}
 
 /* Interactive Link Cards */
 .link-item {
@@ -142,7 +176,7 @@ h1, h2, h3, .font-display {
     transform: translateX(4px);
     border-color: #cbd5e1;
     color: #1e293b;
-    box-shadow: 4px 4px 15px rgba(0,0,0,0.03);
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .link-item i {
