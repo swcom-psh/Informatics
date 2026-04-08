@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 2-1-1. 데이터의 이해</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #dcd3c6;
+            margin: 0;
+            padding: 3rem 1rem;
+            color: #333;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            background-image: radial-gradient(#d3c8b8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .notebook-container {
+            background-color: #fdfbf7;
+            width: 95%;
+            max-width: 1300px;
+            border-radius: 4px 12px 12px 4px;
+            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0, 0, 0, 0.05), inset -1px 0 0 rgba(0, 0, 0, 0.03);
+            position: relative;
+            padding: 3rem 3rem 4rem 5rem;
+            min-height: 1000px;
+        }
+
+        .binder-holes {
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: 40px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .hole {
+            width: 18px;
+            height: 18px;
+            background-color: #dcd3c6;
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .hole::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 6px;
+            background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6);
+            border-radius: 3px;
+            top: 6px;
+            left: 8px;
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .note-header {
+            border-bottom: 2px dashed #d1c8b8;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .note-header::after {
+            content: "Date: 20__ . __ . __";
+            position: absolute;
+            right: 0;
+            top: -10px;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+            color: #9c9284;
+            font-size: 0.95rem;
+        }
+
+        .concept-box {
+            background-color: #fffbdf;
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            position: relative;
+            transform: rotate(-0.5deg);
+        }
+
+        .concept-box::before {
+            content: "📌";
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 1.5rem;
+        }
+
+        .data-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .unit-block {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+    <div class="notebook-container">
+        <!-- 홈으로 가기 버튼 -->
+        <a href="../index.html"
+            class="absolute top-40 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50 lg:top-24"
+            style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            메인으로
+        </a>
+
+        <div class="binder-holes">
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+        </div>
+
+        <header class="note-header">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">2-1-1. 데이터의 이해</h1>
+            <p class="text-slate-500 font-medium">컴퓨터가 세상을 이해하는 방식: 자료와 정보의 기초</p>
+        </header>
+
+        <main>
+            <!-- 1. 비트와 바이트 -->
+            <h2 class="text-2xl font-bold mt-10 mb-6 pb-2 border-b-2 border-slate-200 inline-block">1. 비트와 바이트: 데이터의 최소
+                단위</h2>
+            <div class="unit-block mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-3 underline decoration-blue-300">비트 (Bit)</h4>
+                        <p class="text-sm text-slate-600 mb-4"><strong>Binary Digit</strong>의 약자로, 데이터의 최소 단위입니다. 전구가
+                            <strong>꺼짐(0)</strong>과 <strong>켜짐(1)</strong> 상태 두 가지만 가질 수 있는 것과 같습니다.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center gap-10 mt-8">
+                            <!-- Circuit Off (0) -->
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="bg-slate-100 p-6 rounded-3xl border-2 border-slate-200 shadow-inner relative group">
+                                    <div
+                                        class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-400 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
+                                        OFF (0)</div>
+                                    <svg viewBox="0 0 120 120" class="w-32 h-32">
+                                        <!-- Wire Path background -->
+                                        <path d="M 30 60 L 15 60 L 15 100 L 105 100 L 105 60 L 90 60" fill="none"
+                                            stroke="#e2e8f0" stroke-width="8" stroke-linecap="round" />
+                                        <!-- Real Wire -->
+                                        <path d="M 30 60 L 15 60 L 15 100 L 105 100 L 105 60 L 90 60" fill="none"
+                                            stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+                                        <!-- Battery -->
+                                        <rect x="45" y="92" width="30" height="15" rx="3" fill="#475569"
+                                            shadow="0 2px 4px rgba(0,0,0,0.1)" />
+                                        <rect x="48" y="95" width="8" height="9" fill="#ef4444" opacity="0.8" />
+                                        <!-- Open Switch -->
+                                        <line x1="30" y1="60" x2="65" y2="35" stroke="#334155" stroke-width="6"
+                                            stroke-linecap="round" />
+                                        <circle cx="30" cy="60" r="4" fill="#334155" />
+                                        <circle cx="70" cy="60" r="4" fill="#334155" />
+                                        <line x1="70" y1="60" x2="90" y2="60" stroke="#94a3b8" stroke-width="4" />
+                                        <!-- Bulb Off -->
+                                        <path d="M 45 40 Q 60 5, 75 40 L 70 45 L 50 45 Z" fill="#f8fafc"
+                                            stroke="#94a3b8" stroke-width="3" />
+                                        <rect x="53" y="45" width="14" height="6" fill="#cbd5e1" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="hidden sm:block text-slate-200 font-light text-5xl">|</div>
+
+                            <!-- Circuit On (1) -->
+                            <div class="flex flex-col items-center">
+                                <div
+                                    class="bg-amber-50 p-6 rounded-3xl border-2 border-amber-200 shadow-xl shadow-amber-100/50 relative group">
+                                    <div
+                                        class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest animate-pulse">
+                                        ON (1)</div>
+                                    <svg viewBox="0 0 120 120" class="w-32 h-32">
+                                        <!-- Glow Effect -->
+                                        <circle cx="60" cy="30" r="25" fill="url(#bulbGlowMain)" opacity="0.8" />
+                                        <defs>
+                                            <radialGradient id="bulbGlowMain">
+                                                <stop offset="20%" stop-color="#fbbf24" />
+                                                <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+                                            </radialGradient>
+                                        </defs>
+
+                                        <!-- Active Wire Path background -->
+                                        <path d="M 30 60 L 15 60 L 15 100 L 105 100 L 105 60 L 90 60" fill="none"
+                                            stroke="#fef3c7" stroke-width="8" stroke-linecap="round" />
+                                        <!-- Active Wire -->
+                                        <path d="M 30 60 L 15 60 L 15 100 L 105 100 L 105 60 L 90 60" fill="none"
+                                            stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+                                        <!-- Battery -->
+                                        <rect x="45" y="92" width="30" height="15" rx="3" fill="#d97706" />
+                                        <!-- Closed Switch -->
+                                        <line x1="30" y1="60" x2="70" y2="60" stroke="#b45309" stroke-width="6"
+                                            stroke-linecap="round" />
+                                        <circle cx="30" cy="60" r="4" fill="#b45309" />
+                                        <circle cx="70" cy="60" r="4" fill="#b45309" />
+                                        <line x1="70" y1="60" x2="90" y2="60" stroke="#f59e0b" stroke-width="4" />
+                                        <!-- Bulb On -->
+                                        <path d="M 45 40 Q 60 5, 75 40 L 70 45 L 50 45 Z" fill="#fbbf24"
+                                            stroke="#d97706" stroke-width="3" />
+                                        <rect x="53" y="45" width="14" height="6" fill="#f59e0b" />
+                                        <!-- Light Rays -->
+                                        <g stroke="#f59e0b" stroke-width="3" stroke-linecap="round">
+                                            <line x1="60" y1="5" x2="60" y2="0" />
+                                            <line x1="85" y1="20" x2="90" y2="15" />
+                                            <line x1="35" y1="20" x2="30" y2="15" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-3 underline decoration-purple-300">바이트 (Byte)
+                        </h4>
+                        <p class="text-sm text-slate-600 mb-4">비트 <strong>8개</strong>를 하나로 묶은 단위입니다. 컴퓨터가 문자를 표현하거나 데이터를
+                            처리하는 가장 기본 단위가 됩니다.</p>
+                        <div class="flex gap-1.5 flex-wrap">
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                1</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                2</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                3</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                4</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                5</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                6</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-200 bg-white rounded-md flex items-center justify-center text-[10px] font-bold text-purple-300">
+                                7</div>
+                            <div
+                                class="w-7 h-7 border-2 border-purple-400 bg-purple-50 rounded-md flex items-center justify-center text-[10px] font-bold text-purple-600">
+                                8</div>
+                        </div>
+                        <p class="text-xs font-black text-purple-600 mt-3">1 Byte = 8 Bits</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-6 text-center text-lg">🚀 데이터 기차: 큰 단위로의 확장</h4>
+                    <p class="text-center text-sm text-slate-500 mb-8">데이터는 <strong>1,024(2¹⁰)</strong>배씩 커질 때마다 새로운 이름을
+                        가집니다.</p>
+                    <div class="overflow-x-auto">
+                        <table class="text-sm">
+                            <thead>
+                                <tr class="bg-slate-800 text-white">
+                                    <th class="p-3 border border-slate-700">단위</th>
+                                    <th class="p-3 border border-slate-700">약어</th>
+                                    <th class="p-3 border border-slate-700">계산 (약 1,000배씩)</th>
+                                    <th class="p-3 border border-slate-700">체감하는 데이터 크기</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 border font-bold text-center">킬로바이트</td>
+                                    <td class="p-3 border font-black text-center text-slate-500">KB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 B</td>
+                                    <td class="p-3 border text-slate-600">짧은 글자 위주의 문서 1장</td>
+                                </tr>
+                                <tr class="bg-blue-50/20 hover:bg-blue-50 transition">
+                                    <td class="p-3 border font-bold text-center">메가바이트</td>
+                                    <td class="p-3 border font-black text-center text-blue-600">MB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 KB</td>
+                                    <td class="p-3 border text-slate-600">고음질 음악(MP3) 1곡, 사진 수십 장</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50 transition">
+                                    <td class="p-3 border font-bold text-center">기가바이트</td>
+                                    <td class="p-3 border font-black text-center text-indigo-600">GB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 MB</td>
+                                    <td class="p-3 border text-slate-600">일반 영화 1편, 고해상도 게임 설치 파일</td>
+                                </tr>
+                                <tr class="bg-purple-50/20 hover:bg-purple-50 transition">
+                                    <td class="p-3 border font-bold text-center">테라바이트</td>
+                                    <td class="p-3 border font-black text-center text-purple-600">TB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 GB</td>
+                                    <td class="p-3 border text-slate-600">대용량 외장 하드디스크 1개</td>
+                                </tr>
+                                <tr class="hover:bg-rose-50 transition">
+                                    <td class="p-3 border font-bold text-center">페타바이트</td>
+                                    <td class="p-3 border font-black text-center text-rose-500">PB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 TB</td>
+                                    <td class="p-3 border text-slate-600">구글 하루 데이터 처리량 수준</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 border font-bold text-center">엑사바이트</td>
+                                    <td class="p-3 border font-black text-center text-indigo-700">EB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 PB</td>
+                                    <td class="p-3 border text-slate-600">전 세계 인터넷 통신량의 며칠분 규모</td>
+                                </tr>
+                                <tr class="bg-indigo-50/20 hover:bg-slate-50 transition">
+                                    <td class="p-3 border font-bold text-center">제타바이트</td>
+                                    <td class="p-3 border font-black text-center text-purple-700">ZB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 EB</td>
+                                    <td class="p-3 border text-slate-600">지구상에서 매년 생성되는 데이터 총량 규모</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="p-3 border font-bold text-center">요타바이트</td>
+                                    <td class="p-3 border font-black text-center text-rose-700">YB</td>
+                                    <td class="p-3 border text-center font-mono">1,024 ZB</td>
+                                    <td class="p-3 border text-slate-600 font-bold italic">Infinity & Beyond (2⁸⁰ Byte)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 p-4 bg-slate-900 rounded-xl text-center">
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Byte Sequence</p>
+                        <p class="text-white font-black text-lg">B → KB → MB → GB → TB → PB → EB → ZB → YB</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 데이터란? -->
+            <h2 class="text-2xl font-bold mt-16 mb-6 pb-2 border-b-2 border-slate-200 inline-block">2. 데이터란 무엇일까?</h2>
+            <p class="mb-6 text-lg text-slate-700 leading-relaxed">
+                비트와 바이트라는 그릇에 담길 내용물을 <strong>데이터(Data)</strong>라고 합니다. 관찰이나 측정을 통해 얻은 사실이나 수치를 의미합니다.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-16">
+                <div class="data-card text-center">
+                    <div class="text-3xl mb-2">🔢</div>
+                    <h3 class="font-bold text-slate-800">숫자 데이터</h3>
+                    <p class="text-xs text-slate-500 mt-2">나이, 성적, <br>온도, 가격 등</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-3xl mb-2">🔠</div>
+                    <h3 class="font-bold text-slate-800">문자 데이터</h3>
+                    <p class="text-xs text-slate-500 mt-2">이름, 주소, <br>채팅 메시지 등</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-3xl mb-2">🖼️</div>
+                    <h3 class="font-bold text-slate-800">그림 데이터</h3>
+                    <p class="text-xs text-slate-500 mt-2">사진, 일러스트, <br>아이콘 등</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-3xl mb-2">🔊</div>
+                    <h3 class="font-bold text-slate-800">소리 데이터</h3>
+                    <p class="text-xs text-slate-500 mt-2">음악, 목소리, <br>효과음 등</p>
+                </div>
+                <div class="data-card text-center">
+                    <div class="text-3xl mb-2">🎬</div>
+                    <h3 class="font-bold text-slate-800">영상 데이터</h3>
+                    <p class="text-xs text-slate-500 mt-2">영화, 유튜브, <br>움짤(GIF) 등</p>
+                </div>
+            </div>
+
+            <!-- 3. 디지털 표현 -->
+            <h2 class="text-2xl font-bold mt-12 mb-6 pb-2 border-b-2 border-slate-200 inline-block">3. 데이터는 어떻게 0과 1이
+                될까?</h2>
+
+            <div class="space-y-10">
+                <!-- 3-1. 숫자 데이터 -->
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="p-1 bg-blue-100 rounded mr-2">🔢</span> 숫자: 진법 변환의 원리
+                    </h3>
+                    <p class="mb-4 text-slate-600 leading-relaxed">우리가 일상에서 쓰는 <strong>10진수</strong>를 컴퓨터는 0과 1의
+                        <strong>2진수</strong>로 바꾸어 저장합니다. 또한 효율적인 관리를 위해 <strong>16진수</strong>를 섞어서 사용하기도 합니다.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-5 rounded-xl border border-blue-100 shadow-sm">
+                            <h4 class="font-bold text-blue-600 text-sm mb-2">10진수 (Decimal)</h4>
+                            <div class="text-2xl font-black text-slate-800">13</div>
+                            <p class="text-[10px] text-slate-400 mt-1">인간의 방식 (0~9)</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-blue-100 shadow-sm">
+                            <h4 class="font-bold text-indigo-600 text-sm mb-2">2진수 (Binary)</h4>
+                            <div class="text-2xl font-black text-slate-800 font-mono">1101</div>
+                            <p class="text-[10px] text-slate-400 mt-1">컴퓨터 언어 (0, 1)</p>
+                        </div>
+                        <div
+                            class="bg-white p-5 rounded-xl border border-blue-100 shadow-sm font-mono text-center flex flex-col justify-center">
+                            <span class="text-xs text-slate-400">16진수(Hex)</span>
+                            <span class="text-3xl font-black text-purple-600">D</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100 text-sm">
+                        <div class="flex items-start gap-3">
+                            <div class="text-xl">💡</div>
+                            <div>
+                                <p class="font-bold text-blue-800 mb-1">상식 한 조각: 왜 16진수인가요?</p>
+                                <p class="text-slate-600 leading-snug text-xs">2진수는 단위가 커질수록 너무 길어집니다(예: 11111111).
+                                    16진수를 쓰면 이를 <strong>'FF'</strong>처럼 짧게 요약할 수 있어 사람이 코드를 분석할 때 훨씬 유리합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3-2. 문자 데이터 -->
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="p-1 bg-amber-100 rounded mr-2">✍️</span> 문자: 약속된 약속 (인코딩)
+                    </h3>
+                    <p class="mb-4 text-slate-600">어떤 숫자가 어떤 문자인지 정해둔 규칙을 <strong>인코딩(Encoding)</strong>이라고 합니다.</p>
+
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="flex-1 bg-amber-50/30 p-5 rounded-2xl border border-amber-100">
+                            <h4 class="font-bold text-amber-700 mb-2">① 아스키코드 (ASCII)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">미국 표준 코드로, 영어와 숫자 중심의 128개 문자를 담당합니다.
+                                <strong>1바이트</strong>의 좁은 공간도 효율적으로 사용합니다.
+                            </p>
+                            <div class="bg-white p-3 rounded font-mono text-xs text-amber-800 shadow-inner">
+                                'A' → 65 → <span class="font-bold">01000001</span>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-purple-50/30 p-5 rounded-2xl border border-purple-100">
+                            <h4 class="font-bold text-purple-700 mb-2">② 유니코드 (Unicode)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">전 세계 모든 언어와 이모지까지 담는 글로벌 표준입니다. 더 풍부한
+                                데이터를 표현하기 위해 보통 <strong>2~4바이트</strong>를 사용합니다.</p>
+                            <div class="bg-white p-3 rounded font-mono text-xs text-purple-800 shadow-inner">
+                                '가' → 44032 → <span class="font-bold">10101100 00000000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 디지털 실험실 2.5: 프리미엄 라이트 테마 -->
+            <div
+                class="mt-16 mb-20 p-1 bg-gradient-to-br from-indigo-100 to-slate-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                <!-- Subtle Glow effect -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/5 blur-[80px] rounded-full"></div>
+
+                <div
+                    class="bg-white/90 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-blue-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                                    <line x1="8" y1="21" x2="16" y2="21" />
+                                    <line x1="12" y1="17" x2="12" y2="21" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">문자의 이진수 변환 실습 <span
+                                        class="text-indigo-600"></span></h3>
+                                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">
+                                    Character to Binary Converter</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <div
+                                class="px-3 py-1 bg-white rounded-full border border-slate-200 shadow-sm text-[10px] font-bold text-slate-500 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> SYSTEM ACTIVE
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-8">
+                        <!-- Input Section -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -inset-0.5 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-2xl opacity-10 group-focus-within:opacity-20 transition duration-500">
+                            </div>
+                            <div
+                                class="relative flex items-center bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+                                <div class="pl-6 text-slate-400">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5">
+                                        <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="binaryInput" placeholder="이곳에 타이핑을 시작하세요..."
+                                    class="w-full bg-transparent px-5 py-6 text-slate-800 text-xl font-semibold focus:outline-none placeholder:text-slate-300">
+                                <div class="pr-6">
+                                    <button id="clearBtn" class="text-slate-300 hover:text-rose-500 transition-colors">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <path d="M18 6L6 18M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Result Terminal -->
+                        <div
+                            class="bg-slate-50 rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                            <div
+                                class="bg-slate-100/50 px-6 py-3 border-b border-slate-200 flex items-center justify-between">
+                                <div class="flex gap-1.5">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                                </div>
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Binary
+                                    Output Stream</span>
+                            </div>
+                            <div id="binaryResultArea"
+                                class="h-[380px] overflow-y-auto p-6 space-y-4 custom-scrollbar bg-white/50">
+                                <div class="h-full flex flex-col items-center justify-center space-y-4 opacity-50">
+                                    <div
+                                        class="w-16 h-16 border-4 border-dashed border-indigo-100 rounded-3xl animate-spin-slow">
+                                    </div>
+                                    <p class="text-slate-400 text-sm font-medium italic">입력을 기다리는 중...</p>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-slate-100/50 px-6 py-3 border-t border-slate-200 flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                <div id="statsDisplay">TOTAL: 0 CHARS</div>
+                                <div class="flex gap-4">
+                                    <span class="flex items-center gap-1"><span
+                                            class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> ASCII</span>
+                                    <span class="flex items-center gap-1"><span
+                                            class="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> UTF-8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                /* Premium animations & scrollbar */
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-slide-in {
+                    animation: slideIn 0.3s ease-out forwards;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: #1e293b;
+                    border-radius: 10px;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: #334155;
+                }
+
+                .animate-spin-slow {
+                    animation: spin 8s linear infinite;
+                }
+
+                @keyframes spin {
+                    from {
+                        transform: rotate(0deg);
+                    }
+
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            </style>
+
+            <!-- 3-3. 소리 데이터 -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                    <span class="p-1 bg-emerald-100 rounded mr-2">🎵</span> 소리: 아날로그의 디지털화 (ADC)
+                </h3>
+                <p class="mb-6 text-slate-600">끊김 없는 파동(아날로그)을 일정한 시간 간격으로 아주 잘게 잘라(샘플링) 숫자로 기록합니다.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-blue-400">
+                        <h4 class="font-bold text-blue-800 mb-2 font-display">샘플링</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">연속적인 파동에서 특정 순간의 값을 채집하는 과정</p>
+                    </div>
+                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-indigo-400">
+                        <h4 class="font-bold text-indigo-800 mb-2 font-display">양자화</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">채집한 값을 가장 가까운 정수 단계로 반올림함</p>
+                    </div>
+                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-purple-400">
+                        <h4 class="font-bold text-purple-800 mb-2 font-display">부호화</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed">숫자를 최종적으로 0과 1의 조합으로 바꿈</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <svg viewBox="0 -25 200 170" class="w-full h-auto">
+                                <line x1="0" y1="60" x2="200" y2="60" stroke="#e2e8f0" stroke-width="2" />
+                                <path d="M 0 60 C 30 10, 70 10, 100 60 C 130 110, 170 110, 200 60" fill="none"
+                                    stroke="#ef4444" stroke-width="3" opacity="0.6" />
+                                <circle cx="50" cy="10" r="5" fill="#3b82f6" />
+                                <line x1="50" y1="60" x2="50" y2="10" stroke="#3b82f6" stroke-width="2"
+                                    stroke-dasharray="2,2" />
+                            </svg>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm text-center flex flex-col justify-center">
+                            <span class="text-xs text-slate-400 mb-1">Discrete Values</span>
+                            <span class="font-bold text-slate-800">1101 0010...</span>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl shadow-sm flex items-center justify-center font-mono text-[10px] text-purple-600 break-all leading-tight">
+                            01000001010011100100010000100000
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </main>
+
+    <script>
+        const binaryInput = document.getElementById('binaryInput');
+        const binaryResultArea = document.getElementById('binaryResultArea');
+        const clearBtn = document.getElementById('clearBtn');
+        const statsDisplay = document.getElementById('statsDisplay');
+        const encoder = new TextEncoder();
+
+        clearBtn.addEventListener('click', () => {
+            binaryInput.value = '';
+            binaryInput.dispatchEvent(new Event('input'));
+            binaryInput.focus();
+        });
+
+        binaryInput.addEventListener('input', (e) => {
+            const text = e.target.value;
+            statsDisplay.innerText = `TOTAL: ${text.length} CHARS`;
+
+            if (!text) {
+                binaryResultArea.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center space-y-4 opacity-50">
+                            <div class="w-16 h-16 border-4 border-dashed border-indigo-100 rounded-3xl animate-spin-slow"></div>
+                            <p class="text-slate-400 text-sm font-medium italic">입력을 기다리는 중...</p>
+                        </div>
+                    `;
+                return;
+            }
+
+            // Render logic - process all characters but focus on performance
+            const fragment = document.createDocumentFragment();
+
+            for (const char of text) {
+                const charCard = document.createElement('div');
+                charCard.className = 'bg-white border border-slate-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 animate-slide-in shadow-sm';
+
+                const charCode = char.charCodeAt(0);
+                const isHangul = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(char);
+                const isAscii = charCode <= 127;
+                const typeLabel = isAscii ? 'ASCII' : (isHangul ? 'UTF-8' : 'UNICODE');
+                const labelColor = isAscii ? 'bg-indigo-500' : (isHangul ? 'bg-purple-500' : 'bg-slate-400');
+
+                const charDisplay = char === ' ' ? '␣' : char;
+
+                charCard.innerHTML = `
+                        <div class="flex items-center gap-4 min-w-[120px]">
+                            <div class="w-14 h-14 flex items-center justify-center text-3xl font-black text-slate-800 bg-slate-50 rounded-xl border border-slate-100">${charDisplay}</div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">${typeLabel}</span>
+                                <span class="text-xs font-mono text-indigo-500 font-bold">U+${charCode.toString(16).toUpperCase().padStart(4, '0')}</span>
+                            </div>
+                        </div>
+                        <div class="flex-grow flex flex-wrap gap-2 justify-center sm:justify-start">
+                            ${Array.from(encoder.encode(char)).map(byte => {
+                    const bin = byte.toString(2).padStart(8, '0');
+                    return `
+                                    <div class="flex flex-col gap-1.5 p-2.5 bg-slate-50 rounded-xl border border-slate-100 group/byte">
+                                        <div class="flex gap-2">
+                                            ${bin.split('').map(bit => `
+                                                <span class="w-6 h-8 flex items-center justify-center text-lg font-mono rounded-md transition-all duration-300 ${bit === '1' ? 'text-indigo-600 font-black' : 'text-slate-300 font-medium'}">${bit}</span>
+                                            `).join('')}
+                                        </div>
+                                        <div class="flex justify-between items-center px-1 mt-1">
+                                            <span class="text-[11px] font-mono text-indigo-500 font-black">0x${byte.toString(16).toUpperCase().padStart(2, '0')}</span>
+                                            <span class="text-[11px] font-mono text-slate-500 font-bold">${byte}</span>
+                                        </div>
+                                    </div>
+                                `;
+                }).join('')}
+                        </div>
+                    `;
+                fragment.appendChild(charCard);
+            }
+
+            binaryResultArea.innerHTML = '';
+            binaryResultArea.appendChild(fragment);
+
+            // Auto scroll to bottom smoothly
+            binaryResultArea.scrollTo({
+                top: binaryResultArea.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+    </div>
+</body>
+
+</html>
