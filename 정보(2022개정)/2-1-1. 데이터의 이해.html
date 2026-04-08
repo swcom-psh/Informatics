@@ -7,89 +7,173 @@
     <title>웹 강의노트 - 2-1-1. 데이터의 이해</title>
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --paper-bg: #fdfbf7;
+            --ocean-deep: #0f172a;
+            --accent-gold: #d4af37;
+            --terracotta: #c46a50;
+            --sage: #7d8a7d;
+            --mesh-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0, transparent 50%), 
+                             radial-gradient(at 100% 0%, rgba(196, 106, 80, 0.05) 0, transparent 50%),
+                             radial-gradient(at 50% 100%, rgba(125, 138, 125, 0.05) 0, transparent 50%);
+        }
+
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #dcd3c6;
+            background-color: #f1ede4;
             margin: 0;
             padding: 3rem 1rem;
-            color: #333;
-            line-height: 1.8;
+            color: #2c2c2c;
+            line-height: 1.7;
             display: flex;
             justify-content: center;
-            background-image: radial-gradient(#d3c8b8 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: var(--mesh-gradient);
+            background-attachment: fixed;
         }
 
         .notebook-container {
-            background-color: #fdfbf7;
-            width: 95%;
-            max-width: 1300px;
-            border-radius: 4px 12px 12px 4px;
-            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0, 0, 0, 0.05), inset -1px 0 0 rgba(0, 0, 0, 0.03);
+            background-color: var(--paper-bg);
+            width: 98%;
+            max-width: 1400px;
+            border-radius: 2rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
             position: relative;
-            padding: 3rem 3rem 4rem 5rem;
+            padding: 4rem 4rem 6rem 6rem;
             min-height: 1000px;
+            overflow: hidden;
+        }
+
+        /* Premium Paper Texture */
+        .notebook-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .binder-holes {
             position: absolute;
-            left: 15px;
-            top: 40px;
-            bottom: 40px;
-            width: 30px;
+            left: 25px;
+            top: 60px;
+            bottom: 60px;
+            width: 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
+            z-index: 10;
         }
 
         .hole {
-            width: 18px;
-            height: 18px;
-            background-color: #dcd3c6;
+            width: 22px;
+            height: 22px;
+            background-color: #d1cbc2;
             border-radius: 50%;
-            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15), 1px 1px 1px rgba(255, 255, 255, 0.8);
             position: relative;
         }
 
         .hole::after {
             content: '';
             position: absolute;
-            width: 28px;
-            height: 6px;
-            background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6);
-            border-radius: 3px;
-            top: 6px;
-            left: 8px;
-            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
-            z-index: 10;
+            width: 34px;
+            height: 8px;
+            background: linear-gradient(135deg, #e2e4e6 0%, #bcbec1 50%, #d6d7d9 100%);
+            border-radius: 4px;
+            top: 7px;
+            left: 10px;
+            box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
         }
 
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .font-display { font-family: 'Playfair Display', serif; }
+
         .note-header {
-            border-bottom: 2px dashed #d1c8b8;
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
             position: relative;
         }
 
         .note-header::after {
-            content: "Date: 20__ . __ . __";
+            content: "ARCHIVE DEPT. 2026";
             position: absolute;
             right: 0;
-            top: -10px;
-            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-            color: #9c9284;
-            font-size: 0.95rem;
+            top: -20px;
+            font-family: 'monospace';
+            color: #b5ada0;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            font-weight: bold;
         }
 
-        .concept-box {
-            background-color: #fffbdf;
-            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
-            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
-            margin-bottom: 2rem;
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Floating Lab Section */
+        .premium-lab {
+            background: var(--ocean-deep);
+            border-radius: 3rem;
+            padding: 3rem;
+            color: #d1d5db;
             position: relative;
-            transform: rotate(-0.5deg);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .premium-lab::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Oscilloscope Canvas */
+        #audioCanvas {
+            background: #020617;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Neumorphic Controls */
+        .neo-btn {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3), -2px -2px 8px rgba(255,255,255,0.02);
+            transition: all 0.2s ease;
+        }
+
+        .neo-btn:hover {
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            transform: scale(0.98);
         }
 
         .concept-box::before {
@@ -128,14 +212,14 @@
     <div class="notebook-container">
         <!-- 홈으로 가기 버튼 -->
         <a href="../index.html"
-            class="absolute top-40 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50 lg:top-24"
+            class="absolute top-10 right-10 glass-card px-6 py-3 text-slate-600 font-bold text-xs tracking-widest uppercase flex items-center z-50 transition-all hover:bg-white hover:scale-105 active:scale-95"
             style="text-decoration:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            메인으로
+            Main Dashboard
         </a>
 
         <div class="binder-holes">
@@ -149,21 +233,23 @@
             <div class="hole"></div>
         </div>
 
-        <header class="note-header">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">2-1-1. 데이터의 이해</h1>
-            <p class="text-slate-500 font-medium">컴퓨터가 세상을 이해하는 방식: 자료와 정보의 기초</p>
+        <header class="note-header text-center sm:text-left">
+            <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-4">2-1-1. <span class="sketch-underline">데이터의 이해</span></h1>
+            <p class="text-xl text-slate-500 font-medium">Digital Foundation: 자료와 정보의 체계적 이해</p>
         </header>
 
         <main>
             <!-- 1. 비트와 바이트 -->
-            <h2 class="text-2xl font-bold mt-10 mb-6 pb-2 border-b-2 border-slate-200 inline-block">1. 비트와 바이트: 데이터의 최소
-                단위</h2>
-            <div class="unit-block mb-12">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <h2 class="text-3xl font-bold mt-16 mb-8 flex items-center gap-3">
+                <span class="text-blue-500 p-2 bg-blue-50 rounded-lg shadow-sm">🔢</span> 
+                1. <span class="sketch-underline">비트와 바이트</span>: 데이터의 최소 단위
+            </h2>
+            <div class="glass-card mb-16 p-10 overflow-hidden relative">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/5 blur-[50px] rounded-full"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                     <div>
-                        <h4 class="text-lg font-bold text-slate-800 mb-3 underline decoration-blue-300">비트 (Bit)</h4>
-                        <p class="text-sm text-slate-600 mb-4"><strong>Binary Digit</strong>의 약자로, 데이터의 최소 단위입니다. 전구가
-                            <strong>꺼짐(0)</strong>과 <strong>켜짐(1)</strong> 상태 두 가지만 가질 수 있는 것과 같습니다.
+                        <h4 class="text-2xl font-black text-slate-800 mb-6 font-display border-b-4 border-blue-500/20 inline-block pb-1">비트 (Bit)</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6"><strong>Binary Digit</strong>의 약자로, 디지털 세계의 가장 작은 심장입니다. 전구가 꺼짐(0)과 켜짐(1) 상태를 선택하듯, 단 두 가지의 상태만을 명확하게 구분하여 기록합니다.</p>
                         </p>
                         <div class="flex flex-col sm:flex-row items-center gap-10 mt-8">
                             <!-- Circuit Off (0) -->
@@ -612,130 +698,131 @@
             </style>
 
             <!-- 3. 소리 데이터의 디지털화 -->
-            <div class="mt-16 mb-12">
-                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-slate-200 inline-block">3. 소리 데이터의 디지털화</h2>
-                <p class="mb-8 text-slate-600">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 <strong>아날로그 신호</strong>를 0과 1의 <strong>디지털 신호</strong>로 바꾸어야 합니다.</p>
+            <div class="mt-20 mb-16">
+                <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                    <span class="text-ocean-deep p-2 bg-slate-100 rounded-lg shadow-sm">💿</span> 
+                    3. <span class="sketch-underline">소리 데이터의 디지털화</span>
+                </h2>
+                <p class="mb-12 text-slate-500 max-w-2xl leading-relaxed">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 아날로그 신호를 1과 0의 디지털 신호로 변환하는 정교한 설계 과정이 필요합니다.</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-blue-400">
-                        <h4 class="font-bold text-blue-800 mb-2 font-display">① 표본화 (Sampling)</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">아날로그 파형을 일정 시간 간격으로 잘게 나누는 과정</p>
-                        <div class="mt-4 h-1.5 bg-blue-50 rounded-full overflow-hidden">
-                            <div class="h-full bg-blue-400 w-1/3 animate-pulse"></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="glass-card p-8 border-t-4 border-t-blue-500/50">
+                        <div class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-4">Step 01</div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-3 font-display">표본화 (Sampling)</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">아날로그 파형을 일정 시간 간격으로 잘게 나누어 기록하는 첫 번째 관문입니다.</p>
+                        <div class="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 w-1/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
                         </div>
                     </div>
-                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-amber-400">
-                        <h4 class="font-bold text-amber-800 mb-2 font-display">② 양자화 (Quantization)</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">나누어진 각 표본의 값을 정수 값으로 변환하는 과정</p>
-                        <div class="mt-4 h-1.5 bg-amber-50 rounded-full overflow-hidden">
-                            <div class="h-full bg-amber-400 w-2/3 animate-pulse"></div>
+                    <div class="glass-card p-8 border-t-4 border-t-amber-500/50">
+                        <div class="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-4">Step 02</div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-3 font-display">양자화 (Quantization)</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">나누어진 각 표본의 진폭을 가장 가까운 정수 값으로 측정하여 정의합니다.</p>
+                        <div class="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-500 w-2/3 shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
                         </div>
                     </div>
-                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-indigo-400">
-                        <h4 class="font-bold text-indigo-800 mb-2 font-display">③ 부호화 (Encoding)</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">양자화된 숫자 값을 이진수(0, 1)로 변환하는 과정</p>
-                        <div class="mt-4 h-1.5 bg-indigo-50 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-400 w-full animate-pulse"></div>
+                    <div class="glass-card p-8 border-t-4 border-t-indigo-500/50">
+                        <div class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Step 03</div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-3 font-display">부호화 (Encoding)</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">양자화된 수치 데이터를 최종적으로 컴퓨터 언어인 이진수(0, 1)로 변환합니다.</p>
+                        <div class="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 w-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 그래픽 안내 자료 복구 -->
-                <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 shadow-inner">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                            <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4 italic">Analog Wave Capture</span>
-                            <svg viewBox="0 0 200 100" class="w-full h-auto overflow-visible">
-                                <line x1="0" y1="50" x2="200" y2="50" stroke="#f1f5f9" stroke-width="2" />
-                                <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50 C 140 10, 160 10, 180 50" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" opacity="0.8" />
-                                <g class="animate-pulse">
-                                    <circle cx="60" cy="50" r="4" fill="#3b82f6" />
-                                    <line x1="60" y1="50" x2="60" y2="100" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,4" />
-                                </g>
-                            </svg>
-                            <p class="mt-4 text-[11px] font-bold text-slate-400">원래의 소리 (파동)</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4 italic">Quantization Levels</span>
-                            <svg viewBox="0 0 200 100" class="w-full h-auto overflow-visible">
-                                <!-- Horizontal Grid Lines (Levels) -->
-                                <line x1="0" y1="20" x2="200" y2="20" stroke="#fef3c7" stroke-width="1" />
-                                <line x1="0" y1="40" x2="200" y2="40" stroke="#fef3c7" stroke-width="1" />
-                                <line x1="0" y1="60" x2="200" y2="60" stroke="#fef3c7" stroke-width="1" />
-                                <line x1="0" y1="80" x2="200" y2="80" stroke="#fef3c7" stroke-width="1" />
-                                
-                                <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50" fill="none" stroke="#f1f5f9" stroke-width="2" />
-                                
-                                <!-- Staircase Quantized Wave -->
-                                <path d="M 0 60 H 20 V 20 H 50 V 60 H 80 V 80 H 110 V 40 H 140" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                                
-                                <circle cx="50" cy="20" r="4" fill="#f59e0b" />
-                            </svg>
-                            <p class="mt-4 text-[11px] font-bold text-slate-400">정수값으로 변환 (양자화)</p>
-                        </div>
-                        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 flex flex-col items-center">
-                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-4 italic">Bit Stream Output</span>
-                            <div class="w-full font-mono text-indigo-400 text-[10px] break-all leading-relaxed opacity-80 h-16 overflow-hidden">
-                                0100101011100101 0110110001010111 1101010110110101 0101101011100101 0101010111010110 11010101011001
+                <div class="glass-card p-10 mb-16 border border-slate-100/50">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+                        <div class="flex flex-col items-center group">
+                            <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-6">Analog Capture</span>
+                            <div class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
+                                <svg viewBox="0 0 200 100" class="w-full h-full overflow-visible">
+                                    <line x1="0" y1="50" x2="200" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4" />
+                                    <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50 C 140 10, 160 10, 180 50" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" class="drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
+                                    <circle cx="60" cy="50" r="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5" />
+                                </svg>
                             </div>
-                            <p class="mt-4 text-[11px] font-bold text-slate-500">디지털 데이터 (0과 1)</p>
+                            <p class="mt-4 text-[11px] font-bold text-slate-400">연속적인 아날로그 파동</p>
+                        </div>
+                        <div class="flex flex-col items-center group">
+                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6">Quantization Step</span>
+                            <div class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
+                                <svg viewBox="0 0 200 100" class="w-full h-full overflow-visible">
+                                    <g stroke="#e2e8f0" stroke-width="0.5">
+                                        <line x1="0" y1="20" x2="200" y2="20" />
+                                        <line x1="0" y1="40" x2="200" y2="40" />
+                                        <line x1="0" y1="60" x2="200" y2="60" />
+                                        <line x1="0" y1="80" x2="200" y2="80" />
+                                    </g>
+                                    <path d="M 0 60 H 20 V 20 H 50 V 60 H 80 V 80 H 110 V 40 H 140" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
+                                    <circle cx="50" cy="20" r="4" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="1.5" />
+                                </svg>
+                            </div>
+                            <p class="mt-4 text-[11px] font-bold text-slate-400">데이터 양자화 (이산화)</p>
+                        </div>
+                        <div class="flex flex-col items-center group">
+                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">Digital Binary Output</span>
+                            <div class="w-full h-32 bg-slate-900 rounded-2xl p-6 border border-slate-800 flex items-center shadow-inner">
+                                <div class="font-mono text-indigo-400 text-[10px] break-all leading-relaxed opacity-60 h-full overflow-hidden">
+                                    01001010 11100101 01101100 01010111 11010101 10110101 01011010 11100101 01010101 11010110 11010101 01011001
+                                </div>
+                            </div>
+                            <p class="mt-4 text-[11px] font-bold text-slate-500">부호화된 이진 결과물</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 디지털 실험실 3.0: 소리 신호 스튜디오 -->
-            <div class="mt-16 mb-20 p-1 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
-                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full"></div>
-
-                <div class="bg-white/95 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gradient-to-tr from-blue-500 to-indigo-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                    <line x1="12" y1="19" x2="12" y2="23"/>
-                                    <line x1="8" y1="23" x2="16" y2="23"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">소리 데이터의 디지털 고립 <span class="text-blue-600">실시간 실험실</span></h3>
-                                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Real-time Audio Digitization Lab</p>
-                            </div>
+            <div class="premium-lab mt-20 mb-24">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_40px_-10px_rgba(59,130,246,0.5)]">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
                         </div>
-                        <button id="micBtn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm shadow-lg shadow-indigo-100 transition-all flex items-center gap-2">
-                            <span id="micStatusCircle" class="w-2 h-2 bg-white rounded-full animate-pulse hidden"></span>
-                            <span id="micBtnText">마이크 시작하기</span>
-                        </button>
+                        <div>
+                            <h3 class="text-3xl font-black text-white tracking-tight">Audio Capture Lab <span class="text-blue-400">3.0</span></h3>
+                            <p class="text-blue-200/40 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Real-time Oscilloscope Visualization</p>
+                        </div>
                     </div>
+                    <button id="micBtn" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm shadow-[0_15px_30px_rgba(59,130,246,0.3)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.4)] transition-all flex items-center gap-3 active:scale-95">
+                        <span id="micStatusCircle" class="w-2.5 h-2.5 bg-green-400 rounded-full shadow-[0_0_10px_#4ade80] hidden"></span>
+                        <span id="micBtnText">START CAPTURE</span>
+                    </button>
+                </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <!-- Controls Panel -->
                         <div class="lg:col-span-1 space-y-8">
-                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                <h5 class="text-sm font-black text-slate-600 mb-6 flex items-center gap-2">
-                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 1. 표본화 주기 (Sampling Rate)
+                            <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
+                                <h5 class="text-xs font-black text-blue-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
+                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_#3b82f6]"></span> SAMPLING RATE
                                 </h5>
-                                <input type="range" id="sampleRate" min="5" max="100" value="30" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                                <div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400">
-                                    <span>LOW (느림)</span>
-                                    <span id="sampleVal" class="text-blue-600">30 px 간격</span>
-                                    <span>HIGH (정밀)</span>
+                                <input type="range" id="sampleRate" min="5" max="100" value="30" class="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                                <div class="flex justify-between mt-4 text-[9px] font-black text-white/20 tracking-tighter">
+                                    <span>LOW RESOLUTION</span>
+                                    <span id="sampleVal" class="text-blue-400">INTERVAL: 30PX</span>
+                                    <span>HIGH RESOLUTION</span>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                                <h5 class="text-sm font-black text-slate-600 mb-6 flex items-center gap-2">
-                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 2. 양자화 비트 (Bit Depth)
+                            <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
+                                <h5 class="text-xs font-black text-amber-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
+                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></span> QUANTIZATION DEPTH
                                 </h5>
-                                <div class="grid grid-cols-4 gap-2">
-                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="1">1bit</button>
-                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="2">2bit</button>
-                                    <button class="bit-btn active px-2 py-3 rounded-xl border-2 border-amber-400 bg-amber-50 text-xs font-black text-amber-600 shadow-sm" data-bits="4">4bit</button>
-                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="8">8bit</button>
+                                <div class="grid grid-cols-4 gap-3">
+                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="1">1 BIT</button>
+                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="2">2 BIT</button>
+                                    <button class="bit-btn active px-2 py-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] font-black text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.1)]" data-bits="4">4 BIT</button>
+                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="8">8 BIT</button>
                                 </div>
-                                <p class="mt-4 text-[10px] text-slate-400 line-clamp-2 leading-relaxed">양자화 비트가 높을수록 원래 소리의 크기를 더 세밀하게(많은 단계로) 표현할 수 있습니다.</p>
                             </div>
                         </div>
 
@@ -798,7 +885,7 @@
 
             for (const char of text) {
                 const charCard = document.createElement('div');
-                charCard.className = 'bg-white border border-slate-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-6 animate-slide-in shadow-sm';
+                charCard.className = 'glass-card border-none bg-white/40 p-6 flex flex-col sm:flex-row items-center gap-8 animate-slide-in shadow-xl shadow-slate-200/20';
 
                 const charCode = char.charCodeAt(0);
                 const isHangul = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(char);
@@ -864,11 +951,11 @@
         document.querySelectorAll('.bit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.bit-btn').forEach(b => {
-                    b.classList.remove('active', 'border-amber-400', 'bg-amber-50', 'text-amber-600');
-                    b.classList.add('border-slate-200', 'text-slate-500');
+                    b.classList.remove('active', 'bg-amber-500/10', 'border-amber-500/30', 'text-amber-400', 'shadow-[0_0_20px_rgba(245,158,11,0.1)]');
+                    b.classList.add('border-white/5', 'text-white/30');
                 });
-                btn.classList.add('active', 'border-amber-400', 'bg-amber-50', 'text-amber-600');
-                btn.classList.remove('border-slate-200', 'text-slate-500');
+                btn.classList.add('active', 'bg-amber-500/10', 'border-amber-500/30', 'text-amber-400', 'shadow-[0_0_20px_rgba(245,158,11,0.1)]');
+                btn.classList.remove('border-white/5', 'text-white/30');
                 currentBits = parseInt(btn.dataset.bits);
             });
         });
