@@ -611,47 +611,154 @@
                 }
             </style>
 
-            <!-- 3-3. 소리 데이터 -->
-            <div>
-                <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                    <span class="p-1 bg-emerald-100 rounded mr-2">🎵</span> 소리: 아날로그의 디지털화 (ADC)
-                </h3>
-                <p class="mb-6 text-slate-600">끊김 없는 파동(아날로그)을 일정한 시간 간격으로 아주 잘게 잘라(샘플링) 숫자로 기록합니다.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- 3. 소리 데이터의 디지털화 -->
+            <div class="mt-16 mb-12">
+                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-slate-200 inline-block">3. 소리 데이터의 디지털화</h2>
+                <p class="mb-8 text-slate-600">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 <strong>아날로그 신호</strong>를 0과 1의 <strong>디지털 신호</strong>로 바꾸어야 합니다.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-blue-400">
-                        <h4 class="font-bold text-blue-800 mb-2 font-display">샘플링</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">연속적인 파동에서 특정 순간의 값을 채집하는 과정</p>
+                        <h4 class="font-bold text-blue-800 mb-2 font-display">① 표본화 (Sampling)</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">아날로그 파형을 일정 시간 간격으로 잘게 나누는 과정</p>
+                        <div class="mt-4 h-1.5 bg-blue-50 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-400 w-1/3 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-amber-400">
+                        <h4 class="font-bold text-amber-800 mb-2 font-display">② 양자화 (Quantization)</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">나누어진 각 표본의 값을 정수 값으로 변환하는 과정</p>
+                        <div class="mt-4 h-1.5 bg-amber-50 rounded-full overflow-hidden">
+                            <div class="h-full bg-amber-400 w-2/3 animate-pulse"></div>
+                        </div>
                     </div>
                     <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-indigo-400">
-                        <h4 class="font-bold text-indigo-800 mb-2 font-display">양자화</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">채집한 값을 가장 가까운 정수 단계로 반올림함</p>
-                    </div>
-                    <div class="bg-white p-5 border shadow-sm rounded-lg border-t-4 border-t-purple-400">
-                        <h4 class="font-bold text-purple-800 mb-2 font-display">부호화</h4>
-                        <p class="text-xs text-gray-500 leading-relaxed">숫자를 최종적으로 0과 1의 조합으로 바꿈</p>
+                        <h4 class="font-bold text-indigo-800 mb-2 font-display">③ 부호화 (Encoding)</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed overflow-hidden whitespace-nowrap text-ellipsis">양자화된 숫자 값을 이진수(0, 1)로 변환하는 과정</p>
+                        <div class="mt-4 h-1.5 bg-indigo-50 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-400 w-full animate-pulse"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white p-4 rounded-xl shadow-sm">
-                            <svg viewBox="0 -25 200 170" class="w-full h-auto">
-                                <line x1="0" y1="60" x2="200" y2="60" stroke="#e2e8f0" stroke-width="2" />
-                                <path d="M 0 60 C 30 10, 70 10, 100 60 C 130 110, 170 110, 200 60" fill="none"
-                                    stroke="#ef4444" stroke-width="3" opacity="0.6" />
-                                <circle cx="50" cy="10" r="5" fill="#3b82f6" />
-                                <line x1="50" y1="60" x2="50" y2="10" stroke="#3b82f6" stroke-width="2"
-                                    stroke-dasharray="2,2" />
+                <!-- 그래픽 안내 자료 복구 -->
+                <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-200 shadow-inner">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
+                            <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-4 italic">Analog Wave Capture</span>
+                            <svg viewBox="0 0 200 100" class="w-full h-auto overflow-visible">
+                                <line x1="0" y1="50" x2="200" y2="50" stroke="#f1f5f9" stroke-width="2" />
+                                <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50 C 140 10, 160 10, 180 50" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+                                <g class="animate-pulse">
+                                    <circle cx="60" cy="50" r="4" fill="#3b82f6" />
+                                    <line x1="60" y1="50" x2="60" y2="100" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,4" />
+                                </g>
                             </svg>
+                            <p class="mt-4 text-[11px] font-bold text-slate-400">원래의 소리 (파동)</p>
                         </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-center flex flex-col justify-center">
-                            <span class="text-xs text-slate-400 mb-1">Discrete Values</span>
-                            <span class="font-bold text-slate-800">1101 0010...</span>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
+                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-4 italic">Quantization Levels</span>
+                            <svg viewBox="0 0 200 100" class="w-full h-auto overflow-visible">
+                                <!-- Horizontal Grid Lines (Levels) -->
+                                <line x1="0" y1="20" x2="200" y2="20" stroke="#fef3c7" stroke-width="1" />
+                                <line x1="0" y1="40" x2="200" y2="40" stroke="#fef3c7" stroke-width="1" />
+                                <line x1="0" y1="60" x2="200" y2="60" stroke="#fef3c7" stroke-width="1" />
+                                <line x1="0" y1="80" x2="200" y2="80" stroke="#fef3c7" stroke-width="1" />
+                                
+                                <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50" fill="none" stroke="#f1f5f9" stroke-width="2" />
+                                
+                                <!-- Staircase Quantized Wave -->
+                                <path d="M 0 60 H 20 V 20 H 50 V 60 H 80 V 80 H 110 V 40 H 140" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                
+                                <circle cx="50" cy="20" r="4" fill="#f59e0b" />
+                            </svg>
+                            <p class="mt-4 text-[11px] font-bold text-slate-400">정수값으로 변환 (양자화)</p>
                         </div>
-                        <div
-                            class="bg-white p-4 rounded-xl shadow-sm flex items-center justify-center font-mono text-[10px] text-purple-600 break-all leading-tight">
-                            01000001010011100100010000100000
+                        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 flex flex-col items-center">
+                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-4 italic">Bit Stream Output</span>
+                            <div class="w-full font-mono text-indigo-400 text-[10px] break-all leading-relaxed opacity-80 h-16 overflow-hidden">
+                                0100101011100101 0110110001010111 1101010110110101 0101101011100101 0101010111010110 11010101011001
+                            </div>
+                            <p class="mt-4 text-[11px] font-bold text-slate-500">디지털 데이터 (0과 1)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 디지털 실험실 3.0: 소리 신호 스튜디오 -->
+            <div class="mt-16 mb-20 p-1 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full"></div>
+
+                <div class="bg-white/95 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-tr from-blue-500 to-indigo-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    <line x1="12" y1="19" x2="12" y2="23"/>
+                                    <line x1="8" y1="23" x2="16" y2="23"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-800 tracking-tight">소리 데이터의 디지털 고립 <span class="text-blue-600">실시간 실험실</span></h3>
+                                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Real-time Audio Digitization Lab</p>
+                            </div>
+                        </div>
+                        <button id="micBtn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm shadow-lg shadow-indigo-100 transition-all flex items-center gap-2">
+                            <span id="micStatusCircle" class="w-2 h-2 bg-white rounded-full animate-pulse hidden"></span>
+                            <span id="micBtnText">마이크 시작하기</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Controls Panel -->
+                        <div class="lg:col-span-1 space-y-8">
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                <h5 class="text-sm font-black text-slate-600 mb-6 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 1. 표본화 주기 (Sampling Rate)
+                                </h5>
+                                <input type="range" id="sampleRate" min="5" max="100" value="30" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                                <div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400">
+                                    <span>LOW (느림)</span>
+                                    <span id="sampleVal" class="text-blue-600">30 px 간격</span>
+                                    <span>HIGH (정밀)</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                                <h5 class="text-sm font-black text-slate-600 mb-6 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 2. 양자화 비트 (Bit Depth)
+                                </h5>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="1">1bit</button>
+                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="2">2bit</button>
+                                    <button class="bit-btn active px-2 py-3 rounded-xl border-2 border-amber-400 bg-amber-50 text-xs font-black text-amber-600 shadow-sm" data-bits="4">4bit</button>
+                                    <button class="bit-btn px-2 py-3 rounded-xl border-2 border-slate-200 text-xs font-black text-slate-500 hover:border-amber-300 transition-all" data-bits="8">8bit</button>
+                                </div>
+                                <p class="mt-4 text-[10px] text-slate-400 line-clamp-2 leading-relaxed">양자화 비트가 높을수록 원래 소리의 크기를 더 세밀하게(많은 단계로) 표현할 수 있습니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- Visualization Area -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative min-h-[320px]">
+                                <div class="absolute top-4 left-4 z-20 flex gap-2">
+                                    <span class="px-2 py-1 bg-white/10 rounded text-[9px] font-black text-white/50 border border-white/5 uppercase">Waveform View</span>
+                                    <span class="px-2 py-1 bg-red-500/20 rounded text-[9px] font-black text-red-400 border border-red-500/20 uppercase">Analog</span>
+                                    <span class="px-2 py-1 bg-blue-500/20 rounded text-[9px] font-black text-blue-400 border border-blue-500/20 uppercase">Digital</span>
+                                </div>
+                                <canvas id="audioCanvas" class="w-full h-full block"></canvas>
+                            </div>
+
+                            <div class="bg-indigo-900 rounded-2xl p-6 relative overflow-hidden">
+                                <div class="relative z-10">
+                                    <h5 class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-3">3. 이진 부호화 스트림 (Binary Encoding)</h5>
+                                    <div id="audioBinaryStream" class="font-mono text-indigo-100 text-sm whitespace-nowrap overflow-hidden opacity-80 h-6">
+                                        0000000000000000000000000000000000000000...
+                                    </div>
+                                </div>
+                                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-indigo-900 to-transparent z-20"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -739,6 +846,141 @@
                 top: binaryResultArea.scrollHeight,
                 behavior: 'smooth'
             });
+        });
+
+        // --- Audio Digitization Logic ---
+        let audioContext, analyser, dataArray, source, animationId;
+        const micBtn = document.getElementById('micBtn');
+        const micBtnText = document.getElementById('micBtnText');
+        const micStatusCircle = document.getElementById('micStatusCircle');
+        const canvas = document.getElementById('audioCanvas');
+        const ctx = canvas.getContext('2d');
+        const sampleRateInput = document.getElementById('sampleRate');
+        const sampleValDisplay = document.getElementById('sampleVal');
+        const binaryStream = document.getElementById('audioBinaryStream');
+        let currentBits = 4;
+        let isRecording = false;
+
+        document.querySelectorAll('.bit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bit-btn').forEach(b => {
+                    b.classList.remove('active', 'border-amber-400', 'bg-amber-50', 'text-amber-600');
+                    b.classList.add('border-slate-200', 'text-slate-500');
+                });
+                btn.classList.add('active', 'border-amber-400', 'bg-amber-50', 'text-amber-600');
+                btn.classList.remove('border-slate-200', 'text-slate-500');
+                currentBits = parseInt(btn.dataset.bits);
+            });
+        });
+
+        sampleRateInput.addEventListener('input', (e) => {
+            sampleValDisplay.innerText = `${e.target.value} px 간격`;
+        });
+
+        async function initAudio() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                
+                isRecording = true;
+                micBtnText.innerText = '실습 중 (클릭 시 중단)';
+                micStatusCircle.classList.remove('hidden');
+                draw();
+            } catch (err) {
+                alert('마이크 접근 권한이 필요합니다.');
+                console.error(err);
+            }
+        }
+
+        function draw() {
+            if (!isRecording) return;
+            animationId = requestAnimationFrame(draw);
+            
+            // Set canvas resolution
+            if (canvas.width !== canvas.clientWidth) {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
+
+            const bufferLength = analyser.frequencyBinCount;
+            const waveData = new Uint8Array(bufferLength);
+            analyser.getByteTimeDomainData(waveData);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Grid
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.height; i+=20) {
+                ctx.beginPath();ctx.moveTo(0, i);ctx.lineTo(canvas.width, i);ctx.stroke();
+            }
+
+            const step = parseInt(sampleRateInput.value);
+            const sliceWidth = canvas.width / bufferLength;
+            
+            // 1. Analog Wave (Red)
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+            ctx.lineWidth = 2;
+            let x = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const v = waveData[i] / 128.0;
+                const y = v * canvas.height / 2;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+                x += sliceWidth;
+            }
+            ctx.stroke();
+
+            // 2. Sampled & Quantized (Digital Blue)
+            const levels = Math.pow(2, currentBits);
+            const quantizationUnit = canvas.height / levels;
+            ctx.beginPath();
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            
+            let binaryOutput = "";
+            let lastY = canvas.height / 2;
+            
+            for (let i = 0; i < bufferLength; i += Math.max(1, Math.floor(step / (canvas.width / bufferLength)))) {
+                const sampleX = (i / bufferLength) * canvas.width;
+                const v = waveData[i] / 128.0;
+                const rawY = v * canvas.height / 2;
+                
+                // Quantize
+                const level = Math.floor(rawY / quantizationUnit);
+                const quantY = level * quantizationUnit + (quantizationUnit / 2);
+                
+                // Draw Staircase
+                ctx.lineTo(sampleX, lastY);
+                ctx.lineTo(sampleX, quantY);
+                
+                // Collect Binary bits (simple mapping for visualization)
+                binaryOutput += level.toString(2).padStart(currentBits, '0') + " ";
+                lastY = quantY;
+            }
+            ctx.stroke();
+
+            // Labels for Binary
+            binaryStream.innerText = binaryOutput;
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (!isRecording) {
+                initAudio();
+            } else {
+                isRecording = false;
+                cancelAnimationFrame(animationId);
+                micBtnText.innerText = '마이크 시작하기';
+                micStatusCircle.classList.add('hidden');
+                if (audioContext) audioContext.close();
+            }
         });
     </script>
     </div>

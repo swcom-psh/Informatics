@@ -13,6 +13,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <style>
+        :root {
+            --notebook-bg: #fdfbf7;
+            --paper-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            --accent-sage: #6b8277;
+            --accent-terracotta: #c46a50;
+            --warm-neutral: #f5f0e6;
+        }
+
         body {
             font-family: 'Pretendard', sans-serif;
             background-color: #dcd3c6;
@@ -22,19 +30,21 @@
             line-height: 1.8;
             display: flex;
             justify-content: center;
-            background-image: radial-gradient(#d3c8b8 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: radial-gradient(#d3c8b8 2px, transparent 2px);
+            background-size: 30px 30px;
         }
 
         .notebook-container {
-            background-color: #fdfbf7;
+            background-color: var(--notebook-bg);
+            background-image: var(--paper-texture);
             width: 95%;
             max-width: 1300px;
             border-radius: 4px 12px 12px 4px;
-            box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.15), inset 1px 0 0 rgba(0, 0, 0, 0.05), inset -1px 0 0 rgba(0, 0, 0, 0.03);
+            box-shadow: -15px 15px 35px rgba(0, 0, 0, 0.1), inset 1px 0 0 rgba(0, 0, 0, 0.05);
             position: relative;
-            padding: 3rem 3rem 4rem 5rem;
+            padding: 3rem 3rem 4rem 6rem;
             min-height: 1000px;
+            border-left: 1px solid #e1d8c8;
         }
 
         .binder-holes {
@@ -156,6 +166,25 @@
             display: inline;
         }
 
+        /* Hand-drawn underline effect */
+        .sketch-underline {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sketch-underline::after {
+            content: "";
+            position: absolute;
+            left: -2px;
+            right: -2px;
+            bottom: 2px;
+            height: 12px;
+            background: rgba(196, 106, 80, 0.15);
+            z-index: -1;
+            transform: skew(-15deg) rotate(-0.5deg);
+            border-radius: 4px;
+        }
+
         /* New Visual Styles */
         .rle-visual {
             display: flex;
@@ -215,25 +244,47 @@
 
         .image-card {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px) rotate(0.5deg);
         }
 
         .image-placeholder {
-            height: 350px;
+            height: 380px;
             background-size: cover;
             background-position: center;
+            border-radius: 2px;
+            border: 1px solid #f0f0f0;
             position: relative;
         }
 
-        .artifact-noise {
+        /* Tape effect for cards */
+        .tape-segment {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            width: 80px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(1px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 20;
+        }
+
+        .tape-segment::after {
+            content: "";
             position: absolute;
             inset: 0;
-            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-            opacity: 0.2;
-            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23f)' opacity='0.2'/%3E%3C/svg%3E");
         }
 
         /* Digital Compression Lab Redesign */
@@ -278,8 +329,15 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-lab-in {
@@ -451,47 +509,74 @@
                 </p>
             </div>
 
-            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 데이터 압축의 기초: 인코딩과 디코딩 (코덱, CODEC)</h2>
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. <span
+                    class="sketch-underline">데이터 압축의 기초</span>: 인코딩과 디코딩 (코덱, CODEC)</h2>
             <p class="mb-4">
                 데이터를 작게 뭉치는 과정을 <span class="font-bold text-blue-600 underline">인코딩(Encoding)</span>, 다시 원래대로 사용할 수 있게
                 푸는 과정을 <span class="font-bold text-green-600 underline">디코딩(Decoding)</span>이라고 부릅니다. 이 둘을 전문적으로 합쳐서
                 수행하는 소프트웨어를 <span class="font-bold bg-amber-200 px-1 rounded">코덱(CODEC: Coder + Decoder)</span>이라고 합니다.
             </p>
 
-            <div class="my-8 p-6 bg-slate-50 rounded-xl border border-slate-200">
-                <h4 class="font-bold text-slate-700 mb-4 text-center">🔄 코덱의 작동 흐름</h4>
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-2xl mx-auto">
-                    <div class="text-center">
+            <div
+                class="my-8 p-8 bg-slate-50/50 rounded-[2rem] border border-slate-200 shadow-inner relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-500/5 blur-[50px] rounded-full"></div>
+                <h4 class="font-black text-slate-700 mb-8 text-center uppercase tracking-widest text-xs italic">🔄 코덱의
+                    작동 흐름 (CODEC Workflow)</h4>
+                <div
+                    class="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-3xl mx-auto relative z-10">
+                    <div class="text-center group">
                         <div
-                            class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl shadow-sm border border-blue-200">
+                            class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-3 text-3xl shadow-sm border border-slate-100 group-hover:scale-110 transition-transform">
                             📄</div>
-                        <span class="text-sm font-bold text-slate-600">원본 데이터</span>
+                        <span class="text-xs font-black text-slate-500">원본 데이터</span>
                     </div>
-                    <div class="hidden sm:block text-slate-300 text-2xl">→</div>
-                    <div class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold shadow-md whitespace-nowrap">
-                        Encoder (압축)</div>
-                    <div class="hidden sm:block text-slate-300 text-2xl">→</div>
-                    <div class="text-center">
+                    <div class="hidden sm:block text-slate-200">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                            <path d="M5 10h30M30 5l5 5-5 5" />
+                        </svg>
+                    </div>
+                    <div
+                        class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black shadow-xl shadow-blue-100 whitespace-nowrap text-sm tracking-tight scale-105">
+                        Encoder <span class="opacity-50 font-normal">(압축)</span></div>
+                    <div class="hidden sm:block text-slate-200">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                            <path d="M5 10h30M30 5l5 5-5 5" />
+                        </svg>
+                    </div>
+                    <div class="text-center group">
                         <div
-                            class="w-12 h-12 bg-amber-100 rounded flex items-center justify-center mx-auto mb-2 text-xl shadow-sm border border-amber-200">
+                            class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-sm border border-amber-100 group-hover:rotate-12 transition-transform">
                             📦</div>
-                        <span class="text-sm font-bold text-slate-600 break-keep whitespace-nowrap">압축된 데이터</span>
+                        <span class="text-xs font-black text-amber-600">압축 완료</span>
                     </div>
-                    <div class="hidden sm:block text-slate-300 text-2xl">→</div>
-                    <div class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-md whitespace-nowrap">
-                        Decoder (복원)</div>
-                    <div class="hidden sm:block text-slate-300 text-2xl">→</div>
-                    <div class="text-center">
+                    <div class="hidden sm:block text-slate-200">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                            <path d="M5 10h30M30 5l5 5-5 5" />
+                        </svg>
+                    </div>
+                    <div
+                        class="bg-emerald-600 text-white px-6 py-3 rounded-2xl font-black shadow-xl shadow-emerald-100 whitespace-nowrap text-sm tracking-tight scale-105">
+                        Decoder <span class="opacity-50 font-normal">(복원)</span></div>
+                    <div class="hidden sm:block text-slate-200">
+                        <svg width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                            <path d="M5 10h30M30 5l5 5-5 5" />
+                        </svg>
+                    </div>
+                    <div class="text-center group">
                         <div
-                            class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl shadow-sm border border-green-200">
+                            class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-3 text-3xl shadow-sm border border-slate-100 group-hover:scale-110 transition-transform">
                             📄</div>
-                        <span class="text-sm font-bold text-slate-600 break-keep whitespace-nowrap">복원된 데이터</span>
+                        <span class="text-xs font-black text-slate-500">복원된 데이터</span>
                     </div>
                 </div>
             </div>
 
-            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 두 가지 압축 방법: 뼈를 깎을
-                것인가, 빈틈만 줄일 것인가?</h2>
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. <span
+                    class="sketch-underline">두 가지 압축 방법</span>: 뼈를 깎을 것인가, 빈틈만 줄일 것인가?</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
                 <!-- 손실 압축 -->
@@ -526,41 +611,90 @@
                 </div>
             </div>
 
-            <!-- 시각 자료: Lossy vs Lossless 비교 -->
-            <div class="my-10 bg-slate-50 p-8 rounded-2xl border border-slate-200">
-                <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">📱 한눈에 보는 화질 차이 (시뮬레이션)</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    <div class="image-card">
-                        <div class="image-placeholder" style="background-image: url('../sample_original.png');"></div>
-                        <div class="p-4 bg-white border-t">
-                            <span
-                                class="inline-block bg-green-100 text-green-700 text-xs px-2 py-2 rounded font-bold mb-2">무손실
-                                (PNG/FLAC)</span>
-                            <p class="text-sm text-slate-600">원본의 모든 픽셀과 소리를 그대로 유지합니다. 깨끗하고 선명합니다.</p>
+            <!-- 시각 자료: Lossy vs Lossless 비교 (교실 사진 버전) -->
+            <div
+                class="my-10 bg-white/50 p-10 rounded-[2.5rem] border border-slate-200 relative overflow-hidden backdrop-blur-sm">
+                <div class="absolute top-0 right-0 p-4">
+                    <svg width="60" height="60" viewBox="0 0 100 100" class="opacity-10 text-terracotta">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-dasharray="5,5" />
+                    </svg>
+                </div>
+
+                <h3 class="text-2xl font-black text-slate-800 mb-10 text-center tracking-tight">
+                    📸 <span class="sketch-underline">진짜 압축의 원리</span>: 인간의 시각은 완벽하지 않다!
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
+                    <!-- 중앙 VS 뱃지 -->
+                    <div
+                        class="hidden md:flex absolute inset-0 items-center justify-center p-4 pointer-events-none z-30">
+                        <div
+                            class="bg-white px-4 py-2 rounded-full border-2 border-slate-100 shadow-lg font-black text-slate-400 italic">
+                            VS</div>
+                    </div>
+
+                    <!-- 무손실/원본 카드 -->
+                    <div class="image-card group">
+                        <div class="tape-segment"></div>
+                        <div class="image-placeholder" style="background-image: url('class_photo_original.jpg');"></div>
+                        <div class="p-6 bg-white/95 border-t">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span
+                                    class="px-2 py-1 bg-green-100 text-green-700 text-[10px] font-black uppercase rounded tracking-wider">Original
+                                    Detail</span>
+                                <span class="text-slate-400 text-xs font-mono">100% Data</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 mb-2">무손실 (Original)</h4>
+                            <p class="text-sm text-slate-500 leading-relaxed">
+                                우리 반 친구들의 모습이 담긴 원본 사진입니다. 수천만 가지의 미세한 색상 정보를 모두 담고 있어 용량이 매우 큽니다.
+                            </p>
                         </div>
                     </div>
-                    <div class="image-card">
-                        <div class="image-placeholder" style="background-image: url('../sample_compressed.png');"></div>
-                        <div class="p-4 bg-white border-t">
-                            <span
-                                class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-2 rounded font-bold mb-2">손실
-                                (JPEG/MP3)</span>
-                            <p class="text-sm text-slate-600 font-medium italic">"디지털 풍화" 발생! 압축률을 높이면 경계면이 뭉개지고 지저분한
-                                노이즈(Artifact)가 생깁니다.</p>
+
+                    <!-- 손실/최적화 카드 -->
+                    <div class="image-card group">
+                        <div class="tape-segment" style="transform: translateX(-50%) rotate(-3deg);"></div>
+                        <div class="image-placeholder" style="background-image: url('class_photo_optimized.jpg');">
+                        </div>
+                        <div class="p-6 bg-white/95 border-t">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span
+                                    class="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase rounded tracking-wider">Perceptual
+                                    optimization</span>
+                                <span class="text-amber-600 text-xs font-mono font-bold">~15% Size</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 mb-2">손실 압축 (Optimized)</h4>
+                            <p class="text-sm text-slate-500 leading-relaxed font-medium">
+                                <span class="text-amber-600 font-bold">인간이 민감하지 않은 색상 차이</span>를 수학적으로 단순화했습니다. 자세히 보지
+                                않으면 원본과 큰 차이를 느끼기 어렵지만, 용량은 획기적으로 줄어듭니다.
+                            </p>
                         </div>
                     </div>
+                </div>
+
+                <div class="mt-10 p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start gap-3">
+                    <span class="text-xl">💡</span>
+                    <p class="text-xs text-amber-800 leading-normal">
+                        <strong>핵심 포인트:</strong> 사진이나 영상 같은 멀티미디어는 1bit의 오차가 치명적이지 않습니다. 따라서 '적당히 버리는' 손실 압축을 통해 우리는
+                        유튜브와 넷플릭스를 끊김 없이 즐길 수 있는 것입니다!
+                    </p>
                 </div>
             </div>
 
             <!-- 오디오 비교 실험실 (추가됨) -->
             <div class="my-10 bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm">
                 <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">🎧 귀로 듣는 오디오 압축 차이 (시뮬레이션)</h3>
-                <p class="text-sm text-slate-600 mb-6 text-center">앞선 과정을 거쳐 저장된 거대한 원본 오디오(.wav)가, <strong>무손실 압축(.flac)</strong>과 <strong>극단적 손실 압축(.mp3)</strong>에서 어떻게 달라지는지 들어보세요.</p>
+                <p class="text-sm text-slate-600 mb-6 text-center">앞선 과정을 거쳐 저장된 거대한 원본 오디오(.wav)가, <strong>무손실
+                        압축(.flac)</strong>과 <strong>극단적 손실 압축(.mp3)</strong>에서 어떻게 달라지는지 들어보세요.</p>
                 <div class="space-y-4">
                     <!-- 1. 원본 (WAV) -->
-                    <div class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <div
+                        class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                         <div class="w-full sm:w-1/4 mb-3 sm:mb-0">
-                            <span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded font-bold mb-1">비압축 원본</span>
+                            <span
+                                class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded font-bold mb-1">비압축
+                                원본</span>
                             <div class="font-bold text-gray-900">WAV (오리지널)</div>
                             <div class="text-xs text-gray-500 font-mono">약 26.5 MB</div>
                         </div>
@@ -574,9 +708,12 @@
                         </div>
                     </div>
                     <!-- 2. 무손실 (FLAC) -->
-                    <div class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-green-400">
+                    <div
+                        class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-green-400">
                         <div class="w-full sm:w-1/4 mb-3 sm:mb-0">
-                            <span class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold mb-1">무손실 압축</span>
+                            <span
+                                class="inline-block bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold mb-1">무손실
+                                압축</span>
                             <div class="font-bold text-gray-900">FLAC</div>
                             <div class="text-xs text-green-600 font-mono font-bold">약 17.4 MB</div>
                         </div>
@@ -590,9 +727,12 @@
                         </div>
                     </div>
                     <!-- 3. 손실 압축 (MP3 극단적) -->
-                    <div class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-red-400">
+                    <div
+                        class="flex flex-col sm:flex-row items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-red-400">
                         <div class="w-full sm:w-1/4 mb-3 sm:mb-0">
-                            <span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold mb-1">극단적 손실 압축</span>
+                            <span
+                                class="inline-block bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold mb-1">극단적
+                                손실 압축</span>
                             <div class="font-bold text-gray-900">MP3 (32kbps)</div>
                             <div class="text-xs text-red-500 font-mono font-bold">약 0.6 MB</div>
                         </div>
@@ -610,7 +750,8 @@
 
 
             <!-- RLE 시각화와 압축 실험실 -->
-            <h2 class="text-2xl font-bold mt-16 mb-4 pb-2 border-b border-dashed border-gray-300">3. 어떻게 줄이나요? - 무손실 압축의 원리</h2>
+            <h2 class="text-2xl font-bold mt-16 mb-4 pb-2 border-b border-dashed border-gray-300">3. 어떻게 줄이나요? - 무손실 압축의
+                원리</h2>
             <div class="concept-box rotate-0">
                 <h3 class="font-bold text-xl text-blue-900 mb-4">🧩 런-길이 부호화 (Run-Length Encoding)</h3>
                 <p class="text-blue-800 mb-4">
@@ -656,7 +797,8 @@
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-3 px-1">
                             <label class="block text-sm font-bold text-slate-500">입력 시뮬레이션</label>
-                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Real-time Processing</span>
+                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Real-time
+                                Processing</span>
                         </div>
                         <div class="lab-input-area focus-within:ring-4 focus-within:ring-blue-50">
                             <textarea id="compression-input" rows="2"
@@ -671,36 +813,49 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
                         <div class="space-y-6">
-                            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
+                            <div
+                                class="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-tight">Original Size</span>
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-tight">Original
+                                        Size</span>
                                     <span class="text-xs font-bold text-slate-400 italic">Bytes</span>
                                 </div>
-                                <div id="original-size" class="text-4xl font-black text-slate-800 tracking-tighter">-</div>
+                                <div id="original-size" class="text-4xl font-black text-slate-800 tracking-tighter">-
+                                </div>
                             </div>
 
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-xl shadow-blue-200 text-white relative overflow-hidden group">
-                                <div class="absolute -right-4 -bottom-4 text-white/10 text-8xl font-black group-hover:scale-110 transition-transform duration-500">ZIP</div>
+                            <div
+                                class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-xl shadow-blue-200 text-white relative overflow-hidden group">
+                                <div
+                                    class="absolute -right-4 -bottom-4 text-white/10 text-8xl font-black group-hover:scale-110 transition-transform duration-500">
+                                    ZIP</div>
                                 <div class="relative z-10">
                                     <div class="flex items-center justify-between mb-3">
-                                        <span class="text-xs font-bold opacity-80 uppercase tracking-wider">Compressed Data</span>
-                                        <span class="px-2 py-0.5 bg-white/20 rounded text-[9px] font-bold uppercase backdrop-blur-md">Encoded</span>
+                                        <span class="text-xs font-bold opacity-80 uppercase tracking-wider">Compressed
+                                            Data</span>
+                                        <span
+                                            class="px-2 py-0.5 bg-white/20 rounded text-[9px] font-bold uppercase backdrop-blur-md">Encoded</span>
                                     </div>
-                                    <div id="compressed-result" class="text-3xl font-black truncate drop-shadow-md">-</div>
+                                    <div id="compressed-result" class="text-3xl font-black truncate drop-shadow-md">-
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div id="ratio-bar-container" class="hidden animate-lab-in">
-                            <div class="h-full bg-white p-6 rounded-2xl border border-blue-50 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center">
+                            <div
+                                class="h-full bg-white p-6 rounded-2xl border border-blue-50 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col justify-center">
                                 <div class="flex justify-between items-end mb-5">
                                     <div>
-                                        <span class="block text-[10px] font-black text-blue-500 uppercase mb-1 tracking-widest">Efficiency</span>
+                                        <span
+                                            class="block text-[10px] font-black text-blue-500 uppercase mb-1 tracking-widest">Efficiency</span>
                                         <h5 class="text-xl font-black text-slate-800">데이터 다이어트 점수</h5>
                                     </div>
-                                    <span id="compression-ratio" class="text-5xl font-black text-blue-600 tracking-tighter">0%</span>
+                                    <span id="compression-ratio"
+                                        class="text-5xl font-black text-blue-600 tracking-tighter">0%</span>
                                 </div>
-                                <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden p-1 border border-slate-50 shadow-inner">
+                                <div
+                                    class="w-full bg-slate-100 h-4 rounded-full overflow-hidden p-1 border border-slate-50 shadow-inner">
                                     <div id="ratio-bar"
                                         class="bg-gradient-to-r from-blue-400 via-blue-600 to-indigo-600 h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
                                         style="width: 0%"></div>
@@ -716,26 +871,42 @@
             </div>
 
             <!-- Huffman Coding Concept Section -->
-            <div class="concept-box rotate-0 border-l-8 border-l-indigo-500 mb-12">
-                <h3 class="font-bold text-xl text-indigo-900 mb-4">🌳 허프만 코딩 (Huffman Coding)</h3>
+            <div class="concept-box border-l-8 border-l-indigo-500 mb-12"
+                style="background-color: #f5f3ff; border: 1px solid #ddd6fe; transform: rotate(0.5deg);">
+                <div class="tape-segment" style="top: -10px; width: 60px; background: rgba(196, 106, 80, 0.2);"></div>
+                <h3 class="font-black text-xl text-indigo-900 mb-4 flex items-center">
+                    <span class="mr-3">🌳</span> <span class="sketch-underline">허프만 코딩</span> (Huffman Coding)
+                </h3>
                 <p class="text-indigo-800 mb-6 leading-relaxed">
-                    데이터의 <span class="highlighter">출현 빈도</span>에 따라 서로 다른 길이의 부호를 부여하는 방식입니다. 자주 나오는 데이터에는 짧은 코드를, 드물게 나오는 데이터에는 긴 코드를 주어 전체 크기를 효율적으로 줄이는 지능적인 방법입니다.
+                    데이터의 <span class="highlighter">출현 빈도</span>에 따라 서로 다른 길이의 부호를 부여하는 방식입니다. 자주 나오는 데이터에는 짧은 코드를, 드물게
+                    나오는 데이터에는 긴 코드를 주어 전체 크기를 효율적으로 줄이는 지능적인 방법입니다.
                 </p>
 
                 <div class="rle-visual bg-indigo-50/50 border-indigo-100 flex-col sm:flex-row gap-8 py-8 shadow-inner">
                     <div class="flex flex-col items-center">
-                        <span class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">자주 나옴 (High Freq)</span>
-                        <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-200">A</div>
-                        <div class="mt-3 py-1 px-3 bg-indigo-100 rounded-full text-indigo-700 font-mono font-bold text-sm text-center">Code: 0</div>
+                        <span class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">자주 나옴 (High
+                            Freq)</span>
+                        <div
+                            class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-indigo-200">
+                            A</div>
+                        <div
+                            class="mt-3 py-1 px-3 bg-indigo-100 rounded-full text-indigo-700 font-mono font-bold text-sm text-center">
+                            Code: 0</div>
                     </div>
                     <div class="flex items-center justify-center font-black text-slate-300 italic px-4">VS</div>
                     <div class="flex flex-col items-center">
-                        <span class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">드물게 나옴 (Low Freq)</span>
-                        <div class="w-14 h-14 bg-slate-200 rounded-2xl flex items-center justify-center text-slate-500 text-xl font-black shadow-md border border-slate-300">Z</div>
-                        <div class="mt-3 py-1 px-3 bg-slate-200 rounded-full text-slate-600 font-mono font-bold text-sm text-center">Code: 1101</div>
+                        <span class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-widest">드물게 나옴 (Low
+                            Freq)</span>
+                        <div
+                            class="w-14 h-14 bg-slate-200 rounded-2xl flex items-center justify-center text-slate-500 text-xl font-black shadow-md border border-slate-300">
+                            Z</div>
+                        <div
+                            class="mt-3 py-1 px-3 bg-slate-200 rounded-full text-slate-600 font-mono font-bold text-sm text-center">
+                            Code: 1101</div>
                     </div>
                 </div>
-                <p class="text-center text-sm text-indigo-500 font-medium italic mt-4">"많이 쓰는 말은 짧게, 안 쓰는 말은 길게 표현해서 다이어트를 하는 원리입니다!"</p>
+                <p class="text-center text-sm text-indigo-500 font-medium italic mt-4">"많이 쓰는 말은 짧게, 안 쓰는 말은 길게 표현해서
+                    다이어트를 하는 원리입니다!"</p>
             </div>
 
             <!-- Huffman Coding Interactive Lab -->
@@ -759,14 +930,16 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Left: Frequency Table -->
                         <div class="bg-slate-50 p-6 rounded-2xl border border-dotted border-slate-300 shadow-inner">
-                            <h5 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Frequency Table</h5>
+                            <h5 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Frequency Table
+                            </h5>
                             <div id="freq-table" class="space-y-2">
                                 <p class="text-slate-400 italic text-sm text-center py-10">텍스트를 입력하면 분석이 시작됩니다.</p>
                             </div>
                         </div>
 
                         <!-- Right: Tree Visualization -->
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-inner overflow-x-auto min-h-[400px] flex items-start justify-center">
+                        <div
+                            class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-inner overflow-x-auto min-h-[400px] flex items-start justify-center">
                             <div id="huffman-tree-visual" class="flex flex-col items-center p-4">
                                 <p class="text-slate-400 italic text-sm text-center mt-20">허프만 트리가 이곳에 형성됩니다.</p>
                             </div>
@@ -777,12 +950,17 @@
                         <div class="bg-indigo-600 p-6 rounded-2xl text-white shadow-xl shadow-indigo-100">
                             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <div>
-                                    <span class="text-[10px] uppercase font-bold opacity-70 tracking-widest">Encoded Binary Stream</span>
-                                    <div id="huffman-encoded" class="text-xl font-mono font-black break-all tracking-wider mt-1"></div>
+                                    <span class="text-[10px] uppercase font-bold opacity-70 tracking-widest">Encoded
+                                        Binary Stream</span>
+                                    <div id="huffman-encoded"
+                                        class="text-xl font-mono font-black break-all tracking-wider mt-1"></div>
                                 </div>
-                                <div class="text-center px-6 py-3 bg-white/10 rounded-xl backdrop-blur-md border border-white/20">
-                                    <span class="text-[10px] uppercase font-bold opacity-70 block mb-1">Efficiency</span>
-                                    <span id="huffman-ratio" class="text-3xl font-black tracking-tighter text-amber-300">0%</span>
+                                <div
+                                    class="text-center px-6 py-3 bg-white/10 rounded-xl backdrop-blur-md border border-white/20">
+                                    <span
+                                        class="text-[10px] uppercase font-bold opacity-70 block mb-1">Efficiency</span>
+                                    <span id="huffman-ratio"
+                                        class="text-3xl font-black tracking-tighter text-amber-300">0%</span>
                                 </div>
                             </div>
                         </div>
@@ -790,30 +968,6 @@
                 </div>
             </div>
 
-            <!-- 압축의 역설 고찰 섹션 -->
-            <div class="my-10 p-8 bg-amber-50 rounded-2xl border-2 border-dashed border-amber-200 relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 opacity-10 text-7xl transform rotate-12 select-none">📦</div>
-                <h3 class="font-bold text-xl text-amber-900 mb-4 flex items-center">
-                    <span class="mr-3 text-2xl">🤔</span> 압축의 역설: 왜 용량이 더 커지기도 하나요?
-                </h3>
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                    <div class="flex-grow">
-                        <p class="text-amber-800 text-sm leading-relaxed mb-4">
-                            작은 텍스트 파일을 ZIP으로 압축했더니 오히려 용량이 늘어나는 현상을 <strong>메타데이터 오버헤드(Metadata Overhead)</strong>라고 합니다.
-                        </p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                            <div class="p-3 bg-white/50 rounded-lg border border-amber-100">
-                                <span class="font-bold text-amber-900 block mb-1">📦 상자의 무게</span>
-                                ZIP 파일은 파일명, 시간, 검사값 등을 담은 '포장 상자' 역할을 합니다. 이 정보가 약 150바이트 정도를 차지합니다.
-                            </div>
-                            <div class="p-3 bg-white/50 rounded-lg border border-amber-100">
-                                <span class="font-bold text-amber-900 block mb-1">⚖️ 배보다 배꼽</span>
-                                원본이 7바이트라면, 데이터보다 상자가 훨씬 무거워져 전체 용량이 늘어납니다. 압축은 파일이 클수록 빛을 발합니다!
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="alert-box mt-10">
                 <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
