@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹 강의노트 - 3-1-2. 데이터를 정렬하는 알고리즘</title>
     <!-- 폰트: 프리텐다드 -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Highlight.js (코드 구문 강조) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <style>
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #dcd3c6; /* 책상 배경색 */
+            background-color: #dcd3c6;
+            /* 책상 배경색 */
             margin: 0;
             padding: 3rem 1rem;
             color: #333;
@@ -27,14 +31,15 @@
         }
 
         .notebook-container {
-            background-color: #fdfbf7; /* 종이색 */
+            background-color: #fdfbf7;
+            /* 종이색 */
             width: 100%;
             max-width: 900px;
             border-radius: 4px 12px 12px 4px;
-            box-shadow: 
-                -8px 8px 20px rgba(0, 0, 0, 0.15), 
-                inset 1px 0 0 rgba(0,0,0,0.05),
-                inset -1px 0 0 rgba(0,0,0,0.03);
+            box-shadow:
+                -8px 8px 20px rgba(0, 0, 0, 0.15),
+                inset 1px 0 0 rgba(0, 0, 0, 0.05),
+                inset -1px 0 0 rgba(0, 0, 0, 0.03);
             position: relative;
             padding: 4rem 4rem 5rem 6rem;
             min-height: 1000px;
@@ -51,16 +56,16 @@
             flex-direction: column;
             justify-content: space-evenly;
         }
-        
+
         .hole {
             width: 18px;
             height: 18px;
             background-color: #dcd3c6;
             border-radius: 50%;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,0.8);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
             position: relative;
         }
-        
+
         /* 쇠 링 */
         .hole::after {
             content: '';
@@ -71,7 +76,7 @@
             border-radius: 3px;
             top: 6px;
             left: 8px;
-            box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
+            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
             z-index: 10;
         }
 
@@ -97,11 +102,12 @@
         .concept-box {
             background-color: #fffbdf;
             padding: 1.5rem 1.5rem 1.5rem 2.5rem;
-            box-shadow: 3px 5px 15px rgba(0,0,0,0.06);
+            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
             margin-bottom: 2rem;
             position: relative;
             transform: rotate(-0.5deg);
         }
+
         .concept-box::before {
             content: "📌";
             position: absolute;
@@ -109,7 +115,7 @@
             left: 10px;
             font-size: 1.5rem;
         }
-        
+
         /* 오개념 주의 알림창 */
         .alert-box {
             background-color: #ffefef;
@@ -147,7 +153,8 @@
 
         /* 코드 블록 스타일링 확장 */
         pre {
-            background-color: #1a1b26; /* Tokyo Night Dark */
+            background-color: #1a1b26;
+            /* Tokyo Night Dark */
             padding: 1.5rem;
             border-radius: 8px;
             overflow-x: auto;
@@ -158,11 +165,11 @@
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
             border: 2px solid #292e42;
         }
-        
+
         code.language-python {
             font-family: 'Consolas', 'Monaco', monospace;
         }
-        
+
         .highlighter {
             background: linear-gradient(to top, #ffe566 40%, transparent 40%);
             font-weight: bold;
@@ -170,28 +177,42 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="notebook-container">
         <!-- 홈으로 가기 버튼 -->
-        <a href="../index.html" class="absolute top-20 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg> 
+        <a href="../index.html"
+            class="absolute top-20 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50"
+            style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
             메인으로
         </a>
-        
+
         <!-- 바인더 구멍 세트 -->
         <div class="binder-holes">
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div>
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div>
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div>
-            <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
+            <div class="hole"></div>
         </div>
 
         <!-- 헤더 영역 -->
         <header class="note-header">
-            <div class="inline-block px-3 py-2 mb-4 text-xs font-bold tracking-wider text-amber-800 uppercase bg-amber-100 rounded-sm transform -rotate-1">
+            <div
+                class="inline-block px-3 py-2 mb-4 text-xs font-bold tracking-wider text-amber-800 uppercase bg-amber-100 rounded-sm transform -rotate-1">
                 2022 개정 정보 | 3. 알고리즘과 프로그래밍
             </div>
             <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 font-serif tracking-tight">
@@ -204,46 +225,66 @@
 
         <!-- 본문 핵심 콘텐츠 -->
         <main class="text-gray-800 text-lg">
-            
+
             <div class="concept-box">
                 <h3 class="font-bold text-xl text-amber-900 mb-2">💡 사서 선생님은 수많은 책을 어떻게 정리할까?</h3>
                 <p class="text-amber-800">
-                    도서관에 있는 수만 권의 책에서 원하는 책을 빨리 찾을 수 있는 이유는, 모든 책이 <span class="highlighter">일정한 기준(가나다순, 도서 번호순)</span>에 따라 예쁘게 <span class="font-bold bg-amber-200 px-1 rounded">정렬(Sort)</span>되어 있기 때문입니다.<br><br>
-                    컴퓨터 역시 방대한 데이터에서 값을 빠르게 찾아내기 위해 데이터를 오름차순(작은 것부터) 또는 내림차순(큰 것부터)으로 나열하는 과정이 필수적입니다. 대표적으로 가장 기초가 되는 <strong>버블 정렬</strong>과 <strong>선택 정렬</strong>에 대해 알아봅시다.
+                    도서관에 있는 수만 권의 책에서 원하는 책을 빨리 찾을 수 있는 이유는, 모든 책이 <span class="highlighter">일정한 기준(가나다순, 도서
+                        번호순)</span>에 따라 예쁘게 <span class="font-bold bg-amber-200 px-1 rounded">정렬(Sort)</span>되어 있기
+                    때문입니다.<br><br>
+                    컴퓨터 역시 방대한 데이터에서 값을 빠르게 찾아내기 위해 데이터를 오름차순(작은 것부터) 또는 내림차순(큰 것부터)으로 나열하는 과정이 필수적입니다. 대표적으로 가장 기초가 되는
+                    <strong>버블 정렬</strong>과 <strong>선택 정렬</strong>에 대해 알아봅시다.
                 </p>
             </div>
 
-            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 거품이 위로 올라가듯 위치를 바꾸는 '버블 정렬'</h2>
+            <h2 class="text-2xl font-bold mt-10 mb-4 pb-2 border-b border-dashed border-gray-300">1. 거품이 위로 올라가듯 위치를 바꾸는
+                '버블 정렬'</h2>
             <p class="mb-4">
-                <span class="font-bold bg-amber-200 px-1 rounded">버블 정렬(Bubble Sort)</span>은 바로 옆에 있는 <strong>인접한 두 데이터의 크기를 비교</strong>해서 조건(예: 오름차순 일 때 왼쪽이 더 크다면)에 맞지 않으면 두 자리의 순서를 서로 <span class="text-red-600 font-bold underline">교환(Swap)</span>하는 방식입니다. 마치 거품이 뽀글뽀글 위로 올라가듯이 큰 값이 점차 배열의 끝으로 이동하게 됩니다.
+                <span class="font-bold bg-amber-200 px-1 rounded">버블 정렬(Bubble Sort)</span>은 바로 옆에 있는 <strong>인접한 두 데이터의
+                    크기를 비교</strong>해서 조건(예: 오름차순 일 때 왼쪽이 더 크다면)에 맞지 않으면 두 자리의 순서를 서로 <span
+                    class="text-red-600 font-bold underline">교환(Swap)</span>하는 방식입니다. 마치 거품이 뽀글뽀글 위로 올라가듯이 큰 값이 점차 배열의
+                끝으로 이동하게 됩니다.
             </p>
 
             <div class="bg-gray-50 p-6 text-[0.95rem] rounded-lg border border-gray-200 mb-6 shadow-sm">
                 <h4 class="font-bold text-blue-700 mb-4">[ 2, 5, 4, 6, 1, 3 ] 오름차순 버블 정렬 상세 (i=0, 1)</h4>
                 <div class="space-y-3 ms-2">
-                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mb-1">▶ i = 0 (1회차) : 맨 뒤 자리를 찾아가는 과정</p>
-                    <p><strong>j = 0 비교</strong> : 2와 5 비교. (2 &lt; 5) ➔ <span class="text-blue-500 font-bold">통과 (자리 유지)</span></p>
-                    <p><strong>j = 1 비교</strong> : 5와 4 비교. (5 &gt; 4) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 6, 1, 3]</code></p>
-                    <p><strong>j = 2 비교</strong> : 5와 6 비교. (5 &lt; 6) ➔ <span class="text-blue-500 font-bold">통과 (자리 유지)</span></p>
-                    <p><strong>j = 3 비교</strong> : 6과 1 비교. (6 &gt; 1) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 6, 3]</code></p>
-                    <p><strong>j = 4 비교</strong> : 6과 3 비교. (6 &gt; 3) ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 3, 6]</code></p>
-                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=0 종료 후, 가장 큰 값인 '6'이 맨 마지막에 확정됩니다!</p>
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mb-1">▶ i = 0 (1회차) : 맨 뒤
+                        자리를 찾아가는 과정</p>
+                    <p><strong>j = 0 비교</strong> : 2와 5 비교. (2 &lt; 5) ➔ <span class="text-blue-500 font-bold">통과 (자리
+                            유지)</span></p>
+                    <p><strong>j = 1 비교</strong> : 5와 4 비교. (5 &gt; 4) ➔ <span class="text-red-500 font-bold">순서
+                            교환!</span> 출력: <code>0 번째 [2, 4, 5, 6, 1, 3]</code></p>
+                    <p><strong>j = 2 비교</strong> : 5와 6 비교. (5 &lt; 6) ➔ <span class="text-blue-500 font-bold">통과 (자리
+                            유지)</span></p>
+                    <p><strong>j = 3 비교</strong> : 6과 1 비교. (6 &gt; 1) ➔ <span class="text-red-500 font-bold">순서
+                            교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 6, 3]</code></p>
+                    <p><strong>j = 4 비교</strong> : 6과 3 비교. (6 &gt; 3) ➔ <span class="text-red-500 font-bold">순서
+                            교환!</span> 출력: <code>0 번째 [2, 4, 5, 1, 3, 6]</code></p>
+                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=0 종료 후,
+                        가장 큰 값인 '6'이 맨 마지막에 확정됩니다!</p>
 
                     <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 1 (2회차)</p>
                     <p><strong>j = 0 비교</strong> : 2와 4 비교 ➔ <span class="text-blue-500">통과</span></p>
                     <p><strong>j = 1 비교</strong> : 4와 5 비교 ➔ <span class="text-blue-500">통과</span></p>
-                    <p><strong>j = 2 비교</strong> : 5와 1 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>1 번째 [2, 4, 1, 5, 3, 6]</code></p>
-                    <p><strong>j = 3 비교</strong> : 5와 3 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력: <code>1 번째 [2, 4, 1, 3, 5, 6]</code></p>
-                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=1 종료 후, 다음으로 큰 '5'가 뒤에서 두 번째 자리에 확정됩니다. 이렇게 전체가 맞춰질 때까지 i는 늘어나고 j 범위는 줄어들며 반복합니다.</p>
+                    <p><strong>j = 2 비교</strong> : 5와 1 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력:
+                        <code>1 번째 [2, 4, 1, 5, 3, 6]</code>
+                    </p>
+                    <p><strong>j = 3 비교</strong> : 5와 3 비교 ➔ <span class="text-red-500 font-bold">순서 교환!</span> 출력:
+                        <code>1 번째 [2, 4, 1, 3, 5, 6]</code>
+                    </p>
+                    <p class="text-sm bg-blue-50 text-blue-800 p-2 rounded mt-2 border-l-4 border-blue-400">💡 i=1 종료 후,
+                        다음으로 큰 '5'가 뒤에서 두 번째 자리에 확정됩니다. 이렇게 전체가 맞춰질 때까지 i는 늘어나고 j 범위는 줄어들며 반복합니다.</p>
                 </div>
             </div>
 
             <ul class="list-disc list-inside mb-6 space-y-2 text-gray-700">
                 <li>총 6개의 데이터가 있을 때, <strong>장점:</strong> 구조가 단순하여 알고리즘을 코드로 구현하기 쉽습니다.</li>
-                <li><strong>단점:</strong> 모든 데이터를 계속 앞뒤로 짝지어 비교하고 자리도 수시로 교환해야 하므로 <span class="highlighter">속도가 매우 느립니다.</span></li>
+                <li><strong>단점:</strong> 모든 데이터를 계속 앞뒤로 짝지어 비교하고 자리도 수시로 교환해야 하므로 <span class="highlighter">속도가 매우
+                        느립니다.</span></li>
             </ul>
 
-<pre><code class="language-python"># 1. 버블정렬
+            <pre><code class="language-python"># 1. 버블정렬
 lst = [2, 5, 4, 6, 1, 3]
 temp = 0
 
@@ -266,20 +307,24 @@ print(f'처음: {lst}')
 bubble_sort(lst)
 </code></pre>
 
-<div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre" style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
-처음: [2, 5, 4, 6, 1, 3]
-0 번째 [2, 4, 5, 6, 1, 3]
-0 번째 [2, 4, 5, 1, 6, 3]
-0 번째 [2, 4, 5, 1, 3, 6]
-1 번째 [2, 4, 1, 5, 3, 6]
-1 번째 [2, 4, 1, 3, 5, 6]
-2 번째 [2, 1, 4, 3, 5, 6]
-2 번째 [2, 1, 3, 4, 5, 6]
-3 번째 [1, 2, 3, 4, 5, 6]</div>
+            <div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre"
+                style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
+                처음: [2, 5, 4, 6, 1, 3]
+                0 번째 [2, 4, 5, 6, 1, 3]
+                0 번째 [2, 4, 5, 1, 6, 3]
+                0 번째 [2, 4, 5, 1, 3, 6]
+                1 번째 [2, 4, 1, 5, 3, 6]
+                1 번째 [2, 4, 1, 3, 5, 6]
+                2 번째 [2, 1, 4, 3, 5, 6]
+                2 번째 [2, 1, 3, 4, 5, 6]
+                3 번째 [1, 2, 3, 4, 5, 6]</div>
 
-            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 최솟값을 쏙쏙 골라 앞으로 보내는 '선택 정렬'</h2>
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">2. 최솟값을 쏙쏙 골라 앞으로 보내는
+                '선택 정렬'</h2>
             <p class="mb-4">
-                <span class="font-bold bg-amber-200 px-1 rounded">선택 정렬(Selection Sort)</span>은 전체 데이터(정렬 안 된 부분) 중에서 <span class="text-indigo-600 font-bold underline">가장 작은(또는 큰) 값 하나를 콕 집어 찾은 뒤</span>, 그 값을 맨 앞자리와 순서를 바꾸는 방식입니다.
+                <span class="font-bold bg-amber-200 px-1 rounded">선택 정렬(Selection Sort)</span>은 전체 데이터(정렬 안 된 부분) 중에서
+                <span class="text-indigo-600 font-bold underline">가장 작은(또는 큰) 값 하나를 콕 집어 찾은 뒤</span>, 그 값을 맨 앞자리와 순서를
+                바꾸는 방식입니다.
             </p>
 
             <div class="bg-gray-50 p-6 text-[0.95rem] rounded border border-gray-200 mb-6 shadow-sm">
@@ -287,22 +332,34 @@ bubble_sort(lst)
                 <div class="space-y-3 ms-2">
                     <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mb-1">▶ i = 0 번째 반복</p>
                     <p>현재 탐색 범위 전체에서 가장 작은 값을 찾아봅니다. (j 반복) <br>➔ 가장 작은 값은 <strong>1 (인덱스 4)</strong>로 선택됨!</p>
-                    <p>원래 i=0 위치의 값 <span class="line-through decoration-red-500 font-bold">2</span>와 최솟값 <span class="bg-yellow-200 font-bold px-1 rounded">1</span>의 자리를 <span class="text-red-500 font-bold">교환</span>합니다.</p>
-                    <p>➔ 출력: <code>0번째 [1, 5, 4, 6, 2, 3]</code> <span class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 맨 앞에 최솟값 1 확정!</span></p>
+                    <p>원래 i=0 위치의 값 <span class="line-through decoration-red-500 font-bold">2</span>와 최솟값 <span
+                            class="bg-yellow-200 font-bold px-1 rounded">1</span>의 자리를 <span
+                            class="text-red-500 font-bold">교환</span>합니다.</p>
+                    <p>➔ 출력: <code>0번째 [1, 5, 4, 6, 2, 3]</code> <span
+                            class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 맨 앞에 최솟값 1 확정!</span></p>
 
                     <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 1 번째 반복</p>
-                    <p>나머지 배열(인덱스 1~5)인 [5, 4, 6, 2, 3] 안에서만 가장 작은 값을 탐색합니다. <br>➔ 두 번째 최솟값은 <strong>2 (인덱스 4)</strong>로 선택됨!</p>
-                    <p>현재 i=1 위치의 값 <span class="line-through decoration-red-500 font-bold">5</span>와 방금 찾은 <span class="bg-yellow-200 font-bold px-1 rounded">2</span>의 자리를 <span class="text-red-500 font-bold">교환</span>합니다.</p>
-                    <p>➔ 출력: <code>1번째 [1, 2, 4, 6, 5, 3]</code> <span class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 앞에서 두 번째에 2 확정!</span></p>
+                    <p>나머지 배열(인덱스 1~5)인 [5, 4, 6, 2, 3] 안에서만 가장 작은 값을 탐색합니다. <br>➔ 두 번째 최솟값은 <strong>2 (인덱스 4)</strong>로
+                        선택됨!</p>
+                    <p>현재 i=1 위치의 값 <span class="line-through decoration-red-500 font-bold">5</span>와 방금 찾은 <span
+                            class="bg-yellow-200 font-bold px-1 rounded">2</span>의 자리를 <span
+                            class="text-red-500 font-bold">교환</span>합니다.</p>
+                    <p>➔ 출력: <code>1번째 [1, 2, 4, 6, 5, 3]</code> <span
+                            class="text-sm bg-indigo-50 text-indigo-800 p-1 rounded ml-1">💡 앞에서 두 번째에 2 확정!</span></p>
 
-                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 2 ~ 5 번째 반복 요약</p>
-                    <p><strong>i = 2</strong> : 최소값 '3'(인덱스 5)을 찾아 i=2 위치('4')와 교환 ➔ <code>2번째 [1, 2, 3, 6, 5, 4]</code></p>
-                    <p><strong>i = 3</strong> : 최소값 '4'(인덱스 5)를 찾아 i=3 위치('6')와 교환 ➔ <code>3번째 [1, 2, 3, 4, 5, 6]</code></p>
-                    <p><strong>i = 4, 5</strong> : 이미 위치가 다 맞춰져 있어 자기 자신과 교환이 일어남 ➔ 배열 변화 없이 <code>[1, 2, 3, 4, 5, 6]</code> 출력 (4번째, 5번째)</p>
+                    <p class="font-bold text-gray-700 bg-gray-200 inline-block px-2 rounded mt-4 mb-1">▶ i = 2 ~ 5 번째 반복
+                        요약</p>
+                    <p><strong>i = 2</strong> : 최소값 '3'(인덱스 5)을 찾아 i=2 위치('4')와 교환 ➔ <code>2번째 [1, 2, 3, 6, 5, 4]</code>
+                    </p>
+                    <p><strong>i = 3</strong> : 최소값 '4'(인덱스 5)를 찾아 i=3 위치('6')와 교환 ➔ <code>3번째 [1, 2, 3, 4, 5, 6]</code>
+                    </p>
+                    <p><strong>i = 4, 5</strong> : 이미 위치가 다 맞춰져 있어 자기 자신과 교환이 일어남 ➔ 배열 변화 없이
+                        <code>[1, 2, 3, 4, 5, 6]</code> 출력 (4번째, 5번째)
+                    </p>
                 </div>
             </div>
 
-<pre><code class="language-python"># 2. 선택정렬
+            <pre><code class="language-python"># 2. 선택정렬
 lst = [2, 5, 4, 6, 1, 3]
 temp = 0
 
@@ -332,14 +389,15 @@ def selection_sort(arr):
 selection_sort(lst)
 </code></pre>
 
-<div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre" style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
-처음: [2, 5, 4, 6, 1, 3]
-0번째 [1, 5, 4, 6, 2, 3]
-1번째 [1, 2, 4, 6, 5, 3]
-2번째 [1, 2, 3, 6, 5, 4]
-3번째 [1, 2, 3, 4, 5, 6]
-4번째 [1, 2, 3, 4, 5, 6]
-5번째 [1, 2, 3, 4, 5, 6]</div>
+            <div class="bg-gray-800 text-gray-200 p-4 rounded mb-6 font-mono text-sm leading-relaxed whitespace-pre"
+                style="box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">▶ 실행 결과:
+                처음: [2, 5, 4, 6, 1, 3]
+                0번째 [1, 5, 4, 6, 2, 3]
+                1번째 [1, 2, 4, 6, 5, 3]
+                2번째 [1, 2, 3, 6, 5, 4]
+                3번째 [1, 2, 3, 4, 5, 6]
+                4번째 [1, 2, 3, 4, 5, 6]
+                5번째 [1, 2, 3, 4, 5, 6]</div>
 
             <div class="alert-box mt-10">
                 <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
@@ -347,18 +405,22 @@ selection_sort(lst)
                 </h3>
                 <ul class="list-disc list-inside text-red-900 space-y-2">
                     <li><strong>버블 정렬과 선택 정렬은 완전히 반대 방향으로 확정됩니다.</strong><br>
-                    ➔ <span class="highlighter">버블 정렬</span>: 한 회차가 끝나면 <strong>항상 맨 뒤쪽으로 최댓값이 확정</strong>되어 위치하게 됩니다.<br>
-                    ➔ <span class="highlighter">선택 정렬</span>: 한 회차가 끝나면 <strong>항상 맨 앞쪽으로 최솟값이 확정</strong>되어 위치하게 됩니다.
+                        ➔ <span class="highlighter">버블 정렬</span>: 한 회차가 끝나면 <strong>항상 맨 뒤쪽으로 최댓값이 확정</strong>되어 위치하게
+                        됩니다.<br>
+                        ➔ <span class="highlighter">선택 정렬</span>: 한 회차가 끝나면 <strong>항상 맨 앞쪽으로 최솟값이 확정</strong>되어 위치하게
+                        됩니다.
                     </li>
                     <li><strong>교환(Swap)이 일어나는 횟수도 다릅니다.</strong><br>
-                    ➔ 버블 정렬은 옆 자리와 비교할 때마다 실시간으로 수시로 자리를 바꿉니다. 하지만 ➔ <strong>선택 정렬</strong>은 다 돌아보며 진짜 <strong>최솟값을 하나만 달랑 찾아낸 다음 마지막에 단 1번</strong>만 자리를 교환합니다.
+                        ➔ 버블 정렬은 옆 자리와 비교할 때마다 실시간으로 수시로 자리를 바꿉니다. 하지만 ➔ <strong>선택 정렬</strong>은 다 돌아보며 진짜 <strong>최솟값을
+                            하나만 달랑 찾아낸 다음 마지막에 단 1번</strong>만 자리를 교환합니다.
                     </li>
                 </ul>
             </div>
 
-            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 그럼 둘 중 뭐가 더 좋을까? (정렬 알고리즘 효율성 분석)</h2>
+            <h2 class="text-2xl font-bold mt-12 mb-4 pb-2 border-b border-dashed border-gray-300">3. 그럼 둘 중 뭐가 더 좋을까?
+                (정렬 알고리즘 효율성 분석)</h2>
             <p class="mb-4">
-               데이터 6개( [2, 5, 4, 6, 1, 3] )를 정렬할 때 비교 횟수와 교환 횟수가 각각 어떻게 달랐는지 아래 표를 통해 정리해 봅시다.
+                데이터 6개( [2, 5, 4, 6, 1, 3] )를 정렬할 때 비교 횟수와 교환 횟수가 각각 어떻게 달랐는지 아래 표를 통해 정리해 봅시다.
             </p>
 
             <table>
@@ -384,35 +446,48 @@ selection_sort(lst)
                         <td>정렬되지 않은 값 중에서 최솟값을 찾아서 맨 앞자리와 교환</td>
                         <td>15회</td>
                         <td class="font-bold text-blue-600 bg-blue-50">6회</td>
-                        <td class="text-left text-[0.95rem] leading-snug">조건 비교 횟수는 버블 정렬과 완전히 같지만, 데이터 교환은 한 회차당 딱 1번만 일어난다.</td>
+                        <td class="text-left text-[0.95rem] leading-snug">조건 비교 횟수는 버블 정렬과 완전히 같지만, 데이터 교환은 한 회차당 딱 1번만
+                            일어난다.</td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- 추가된 점근적 표기법 및 시간 복잡도 영역 -->
             <div class="mt-14 mb-10">
-                <h2 class="text-2xl font-bold mb-4 pb-2 border-b border-dashed border-gray-300">4. 알고리즘의 효율성을 나타내는 '시간 복잡도' (Big-O)</h2>
+                <h2 class="text-2xl font-bold mb-4 pb-2 border-b border-dashed border-gray-300">4. 알고리즘의 효율성을 나타내는 '시간
+                    복잡도' (Big-O)</h2>
                 <div class="concept-box mb-6">
                     <h3 class="font-bold text-xl text-amber-900 mb-2">⏱ 알고리즘의 실제 실행 시간 = "비교" 횟수 + "교환" 횟수</h3>
                     <p class="text-amber-800">
-                        컴퓨터가 정렬을 수행할 때 가장 시간이 집중적으로 걸리는 매우 핵심적인 작업 두 가지는 두 데이터의 크기를 살펴보는 <strong class="bg-amber-200 px-1 rounded">비교(Compare)</strong> 작업과, 메모리 안에서 두 데이터의 위치를 직접 뒤바꾸는 <strong class="bg-amber-200 px-1 rounded">교환(Swap)</strong> 작업입니다.<br><br>
-                        따라서 어떤 정렬 알고리즘이 얼마나 효율적인지 판단하는 평가지표인 <strong>시간 복잡도(Time Complexity)</strong>는 근본적으로 <u>총 발생한 비교 횟수와 총 발생한 교환 횟수를 더한 것</u>에 비례하여 결정됩니다.
+                        컴퓨터가 정렬을 수행할 때 가장 시간이 집중적으로 걸리는 매우 핵심적인 작업 두 가지는 두 데이터의 크기를 살펴보는 <strong
+                            class="bg-amber-200 px-1 rounded">비교(Compare)</strong> 작업과, 메모리 안에서 두 데이터의 위치를 직접 뒤바꾸는
+                        <strong class="bg-amber-200 px-1 rounded">교환(Swap)</strong> 작업입니다.<br><br>
+                        따라서 어떤 정렬 알고리즘이 얼마나 효율적인지 판단하는 평가지표인 <strong>시간 복잡도(Time Complexity)</strong>는 근본적으로 <u>총 발생한 비교
+                            횟수와 총 발생한 교환 횟수를 더한 것</u>에 비례하여 결정됩니다.
                     </p>
                 </div>
 
                 <p class="mb-4">
-                    데이터의 총 개수를 <strong>n</strong>이라고 할 때, 처리해야 할 데이터가 점차 많아질수록 알고리즘의 연산 횟수가 어떤 비율로 증가하는지를 추세적(Trend)으로 묶어서 표현하는 방식을 <span class="font-bold text-blue-700 bg-blue-50 px-1 rounded">점근적 표기법(대문자 O 표기법, Big-O Notation)</span>이라고 부릅니다.
+                    데이터의 총 개수를 <strong>n</strong>이라고 할 때, 처리해야 할 데이터가 점차 많아질수록 알고리즘의 연산 횟수가 어떤 비율로 증가하는지를 추세적(Trend)으로
+                    묶어서 표현하는 방식을 <span class="font-bold text-blue-700 bg-blue-50 px-1 rounded">점근적 표기법(대문자 O 표기법, Big-O
+                        Notation)</span>이라고 부릅니다.
                 </p>
 
                 <div class="bg-gray-50 border-l-4 border-gray-400 p-5 rounded mt-4">
                     <h4 class="font-bold text-gray-800 mb-3">🤔 버블 정렬과 선택 정렬은 둘 다 시간 복잡도가 O(n²) 입니다. 왜 그럴까요?</h4>
                     <ul class="list-disc list-inside text-gray-700 space-y-2 leading-relaxed">
-                        <li>데이터가 <strong>6개</strong>일 때 총 비교를 몇 번 했는지 떠올려 봅시다. <code>5 + 4 + 3 + 2 + 1 = 총 15번</code> 비교하게 됩니다.</li>
-                        <li>데이터 개수를 <strong>n개</strong>라고 두고 수학 공식으로 일반화하면 <code>(n-1) + (n-2) + ... + 1 = n(n-1)/2</code> 번 비교하게 됩니다.</li>
-                        <li>이 식에서 가장 영향력이 강한 최고차항인 <span class="font-bold bg-gray-200 px-1 rounded text-lg">n²</span>만 기준점으로서 남겨두고 미미한 나머지(-n/2 상수항 구간 등)를 무시하여 간략히 표기한 것이 바로 <strong>O(n²)</strong>입니다. 거대한 단위의 데이터 그룹을 다룰 때 <u>데이터 수가 10배 늘어나면 연산 시간이 100배로 제곱해서 커진다는 무시무시한 의미</u>입니다!</li>
+                        <li>데이터가 <strong>6개</strong>일 때 총 비교를 몇 번 했는지 떠올려 봅시다. <code>5 + 4 + 3 + 2 + 1 = 총 15번</code>
+                            비교하게 됩니다.</li>
+                        <li>데이터 개수를 <strong>n개</strong>라고 두고 수학 공식으로 일반화하면
+                            <code>(n-1) + (n-2) + ... + 1 = n(n-1)/2</code> 번 비교하게 됩니다.
+                        </li>
+                        <li>이 식에서 가장 영향력이 강한 최고차항인 <span class="font-bold bg-gray-200 px-1 rounded text-lg">n²</span>만
+                            기준점으로서 남겨두고 미미한 나머지(-n/2 상수항 구간 등)를 무시하여 간략히 표기한 것이 바로 <strong>O(n²)</strong>입니다. 거대한 단위의
+                            데이터 그룹을 다룰 때 <u>데이터 수가 10배 늘어나면 연산 시간이 100배로 제곱해서 커진다는 무시무시한 의미</u>입니다!</li>
                     </ul>
-                    <p class="mt-4 text-[0.95rem] text-indigo-700 bg-indigo-50 p-3 rounded font-medium border border-indigo-100">
-                        <strong>✨ 핵심 결론:</strong> 이처럼 점근적 표기법 상으로는 두 알고리즘 모두 O(n²)이라는 동일하게 부진한 평가를 받지만, 
+                    <p
+                        class="mt-4 text-[0.95rem] text-indigo-700 bg-indigo-50 p-3 rounded font-medium border border-indigo-100">
+                        <strong>✨ 핵심 결론:</strong> 이처럼 점근적 표기법 상으로는 두 알고리즘 모두 O(n²)이라는 동일하게 부진한 평가를 받지만,
                         위 효율성 분석 표에서 보셨듯이 <strong>수시로 값이 오가는 무겁고 느린 교환(Swap) 작업의 발생 횟수가 선택 정렬 쪽이 훨씬 적기 때문에</strong>
                         현실적인 체감 실행 속도에서는 <u>선택 정렬이 버블 정렬보다 약간 더 안정적이고 빠르다는 사실!</u> 기억해 두세요.
                     </p>
@@ -425,30 +500,40 @@ selection_sort(lst)
                     <span class="mr-2">📝</span> 스스로 점검하기
                 </h3>
                 <div class="space-y-4">
-                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
-                        <div class="absolute top-20 right-0 bg-gray-200 px-3 py-2 rounded-bl font-bold text-xs text-gray-600">Q 1</div>
+                    <div
+                        class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div
+                            class="absolute top-20 right-0 bg-gray-200 px-3 py-2 rounded-bl font-bold text-xs text-gray-600">
+                            Q 1</div>
                         <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
                             다음 중 인접해 있는 데이터를 연속적으로 비교하며, 자리를 계속해서 바꿔나가는 방식의 정렬 알고리즘은 무엇인가요?
                         </p>
                         <details class="cursor-pointer outline-none">
-                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 확인하기</summary>
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답
+                                확인하기</summary>
                             <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
                                 <strong>정답: 버블 정렬 (Bubble Sort)</strong><br>
                                 거품이 물 밖으로 밀려 올라가듯 데이터들이 옆 자료와 비교하면서 위치가 끊임없이 바뀌는 방법입니다!
                             </p>
                         </details>
                     </div>
-                    
-                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
-                        <div class="absolute top-20 right-0 bg-gray-200 px-3 py-2 rounded-bl font-bold text-xs text-gray-600">Q 2</div>
+
+                    <div
+                        class="p-4 bg-white border-2 border-dashed border-gray-300 rounded shadow-sm relative overflow-hidden">
+                        <div
+                            class="absolute top-20 right-0 bg-gray-200 px-3 py-2 rounded-bl font-bold text-xs text-gray-600">
+                            Q 2</div>
                         <p class="font-medium text-lg mb-3 mt-4 text-gray-800">
-                            [2, 6, 4, 3] 이라는 숫자를 정렬하고 있습니다. 1회차가 끝난 후에 배열 상태가 <strong>[2, 6, 4, 3]</strong> 그대로였다면, 이 알고리즘은 오름차순 버블 정렬일까요?
+                            [2, 6, 4, 3] 이라는 숫자를 정렬하고 있습니다. 1회차가 끝난 후에 배열 상태가 <strong>[2, 6, 4, 3]</strong> 그대로였다면, 이
+                            알고리즘은 오름차순 버블 정렬일까요?
                         </p>
                         <details class="cursor-pointer outline-none">
-                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답 해설 보기</summary>
+                            <summary class="text-blue-600 font-medium hover:text-blue-800 transition select-none">▶ 정답
+                                해설 보기</summary>
                             <p class="mt-3 text-gray-700 p-3 bg-gray-50 border border-gray-200 rounded text-[0.95rem]">
                                 <strong>정답: 아닙니다!</strong><br>
-                                오름차순 버블 정렬이라면 1번(2)과 2번(6)은 안 바뀌지만, 2번(6)과 3번(4)이 바뀌어서 6이 뒤로 밀려나가야 합니다. 1회차 끝에 가장 큰 '6'이 맨 뒤에 와서 <code>[2, 4, 3, 6]</code>이 되어야 정상입니다. 상태가 변하지 않았다면 버블 정렬이 아닙니다.
+                                오름차순 버블 정렬이라면 1번(2)과 2번(6)은 안 바뀌지만, 2번(6)과 3번(4)이 바뀌어서 6이 뒤로 밀려나가야 합니다. 1회차 끝에 가장 큰 '6'이
+                                맨 뒤에 와서 <code>[2, 4, 3, 6]</code>이 되어야 정상입니다. 상태가 변하지 않았다면 버블 정렬이 아닙니다.
                             </p>
                         </details>
                     </div>
@@ -459,4 +544,5 @@ selection_sort(lst)
 
     </div>
 </body>
+
 </html>

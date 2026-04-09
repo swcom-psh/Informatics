@@ -12,158 +12,155 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹 강의노트 - 2-1-1. 디지털 데이터 압축</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
     <style>
         :root {
-            --notebook-bg: #fdfbf7;
-            --paper-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            --accent-sage: #6b8277;
-            --accent-terracotta: #c46a50;
-            --warm-neutral: #f5f0e6;
+            --paper-bg: #fdfbf7;
+            --ocean-deep: #0f172a;
+            --accent-teal: #0d9488;
+            --mesh-gradient: radial-gradient(at 0% 0%, rgba(13, 148, 136, 0.05) 0, transparent 50%),
+                             radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0, transparent 50%);
         }
 
         body {
             font-family: 'Pretendard', sans-serif;
-            background-color: #dcd3c6;
+            background-color: #f1ede4;
             margin: 0;
             padding: 3rem 1rem;
-            color: #333;
-            line-height: 1.8;
+            color: #2c2c2c;
+            line-height: 1.7;
             display: flex;
             justify-content: center;
-            background-image: radial-gradient(#d3c8b8 2px, transparent 2px);
-            background-size: 30px 30px;
+            background-image: var(--mesh-gradient);
+            background-attachment: fixed;
         }
 
         .notebook-container {
-            background-color: var(--notebook-bg);
-            background-image: var(--paper-texture);
-            width: 95%;
-            max-width: 1300px;
-            border-radius: 4px 12px 12px 4px;
-            box-shadow: -15px 15px 35px rgba(0, 0, 0, 0.1), inset 1px 0 0 rgba(0, 0, 0, 0.05);
+            background-color: var(--paper-bg);
+            width: 98%;
+            max-width: 1400px;
+            border-radius: 2rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1);
             position: relative;
-            padding: 3rem 3rem 4rem 6rem;
+            padding: 4rem 4rem 6rem 6rem;
             min-height: 1000px;
-            border-left: 1px solid #e1d8c8;
+            overflow: hidden;
+        }
+
+        .notebook-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         .binder-holes {
             position: absolute;
-            left: 15px;
-            top: 40px;
-            bottom: 40px;
-            width: 30px;
+            left: 25px;
+            top: 60px;
+            bottom: 60px;
+            width: 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
+            z-index: 10;
         }
 
         .hole {
-            width: 18px;
-            height: 18px;
-            background-color: #dcd3c6;
+            width: 22px;
+            height: 22px;
+            background-color: #d1cbc2;
             border-radius: 50%;
-            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.8);
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15);
             position: relative;
         }
 
         .hole::after {
             content: '';
             position: absolute;
-            width: 28px;
-            height: 6px;
-            background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6);
-            border-radius: 3px;
-            top: 6px;
-            left: 8px;
-            box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
-            z-index: 10;
+            width: 34px;
+            height: 8px;
+            background: linear-gradient(135deg, #e2e4e6 0%, #bcbec1 50%, #d6d7d9 100%);
+            border-radius: 4px;
+            top: 7px;
+            left: 10px;
+            box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .note-header {
-            border-bottom: 2px dashed #d1c8b8;
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
-            position: relative;
-        }
+        h1, h2, h3 { font-family: 'Lora', serif; font-weight: 700; letter-spacing: -0.02em; }
 
-        .note-header::after {
-            content: "Date: 20__ . __ . __";
-            position: absolute;
-            right: 0;
-            top: -10px;
-            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-            color: #9c9284;
-            font-size: 0.95rem;
+        .note-header { border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 2rem; margin-bottom: 3rem; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .concept-box {
-            background-color: #fffbdf;
-            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
-            box-shadow: 3px 5px 15px rgba(0, 0, 0, 0.06);
+            background: rgba(255, 251, 223, 0.6);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.1);
             margin-bottom: 2rem;
             position: relative;
             transform: rotate(-0.5deg);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            backdrop-filter: blur(5px);
         }
 
-        .concept-box::before {
-            content: "📌";
-            position: absolute;
-            top: -10px;
-            left: 10px;
-            font-size: 1.5rem;
-        }
+        .concept-box::before { content: "📌"; position: absolute; top: -15px; left: 15px; font-size: 2rem; }
 
         .alert-box {
-            background-color: #ffefef;
-            border-left: 5px solid #ff7b7b;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            background: rgba(255, 239, 239, 0.7);
+            border-left: 6px solid #ff7b7b;
+            padding: 2rem;
+            border-radius: 0 1.5rem 1.5rem 0;
+            margin-bottom: 2.5rem;
             position: relative;
-            transform: rotate(0.4deg);
+            transform: rotate(0.3deg);
+            backdrop-filter: blur(5px);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 2rem;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        th {
-            background-color: #f5f0e6;
-            font-weight: 600;
-            text-align: center;
-            padding: 1rem;
-            border: 1px solid #e1d8c8;
-            color: #5c5446;
-        }
-
-        td {
-            padding: 1rem;
-            border: 1px solid #e1d8c8;
-            color: #4B5563;
-            text-align: left;
-        }
-
-        pre {
-            background-color: #1a1b26;
-            padding: 1.5rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin-bottom: 2rem;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
-            border: 2px solid #292e42;
-        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 3rem; border-radius: 1rem; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+        th { background-color: #f8fafc; font-weight: 700; text-align: center; padding: 1.25rem; border-bottom: 1px solid #e2e8f0; color: #475569; font-family: 'Lora', serif; }
+        td { padding: 1.25rem; border-bottom: 1px solid #f1f5f9; color: #1e293b; background: white; }
 
         .highlighter {
-            background: linear-gradient(to top, #ffe566 40%, transparent 40%);
-            font-weight: bold;
-            display: inline;
+            background: linear-gradient(120deg, rgba(20, 184, 166, 0.2) 0%, rgba(20, 184, 166, 0.2) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.4em;
+            background-position: 0 88%;
+            font-weight: 700;
+        }
+
+        /* Digital Lab Overhaul */
+        .digital-lab {
+            background-color: var(--ocean-deep) !important;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px) !important;
+            background-size: 30px 30px !important;
+            padding: 3rem !important;
+            border-radius: 2rem !important;
+            color: #e2e8f0 !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.5) !important;
         }
 
         /* Hand-drawn underline effect */

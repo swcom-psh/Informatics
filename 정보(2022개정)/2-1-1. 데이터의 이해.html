@@ -547,6 +547,95 @@
                     </div>
                 </div>
 
+                <!-- 3-3. 그림 데이터 -->
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="p-1 bg-green-100 rounded mr-2">🖼️</span> 3-3. 그림: 픽셀과 색의 조합
+                    </h3>
+                    <p class="mb-4 text-slate-600 leading-relaxed">
+                        그림을 아주 작게 확대해 보면 수많은 점들로 이루어져 있습니다. 이 점 하나를 <strong>픽셀(Pixel, 화소)</strong>이라고 하며, 각 픽셀의 색깔 정보를 숫자로 바꾸어 저장합니다.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-slate-400 rounded-full"></span> 흑백 이미지 (단색)
+                            </h4>
+                            <p class="text-xs text-slate-500 mb-4">하나의 픽셀을 0(백) 또는 1(흑)로 표현합니다. <strong>1비트</strong>만으로도 표현이 가능합니다.</p>
+                            <div class="flex justify-center items-center gap-4 bg-white p-4 rounded-xl shadow-inner">
+                                <div class="w-8 h-8 bg-white border border-slate-200 flex items-center justify-center font-mono text-xs text-slate-400">0</div>
+                                <div class="w-8 h-8 bg-slate-900 border border-slate-900 flex items-center justify-center font-mono text-xs text-slate-100">1</div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span> 컬러 이미지 (RGB)
+                            </h4>
+                            <p class="text-xs text-slate-500 mb-4">빛의 3원색인 <strong>R(빨강)</strong>, <strong>G(초록)</strong>, <strong>B(파랑)</strong>를 섞어 색을 만듭니다. 각 색상당 8비트씩, 총 <strong>24비트</strong>를 주로 사용합니다.</p>
+                            <div class="flex justify-center items-center gap-2 bg-white p-4 rounded-xl shadow-inner">
+                                <div class="px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded">Red</div>
+                                <div class="px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded">Green</div>
+                                <div class="px-2 py-1 bg-blue-100 text-blue-600 text-[10px] font-bold rounded">Blue</div>
+                                <div class="text-slate-300">→</div>
+                                <div class="w-8 h-8 rounded-md shadow-sm" style="background-color: #ff5733;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 픽셀 아트 실험실 -->
+                <div class="mt-12 mb-20 p-1 bg-gradient-to-br from-green-100 to-emerald-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full"></div>
+                    <div class="bg-white/90 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-800 tracking-tight">픽셀 아트 이진수 변환 실습</h3>
+                                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Pixel to Binary Converter (1-bit Mode)</p>
+                                </div>
+                            </div>
+                            <button id="resetPixelBtn" class="px-4 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-500 text-slate-500 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                RESET GRID
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                            <!-- Grid Area -->
+                            <div class="flex justify-center">
+                                <div id="pixelGrid" class="grid grid-cols-8 gap-1 p-4 bg-slate-100 rounded-3xl border-4 border-slate-200 shadow-inner w-fit cursor-pointer">
+                                    <!-- 8x8 Grid will be generated here -->
+                                </div>
+                            </div>
+
+                            <!-- Data Display Area -->
+                            <div class="space-y-6">
+                                <div class="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+                                    <div class="relative z-10">
+                                        <h5 class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4">Binary Data Stream (64 bits)</h5>
+                                        <div id="pixelBinaryText" class="font-mono text-white text-sm break-all leading-relaxed opacity-90 min-h-[100px]">
+                                            0000000000000000000000000000000000000000000000000000000000000000
+                                        </div>
+                                    </div>
+                                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full"></div>
+                                </div>
+                                
+                                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                                    <p class="text-xs text-slate-500 leading-relaxed italic">
+                                        격자를 클릭하여 픽셀을 칠해보세요. 칠해진 픽셀은 <strong>1</strong>, 지워진 픽셀은 <strong>0</strong>으로 변환되어 나타납니다. 이것이 컴퓨터가 이미지를 인식하는 가장 기본적인 원리입니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- 디지털 실험실 2.5: 프리미엄 라이트 테마 -->
@@ -701,7 +790,7 @@
             <div class="mt-20 mb-16">
                 <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
                     <span class="text-ocean-deep p-2 bg-slate-100 rounded-lg shadow-sm">💿</span> 
-                    3. <span class="sketch-underline">소리 데이터의 디지털화</span>
+                    4. <span class="sketch-underline">소리 데이터의 디지털화</span>
                 </h2>
                 <p class="mb-12 text-slate-500 max-w-2xl leading-relaxed">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 아날로그 신호를 1과 0의 디지털 신호로 변환하는 정교한 설계 과정이 필요합니다.</p>
                 
@@ -1069,6 +1158,48 @@
                 if (audioContext) audioContext.close();
             }
         });
+
+        // --- Pixel Art Lab Logic ---
+        const pixelGrid = document.getElementById('pixelGrid');
+        const pixelBinaryText = document.getElementById('pixelBinaryText');
+        const resetPixelBtn = document.getElementById('resetPixelBtn');
+        let pixels = new Array(64).fill(0);
+
+        function initPixelGrid() {
+            pixelGrid.innerHTML = '';
+            pixels.forEach((val, i) => {
+                const cell = document.createElement('div');
+                cell.className = `w-8 h-8 sm:w-10 sm:h-10 rounded-sm transition-all duration-200 ${val === 1 ? 'bg-slate-900 shadow-lg' : 'bg-white'}`;
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => togglePixel(i));
+                pixelGrid.appendChild(cell);
+            });
+            updatePixelBinary();
+        }
+
+        function togglePixel(index) {
+            pixels[index] = pixels[index] === 0 ? 1 : 0;
+            const cell = pixelGrid.children[index];
+            if (pixels[index] === 1) {
+                cell.classList.remove('bg-white');
+                cell.classList.add('bg-slate-900', 'shadow-lg');
+            } else {
+                cell.classList.remove('bg-slate-900', 'shadow-lg');
+                cell.classList.add('bg-white');
+            }
+            updatePixelBinary();
+        }
+
+        function updatePixelBinary() {
+            pixelBinaryText.innerText = pixels.join('');
+        }
+
+        resetPixelBtn.addEventListener('click', () => {
+            pixels.fill(0);
+            initPixelGrid();
+        });
+
+        initPixelGrid(); // Initialize on load
     </script>
     </div>
 </body>

@@ -4,45 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹 강의노트 - 1-3-1. 사물 인터넷 프로젝트를 위한 준비</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; margin: 0; padding: 3rem 1rem; color: #334155; line-height: 1.8; display: flex; justify-content: center; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px; }
-        .notebook-container { background-color: #ffffff; width: 100%; max-width: 900px; border-radius: 4px 12px 12px 4px; box-shadow: -8px 8px 20px rgba(0, 0, 0, 0.08), inset 1px 0 0 rgba(0,0,0,0.05), inset -1px 0 0 rgba(0,0,0,0.03); position: relative; padding: 4rem 4rem 5rem 6rem; min-height: 1000px; }
-        .binder-holes { position: absolute; left: 15px; top: 40px; bottom: 40px; width: 30px; display: flex; flex-direction: column; justify-content: space-evenly; }
-        .hole { width: 18px; height: 18px; background-color: #f8fafc; border-radius: 50%; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), 1px 1px 1px rgba(255,255,255,1); position: relative; }
-        .hole::after { content: ''; position: absolute; width: 28px; height: 6px; background: linear-gradient(to bottom, #d6d7d9, #bcbec1, #e2e4e6); border-radius: 3px; top: 6px; left: 8px; box-shadow: 1px 2px 3px rgba(0,0,0,0.2); z-index: 10; }
-        .note-header { border-bottom: 2px dashed #cbd5e1; padding-bottom: 1.5rem; margin-bottom: 2rem; position: relative; }
-        .note-header::after { content: "Date: 20__ . __ . __"; position: absolute; right: 0; top: -10px; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive; color: #94a3b8; font-size: 0.95rem; }
-        .concept-box { background-color: #f1f5f9; padding: 1.5rem 1.5rem 1.5rem 2.5rem; box-shadow: 3px 5px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; border-left: 5px solid #475569; position: relative; transform: rotate(-0.5deg); }
-        .concept-box::before { content: "🛠️"; position: absolute; top: -10px; left: 10px; font-size: 1.5rem; }
-        .highlighter { background: linear-gradient(to top, #cbd5e1 40%, transparent 40%); font-weight: bold; display: inline; }
+        :root {
+            --paper-bg: #fdfbf7;
+            --ocean-deep: #0f172a;
+            --accent-slate: #475569;
+            --mesh-gradient: radial-gradient(at 0% 0%, rgba(71, 85, 105, 0.05) 0, transparent 50%),
+                             radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0, transparent 50%);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f1ede4;
+            margin: 0;
+            padding: 3rem 1rem;
+            color: #2c2c2c;
+            line-height: 1.7;
+            display: flex;
+            justify-content: center;
+            background-image: var(--mesh-gradient);
+            background-attachment: fixed;
+        }
+
+        .notebook-container {
+            background-color: var(--paper-bg);
+            width: 98%;
+            max-width: 1200px;
+            border-radius: 2rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding: 4rem 4rem 6rem 6rem;
+            min-height: 1000px;
+            overflow: hidden;
+        }
+
+        .notebook-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .binder-holes {
+            position: absolute;
+            left: 25px;
+            top: 60px;
+            bottom: 60px;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            z-index: 10;
+        }
+
+        .hole {
+            width: 22px;
+            height: 22px;
+            background-color: #d1cbc2;
+            border-radius: 50%;
+            box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .hole::after {
+            content: '';
+            position: absolute;
+            width: 34px;
+            height: 8px;
+            background: linear-gradient(135deg, #e2e4e6 0%, #bcbec1 50%, #d6d7d9 100%);
+            border-radius: 4px;
+            top: 7px;
+            left: 10px;
+            box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 { font-family: 'Lora', serif; font-weight: 700; letter-spacing: -0.02em; }
+
+        .note-header { border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 2rem; margin-bottom: 3rem; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .sketch-underline {
+            background-image: linear-gradient(120deg, rgba(71, 85, 105, 0.1) 0%, rgba(71, 85, 105, 0.1) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.3em;
+            background-position: 0 88%;
+            transition: background-size 0.25s ease-in;
+        }
     </style>
 </head>
-<body>
+
+<body class="antialiased">
     <div class="notebook-container">
         <!-- 홈으로 가기 버튼 -->
-        <a href="../index.html" class="absolute top-20 right-8 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-sm shadow-sm transition border border-slate-200 flex items-center z-50" style="text-decoration:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg> 
-            메인으로
+        <a href="../index.html"
+            class="absolute top-10 right-10 glass-card px-6 py-3 text-slate-600 font-bold text-xs tracking-widest uppercase flex items-center z-50 transition-all hover:bg-white hover:scale-105 active:scale-95"
+            style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-slate-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Main Dashboard
         </a>
-        <!-- 바인더 구멍 -->
+
         <div class="binder-holes">
             <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
             <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
             <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
         </div>
 
-        <header class="note-header">
-            <div class="inline-block px-3 py-2 mb-4 text-xs font-bold tracking-wider text-slate-800 uppercase bg-slate-200 rounded-sm transform -rotate-1">
-                2022 개정 정보 | 1. 피지컬 컴퓨팅
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-2 font-serif tracking-tight">
-                1-3-1. 사물 인터넷 프로젝트를 위한 준비
-            </h1>
-            <p class="text-lg text-slate-500 font-medium">실생활의 문제를 작은 컴퓨터(보드)로 해결해보자!</p>
+        <header class="note-header text-center sm:text-left">
+            <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-4">1-3-1. <span class="sketch-underline">사물 인터넷 프로젝트를 위한 준비</span></h1>
+            <p class="text-xl text-slate-500 font-medium">실생활의 문제를 작은 컴퓨터(보드)로 해결해보자!</p>
         </header>
 
         <main class="text-slate-700 text-lg">
