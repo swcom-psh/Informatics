@@ -7,7 +7,9 @@
     <title>웹 강의노트 - 2-1-1. 데이터의 이해</title>
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
@@ -16,9 +18,9 @@
             --accent-gold: #d4af37;
             --terracotta: #c46a50;
             --sage: #7d8a7d;
-            --mesh-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0, transparent 50%), 
-                             radial-gradient(at 100% 0%, rgba(196, 106, 80, 0.05) 0, transparent 50%),
-                             radial-gradient(at 50% 100%, rgba(125, 138, 125, 0.05) 0, transparent 50%);
+            --mesh-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.05) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(196, 106, 80, 0.05) 0, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(125, 138, 125, 0.05) 0, transparent 50%);
         }
 
         body {
@@ -90,16 +92,20 @@
         }
 
         /* Typography */
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Lora', serif;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
 
-        .font-display { font-family: 'Playfair Display', serif; }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
 
         .note-header {
-            border-bottom: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             padding-bottom: 2rem;
             margin-bottom: 3rem;
             position: relative;
@@ -160,19 +166,19 @@
             background: #020617;
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 1.5rem;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
         /* Neumorphic Controls */
         .neo-btn {
             background: #0f172a;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.3), -2px -2px 8px rgba(255,255,255,0.02);
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.02);
             transition: all 0.2s ease;
         }
 
         .neo-btn:hover {
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
             transform: scale(0.98);
         }
 
@@ -234,22 +240,26 @@
         </div>
 
         <header class="note-header text-center sm:text-left">
-            <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-4">2-1-1. <span class="sketch-underline">데이터의 이해</span></h1>
+            <h1 class="text-5xl font-black text-slate-900 tracking-tight mb-4">2-1-1. <span
+                    class="sketch-underline">데이터의 이해</span></h1>
             <p class="text-xl text-slate-500 font-medium">Digital Foundation: 자료와 정보의 체계적 이해</p>
         </header>
 
         <main>
             <!-- 1. 비트와 바이트 -->
             <h2 class="text-3xl font-bold mt-16 mb-8 flex items-center gap-3">
-                <span class="text-blue-500 p-2 bg-blue-50 rounded-lg shadow-sm">🔢</span> 
+                <span class="text-blue-500 p-2 bg-blue-50 rounded-lg shadow-sm">🔢</span>
                 1. <span class="sketch-underline">비트와 바이트</span>: 데이터의 최소 단위
             </h2>
             <div class="glass-card mb-16 p-10 overflow-hidden relative">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/5 blur-[50px] rounded-full"></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                     <div>
-                        <h4 class="text-2xl font-black text-slate-800 mb-6 font-display border-b-4 border-blue-500/20 inline-block pb-1">비트 (Bit)</h4>
-                        <p class="text-slate-600 leading-relaxed mb-6"><strong>Binary Digit</strong>의 약자로, 디지털 세계의 가장 작은 심장입니다. 전구가 꺼짐(0)과 켜짐(1) 상태를 선택하듯, 단 두 가지의 상태만을 명확하게 구분하여 기록합니다.</p>
+                        <h4
+                            class="text-2xl font-black text-slate-800 mb-6 font-display border-b-4 border-blue-500/20 inline-block pb-1">
+                            비트 (Bit)</h4>
+                        <p class="text-slate-600 leading-relaxed mb-6"><strong>Binary Digit</strong>의 약자로, 디지털 세계의 가장 작은
+                            심장입니다. 전구가 꺼짐(0)과 켜짐(1) 상태를 선택하듯, 단 두 가지의 상태만을 명확하게 구분하여 기록합니다.</p>
                         </p>
                         <div class="flex flex-col sm:flex-row items-center gap-10 mt-8">
                             <!-- Circuit Off (0) -->
@@ -483,7 +493,7 @@
                 <!-- 3-1. 숫자 데이터 -->
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                        <span class="p-1 bg-blue-100 rounded mr-2">🔢</span> 숫자: 진법 변환의 원리
+                        <span class="p-1 bg-blue-100 rounded mr-2">🔢</span> 3-1. 숫자: 진법 변환의 원리
                     </h3>
                     <p class="mb-4 text-slate-600 leading-relaxed">우리가 일상에서 쓰는 <strong>10진수</strong>를 컴퓨터는 0과 1의
                         <strong>2진수</strong>로 바꾸어 저장합니다. 또한 효율적인 관리를 위해 <strong>16진수</strong>를 섞어서 사용하기도 합니다.
@@ -522,7 +532,7 @@
                 <!-- 3-2. 문자 데이터 -->
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                        <span class="p-1 bg-amber-100 rounded mr-2">✍️</span> 문자: 약속된 약속 (인코딩)
+                        <span class="p-1 bg-amber-100 rounded mr-2">✍️</span> 3-2. 문자: 약속된 약속 (인코딩)
                     </h3>
                     <p class="mb-4 text-slate-600">어떤 숫자가 어떤 문자인지 정해둔 규칙을 <strong>인코딩(Encoding)</strong>이라고 합니다.</p>
 
@@ -553,7 +563,8 @@
                         <span class="p-1 bg-green-100 rounded mr-2">🖼️</span> 3-3. 그림: 픽셀과 색의 조합
                     </h3>
                     <p class="mb-4 text-slate-600 leading-relaxed">
-                        그림을 아주 작게 확대해 보면 수많은 점들로 이루어져 있습니다. 이 점 하나를 <strong>픽셀(Pixel, 화소)</strong>이라고 하며, 각 픽셀의 색깔 정보를 숫자로 바꾸어 저장합니다.
+                        그림을 아주 작게 확대해 보면 수많은 점들로 이루어져 있습니다. 이 점 하나를 <strong>픽셀(Pixel, 화소)</strong>이라고 하며, 각 픽셀의 색깔 정보를
+                        숫자로 바꾸어 저장합니다.
                     </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -561,21 +572,30 @@
                             <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-slate-400 rounded-full"></span> 흑백 이미지 (단색)
                             </h4>
-                            <p class="text-xs text-slate-500 mb-4">하나의 픽셀을 0(백) 또는 1(흑)로 표현합니다. <strong>1비트</strong>만으로도 표현이 가능합니다.</p>
+                            <p class="text-xs text-slate-500 mb-4">하나의 픽셀을 0(백) 또는 1(흑)로 표현합니다. <strong>1비트</strong>만으로도
+                                표현이 가능합니다.</p>
                             <div class="flex justify-center items-center gap-4 bg-white p-4 rounded-xl shadow-inner">
-                                <div class="w-8 h-8 bg-white border border-slate-200 flex items-center justify-center font-mono text-xs text-slate-400">0</div>
-                                <div class="w-8 h-8 bg-slate-900 border border-slate-900 flex items-center justify-center font-mono text-xs text-slate-100">1</div>
+                                <div
+                                    class="w-8 h-8 bg-white border border-slate-200 flex items-center justify-center font-mono text-xs text-slate-400">
+                                    0</div>
+                                <div
+                                    class="w-8 h-8 bg-slate-900 border border-slate-900 flex items-center justify-center font-mono text-xs text-slate-100">
+                                    1</div>
                             </div>
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
                             <h4 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-red-500 rounded-full"></span> 컬러 이미지 (RGB)
                             </h4>
-                            <p class="text-xs text-slate-500 mb-4">빛의 3원색인 <strong>R(빨강)</strong>, <strong>G(초록)</strong>, <strong>B(파랑)</strong>를 섞어 색을 만듭니다. 각 색상당 8비트씩, 총 <strong>24비트</strong>를 주로 사용합니다.</p>
+                            <p class="text-xs text-slate-500 mb-4">빛의 3원색인 <strong>R(빨강)</strong>,
+                                <strong>G(초록)</strong>, <strong>B(파랑)</strong>를 섞어 색을 만듭니다. 각 색상당 8비트씩, 총
+                                <strong>24비트</strong>를 주로 사용합니다.</p>
                             <div class="flex justify-center items-center gap-2 bg-white p-4 rounded-xl shadow-inner">
                                 <div class="px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded">Red</div>
-                                <div class="px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded">Green</div>
-                                <div class="px-2 py-1 bg-blue-100 text-blue-600 text-[10px] font-bold rounded">Blue</div>
+                                <div class="px-2 py-1 bg-green-100 text-green-600 text-[10px] font-bold rounded">Green
+                                </div>
+                                <div class="px-2 py-1 bg-blue-100 text-blue-600 text-[10px] font-bold rounded">Blue
+                                </div>
                                 <div class="text-slate-300">→</div>
                                 <div class="w-8 h-8 rounded-md shadow-sm" style="background-color: #ff5733;"></div>
                             </div>
@@ -584,24 +604,34 @@
                 </div>
 
                 <!-- 픽셀 아트 실험실 -->
-                <div class="mt-12 mb-20 p-1 bg-gradient-to-br from-green-100 to-emerald-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                <div
+                    class="mt-12 mb-20 p-1 bg-gradient-to-br from-green-100 to-emerald-200 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
                     <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/5 blur-[80px] rounded-full"></div>
-                    <div class="bg-white/90 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
+                    <div
+                        class="bg-white/90 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-10 relative z-10 border border-white">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                        <path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>
+                                <div
+                                    class="w-12 h-12 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                        <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 class="text-2xl font-black text-slate-800 tracking-tight">픽셀 아트 이진수 변환 실습</h3>
-                                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Pixel to Binary Converter (1-bit Mode)</p>
+                                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">
+                                        Pixel to Binary Converter (1-bit Mode)</p>
                                 </div>
                             </div>
-                            <button id="resetPixelBtn" class="px-4 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-500 text-slate-500 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            <button id="resetPixelBtn"
+                                class="px-4 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-500 text-slate-500 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                    <path d="M3 3v5h5" />
+                                </svg>
                                 RESET GRID
                             </button>
                         </div>
@@ -609,26 +639,34 @@
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <!-- Grid Area -->
                             <div class="flex justify-center">
-                                <div id="pixelGrid" class="grid grid-cols-8 gap-1 p-4 bg-slate-100 rounded-3xl border-4 border-slate-200 shadow-inner w-fit cursor-pointer">
+                                <div id="pixelGrid"
+                                    class="grid grid-cols-8 gap-1 p-4 bg-slate-100 rounded-3xl border-4 border-slate-200 shadow-inner w-fit cursor-pointer">
                                     <!-- 8x8 Grid will be generated here -->
                                 </div>
                             </div>
 
                             <!-- Data Display Area -->
                             <div class="space-y-6">
-                                <div class="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+                                <div
+                                    class="bg-slate-900 rounded-3xl p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
                                     <div class="relative z-10">
-                                        <h5 class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4">Binary Data Stream (64 bits)</h5>
-                                        <div id="pixelBinaryText" class="font-mono text-white text-sm break-all leading-relaxed opacity-90 min-h-[100px]">
+                                        <h5
+                                            class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-4">
+                                            Binary Data Stream (64 bits)</h5>
+                                        <div id="pixelBinaryText"
+                                            class="font-mono text-white text-sm break-all leading-relaxed opacity-90 min-h-[100px]">
                                             0000000000000000000000000000000000000000000000000000000000000000
                                         </div>
                                     </div>
-                                    <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full"></div>
+                                    <div
+                                        class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full">
+                                    </div>
                                 </div>
-                                
+
                                 <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
                                     <p class="text-xs text-slate-500 leading-relaxed italic">
-                                        격자를 클릭하여 픽셀을 칠해보세요. 칠해진 픽셀은 <strong>1</strong>, 지워진 픽셀은 <strong>0</strong>으로 변환되어 나타납니다. 이것이 컴퓨터가 이미지를 인식하는 가장 기본적인 원리입니다.
+                                        격자를 클릭하여 픽셀을 칠해보세요. 칠해진 픽셀은 <strong>1</strong>, 지워진 픽셀은 <strong>0</strong>으로
+                                        변환되어 나타납니다. 이것이 컴퓨터가 이미지를 인식하는 가장 기본적인 원리입니다.
                                     </p>
                                 </div>
                             </div>
@@ -789,16 +827,18 @@
             <!-- 3. 소리 데이터의 디지털화 -->
             <div class="mt-20 mb-16">
                 <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
-                    <span class="text-ocean-deep p-2 bg-slate-100 rounded-lg shadow-sm">💿</span> 
+                    <span class="text-ocean-deep p-2 bg-slate-100 rounded-lg shadow-sm">💿</span>
                     4. <span class="sketch-underline">소리 데이터의 디지털화</span>
                 </h2>
-                <p class="mb-12 text-slate-500 max-w-2xl leading-relaxed">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 아날로그 신호를 1과 0의 디지털 신호로 변환하는 정교한 설계 과정이 필요합니다.</p>
-                
+                <p class="mb-12 text-slate-500 max-w-2xl leading-relaxed">컴퓨터가 소리를 이해하려면 연속적인 파동 형태의 아날로그 신호를 1과 0의 디지털
+                    신호로 변환하는 정교한 설계 과정이 필요합니다.</p>
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <div class="glass-card p-8 border-t-4 border-t-blue-500/50">
                         <div class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-4">Step 01</div>
                         <h4 class="text-xl font-bold text-slate-800 mb-3 font-display">표본화 (Sampling)</h4>
-                        <p class="text-sm text-slate-500 leading-relaxed">아날로그 파형을 일정 시간 간격으로 잘게 나누어 기록하는 첫 번째 관문입니다.</p>
+                        <p class="text-sm text-slate-500 leading-relaxed">아날로그 파형을 일정 시간 간격으로 잘게 나누어 기록하는 첫 번째 관문입니다.
+                        </p>
                         <div class="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-blue-500 w-1/3 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
                         </div>
@@ -812,9 +852,11 @@
                         </div>
                     </div>
                     <div class="glass-card p-8 border-t-4 border-t-indigo-500/50">
-                        <div class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Step 03</div>
+                        <div class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Step 03
+                        </div>
                         <h4 class="text-xl font-bold text-slate-800 mb-3 font-display">부호화 (Encoding)</h4>
-                        <p class="text-sm text-slate-500 leading-relaxed">양자화된 수치 데이터를 최종적으로 컴퓨터 언어인 이진수(0, 1)로 변환합니다.</p>
+                        <p class="text-sm text-slate-500 leading-relaxed">양자화된 수치 데이터를 최종적으로 컴퓨터 언어인 이진수(0, 1)로 변환합니다.
+                        </p>
                         <div class="mt-6 h-1 bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-indigo-500 w-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
                         </div>
@@ -825,19 +867,29 @@
                 <div class="glass-card p-10 mb-16 border border-slate-100/50">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
                         <div class="flex flex-col items-center group">
-                            <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-6">Analog Capture</span>
-                            <div class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
+                            <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-6">Analog
+                                Capture</span>
+                            <div
+                                class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
                                 <svg viewBox="0 0 200 100" class="w-full h-full overflow-visible">
-                                    <line x1="0" y1="50" x2="200" y2="50" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4" />
-                                    <path d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50 C 140 10, 160 10, 180 50" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" class="drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
-                                    <circle cx="60" cy="50" r="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5" />
+                                    <line x1="0" y1="50" x2="200" y2="50" stroke="#e2e8f0" stroke-width="1"
+                                        stroke-dasharray="4,4" />
+                                    <path
+                                        d="M 0 50 C 20 10, 40 10, 60 50 C 80 90, 100 90, 120 50 C 140 10, 160 10, 180 50"
+                                        fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"
+                                        class="drop-shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
+                                    <circle cx="60" cy="50" r="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"
+                                        stroke-width="1.5" />
                                 </svg>
                             </div>
                             <p class="mt-4 text-[11px] font-bold text-slate-400">연속적인 아날로그 파동</p>
                         </div>
                         <div class="flex flex-col items-center group">
-                            <span class="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6">Quantization Step</span>
-                            <div class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
+                            <span
+                                class="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6">Quantization
+                                Step</span>
+                            <div
+                                class="w-full h-32 bg-slate-50 rounded-2xl p-4 border border-slate-100 group-hover:bg-white transition-colors duration-500">
                                 <svg viewBox="0 0 200 100" class="w-full h-full overflow-visible">
                                     <g stroke="#e2e8f0" stroke-width="0.5">
                                         <line x1="0" y1="20" x2="200" y2="20" />
@@ -845,17 +897,24 @@
                                         <line x1="0" y1="60" x2="200" y2="60" />
                                         <line x1="0" y1="80" x2="200" y2="80" />
                                     </g>
-                                    <path d="M 0 60 H 20 V 20 H 50 V 60 H 80 V 80 H 110 V 40 H 140" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
-                                    <circle cx="50" cy="20" r="4" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="1.5" />
+                                    <path d="M 0 60 H 20 V 20 H 50 V 60 H 80 V 80 H 110 V 40 H 140" fill="none"
+                                        stroke="#f59e0b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                        class="drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]" />
+                                    <circle cx="50" cy="20" r="4" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b"
+                                        stroke-width="1.5" />
                                 </svg>
                             </div>
                             <p class="mt-4 text-[11px] font-bold text-slate-400">데이터 양자화 (이산화)</p>
                         </div>
                         <div class="flex flex-col items-center group">
-                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">Digital Binary Output</span>
-                            <div class="w-full h-32 bg-slate-900 rounded-2xl p-6 border border-slate-800 flex items-center shadow-inner">
-                                <div class="font-mono text-indigo-400 text-[10px] break-all leading-relaxed opacity-60 h-full overflow-hidden">
-                                    01001010 11100101 01101100 01010111 11010101 10110101 01011010 11100101 01010101 11010110 11010101 01011001
+                            <span class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-6">Digital
+                                Binary Output</span>
+                            <div
+                                class="w-full h-32 bg-slate-900 rounded-2xl p-6 border border-slate-800 flex items-center shadow-inner">
+                                <div
+                                    class="font-mono text-indigo-400 text-[10px] break-all leading-relaxed opacity-60 h-full overflow-hidden">
+                                    01001010 11100101 01101100 01010111 11010101 10110101 01011010 11100101 01010101
+                                    11010110 11010101 01011001
                                 </div>
                             </div>
                             <p class="mt-4 text-[11px] font-bold text-slate-500">부호화된 이진 결과물</p>
@@ -868,77 +927,104 @@
             <div class="premium-lab mt-20 mb-24">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                     <div class="flex items-center gap-6">
-                        <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_40px_-10px_rgba(59,130,246,0.5)]">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                <line x1="12" y1="19" x2="12" y2="23"/>
-                                <line x1="8" y1="23" x2="16" y2="23"/>
+                        <div
+                            class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center text-white shadow-[0_20px_40px_-10px_rgba(59,130,246,0.5)]">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" y1="19" x2="12" y2="23" />
+                                <line x1="8" y1="23" x2="16" y2="23" />
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-3xl font-black text-white tracking-tight">Audio Capture Lab <span class="text-blue-400">3.0</span></h3>
-                            <p class="text-blue-200/40 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Real-time Oscilloscope Visualization</p>
+                            <h3 class="text-3xl font-black text-white tracking-tight">Audio Capture Lab <span
+                                    class="text-blue-400">3.0</span></h3>
+                            <p class="text-blue-200/40 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Real-time
+                                Oscilloscope Visualization</p>
                         </div>
                     </div>
-                    <button id="micBtn" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm shadow-[0_15px_30px_rgba(59,130,246,0.3)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.4)] transition-all flex items-center gap-3 active:scale-95">
-                        <span id="micStatusCircle" class="w-2.5 h-2.5 bg-green-400 rounded-full shadow-[0_0_10px_#4ade80] hidden"></span>
+                    <button id="micBtn"
+                        class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm shadow-[0_15px_30px_rgba(59,130,246,0.3)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.4)] transition-all flex items-center gap-3 active:scale-95">
+                        <span id="micStatusCircle"
+                            class="w-2.5 h-2.5 bg-green-400 rounded-full shadow-[0_0_10px_#4ade80] hidden"></span>
                         <span id="micBtnText">START CAPTURE</span>
                     </button>
                 </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <!-- Controls Panel -->
-                        <div class="lg:col-span-1 space-y-8">
-                            <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
-                                <h5 class="text-xs font-black text-blue-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
-                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_#3b82f6]"></span> SAMPLING RATE
-                                </h5>
-                                <input type="range" id="sampleRate" min="5" max="100" value="30" class="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-blue-500">
-                                <div class="flex justify-between mt-4 text-[9px] font-black text-white/20 tracking-tighter">
-                                    <span>LOW RESOLUTION</span>
-                                    <span id="sampleVal" class="text-blue-400">INTERVAL: 30PX</span>
-                                    <span>HIGH RESOLUTION</span>
-                                </div>
-                            </div>
-
-                            <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
-                                <h5 class="text-xs font-black text-amber-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
-                                    <span class="w-1.5 h-1.5 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></span> QUANTIZATION DEPTH
-                                </h5>
-                                <div class="grid grid-cols-4 gap-3">
-                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="1">1 BIT</button>
-                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="2">2 BIT</button>
-                                    <button class="bit-btn active px-2 py-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] font-black text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.1)]" data-bits="4">4 BIT</button>
-                                    <button class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all" data-bits="8">8 BIT</button>
-                                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Controls Panel -->
+                    <div class="lg:col-span-1 space-y-8">
+                        <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
+                            <h5
+                                class="text-xs font-black text-blue-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_#3b82f6]"></span>
+                                SAMPLING RATE
+                            </h5>
+                            <input type="range" id="sampleRate" min="5" max="100" value="30"
+                                class="w-full h-1.5 bg-white/5 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            <div class="flex justify-between mt-4 text-[9px] font-black text-white/20 tracking-tighter">
+                                <span>LOW RESOLUTION</span>
+                                <span id="sampleVal" class="text-blue-400">INTERVAL: 30PX</span>
+                                <span>HIGH RESOLUTION</span>
                             </div>
                         </div>
 
-                        <!-- Visualization Area -->
-                        <div class="lg:col-span-2 space-y-6">
-                            <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative min-h-[320px]">
-                                <div class="absolute top-4 left-4 z-20 flex gap-2">
-                                    <span class="px-2 py-1 bg-white/10 rounded text-[9px] font-black text-white/50 border border-white/5 uppercase">Waveform View</span>
-                                    <span class="px-2 py-1 bg-red-500/20 rounded text-[9px] font-black text-red-400 border border-red-500/20 uppercase">Analog</span>
-                                    <span class="px-2 py-1 bg-blue-500/20 rounded text-[9px] font-black text-blue-400 border border-blue-500/20 uppercase">Digital</span>
-                                </div>
-                                <canvas id="audioCanvas" class="w-full h-full block"></canvas>
+                        <div class="neo-btn p-8 rounded-[2rem] border-white/5 shadow-2xl">
+                            <h5
+                                class="text-xs font-black text-amber-300 mb-6 flex items-center gap-3 uppercase tracking-widest">
+                                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></span>
+                                QUANTIZATION DEPTH
+                            </h5>
+                            <div class="grid grid-cols-4 gap-3">
+                                <button
+                                    class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all"
+                                    data-bits="1">1 BIT</button>
+                                <button
+                                    class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all"
+                                    data-bits="2">2 BIT</button>
+                                <button
+                                    class="bit-btn active px-2 py-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[10px] font-black text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.1)]"
+                                    data-bits="4">4 BIT</button>
+                                <button
+                                    class="bit-btn px-2 py-4 rounded-xl border border-white/5 text-[10px] font-black text-white/30 hover:bg-white/5 transition-all"
+                                    data-bits="8">8 BIT</button>
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="bg-indigo-900 rounded-2xl p-6 relative overflow-hidden">
-                                <div class="relative z-10">
-                                    <h5 class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-3">3. 이진 부호화 스트림 (Binary Encoding)</h5>
-                                    <div id="audioBinaryStream" class="font-mono text-indigo-100 text-sm whitespace-nowrap overflow-hidden opacity-80 h-6">
-                                        0000000000000000000000000000000000000000...
-                                    </div>
+                    <!-- Visualization Area -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative min-h-[320px]">
+                            <div class="absolute top-4 left-4 z-20 flex gap-2">
+                                <span
+                                    class="px-2 py-1 bg-white/10 rounded text-[9px] font-black text-white/50 border border-white/5 uppercase">Waveform
+                                    View</span>
+                                <span
+                                    class="px-2 py-1 bg-red-500/20 rounded text-[9px] font-black text-red-400 border border-red-500/20 uppercase">Analog</span>
+                                <span
+                                    class="px-2 py-1 bg-blue-500/20 rounded text-[9px] font-black text-blue-400 border border-blue-500/20 uppercase">Digital</span>
+                            </div>
+                            <canvas id="audioCanvas" class="w-full h-full block"></canvas>
+                        </div>
+
+                        <div class="bg-indigo-900 rounded-2xl p-6 relative overflow-hidden">
+                            <div class="relative z-10">
+                                <h5 class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-3">3. 이진
+                                    부호화 스트림 (Binary Encoding)</h5>
+                                <div id="audioBinaryStream"
+                                    class="font-mono text-indigo-100 text-sm whitespace-nowrap overflow-hidden opacity-80 h-6">
+                                    0000000000000000000000000000000000000000...
                                 </div>
-                                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-indigo-900 to-transparent z-20"></div>
+                            </div>
+                            <div
+                                class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-indigo-900 to-transparent z-20">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+    </div>
     </div>
     </main>
 
@@ -1062,7 +1148,7 @@
                 source = audioContext.createMediaStreamSource(stream);
                 source.connect(analyser);
                 dataArray = new Uint8Array(analyser.frequencyBinCount);
-                
+
                 isRecording = true;
                 micBtnText.innerText = '실습 중 (클릭 시 중단)';
                 micStatusCircle.classList.remove('hidden');
@@ -1076,7 +1162,7 @@
         function draw() {
             if (!isRecording) return;
             animationId = requestAnimationFrame(draw);
-            
+
             // Set canvas resolution
             if (canvas.width !== canvas.clientWidth) {
                 canvas.width = canvas.clientWidth;
@@ -1093,13 +1179,13 @@
             // Grid
             ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 1;
-            for(let i=0; i<canvas.height; i+=20) {
-                ctx.beginPath();ctx.moveTo(0, i);ctx.lineTo(canvas.width, i);ctx.stroke();
+            for (let i = 0; i < canvas.height; i += 20) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
             }
 
             const step = parseInt(sampleRateInput.value);
             const sliceWidth = canvas.width / bufferLength;
-            
+
             // 1. Analog Wave (Red)
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
@@ -1120,23 +1206,23 @@
             ctx.beginPath();
             ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 3;
-            
+
             let binaryOutput = "";
             let lastY = canvas.height / 2;
-            
+
             for (let i = 0; i < bufferLength; i += Math.max(1, Math.floor(step / (canvas.width / bufferLength)))) {
                 const sampleX = (i / bufferLength) * canvas.width;
                 const v = waveData[i] / 128.0;
                 const rawY = v * canvas.height / 2;
-                
+
                 // Quantize
                 const level = Math.floor(rawY / quantizationUnit);
                 const quantY = level * quantizationUnit + (quantizationUnit / 2);
-                
+
                 // Draw Staircase
                 ctx.lineTo(sampleX, lastY);
                 ctx.lineTo(sampleX, quantY);
-                
+
                 // Collect Binary bits (simple mapping for visualization)
                 binaryOutput += level.toString(2).padStart(currentBits, '0') + " ";
                 lastY = quantY;
